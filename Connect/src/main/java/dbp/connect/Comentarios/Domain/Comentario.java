@@ -22,9 +22,6 @@ public class Comentario {
     @JsonIgnore
     @Column(nullable = true)
     private Long parentId;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private PublicacionInicio post;
 
     @Column(name = "message")
     private String message;
@@ -32,7 +29,7 @@ public class Comentario {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
     @JoinColumn(name ="user_id")
-    private User user;
+    private User AutorId;
 
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})

@@ -18,8 +18,6 @@ public class ComentarioDto {
     private String message;
     @NotNull
     private Long senderId;
-    @NotNull
-    private Long receiverId;
     private List<MultimediaInicio> multimedio;
     private List<ComentarioDto> respuestas;
 }

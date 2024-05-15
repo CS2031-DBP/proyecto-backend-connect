@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface MensajeIndividualRepository extends JpaRepository<MensajeIndividual, String> {
+public interface MensajeIndividualRepository extends JpaRepository<MensajeIndividual, Long> {
     List<MensajeIndividual> findByChatId(String Id);
 }
