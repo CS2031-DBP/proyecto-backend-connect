@@ -18,13 +18,10 @@ import java.util.List;
 public class ChatIndividual {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
 
     @ManyToOne
-    private User sender;
-
-    @ManyToOne
-    private User recipient;
+    private User usuario1;
 
     @OneToMany(mappedBy = "chat")
     private List<MensajeIndividual> mensajes = new ArrayList<>();
