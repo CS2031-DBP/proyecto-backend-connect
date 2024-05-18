@@ -1,15 +1,12 @@
 package dbp.connect.Booking.Domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.util.Date;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Setter
 @Getter
@@ -22,12 +19,15 @@ public class Booking {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "accommodation_id", nullable = false)
     private Accommodation accommodation;
 
+    @Column(nullable = false)
     private Long tenantId;
 
+    @Column(nullable = false)
     private Long landlordId;
 
+    @Column(nullable = false)
     private Date bookingDate;
-
 }

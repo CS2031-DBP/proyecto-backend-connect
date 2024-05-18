@@ -16,10 +16,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class Notificaciones {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String type;
-	private String message;
-	private Date date;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String type;
+    private String message;
+    private Date date;
+    private String destinatario;
+    private String remitente;
 }

@@ -1,14 +1,6 @@
 package dbp.connect.Review.Domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.util.Date;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,26 +12,33 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @NotNull
-    private Accommodation accommodation;
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
 
     @ManyToOne
-    @NotNull
-    private User author;
+    @JoinColumn(name = "autor_id", nullable = false)
+    private Usuario autor;
 
     @ManyToOne
-    @NotNull
-    private User recipient;
+    @JoinColumn(name = "destinatario_id", nullable = false)
+    private Usuario destinatario;
 
-    @NotNull
-    @Min(1)
-    @Max(5)
-    private Integer rating;
+    @Column(nullable = false)
+    private int calificacion;
 
+    @Column(nullable = false)
+    private String comentario;
+
+    public void setCalificacion(int calificacion) {
+        if (calificacion < 1 || calificacion > 5) {
+            throw new IllegalArgumentException("La calificación debe estar entre 1 y 5");
+        }
+        this.calificacion = calificacion;
+    }
 }
-

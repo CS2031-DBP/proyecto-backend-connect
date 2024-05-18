@@ -1,12 +1,12 @@
-package dbp.connect.Notificaciones.Exceptions;
+package dbp.connect.Booking.Exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-public class NotificacionesExceptions extends Exception {
-    public NotificacionesExceptions(String mensaje) {
+public class BookingException extends Exception {
+    public BookingException(String mensaje) {
         super(mensaje);
     }
 }
@@ -14,9 +14,8 @@ public class NotificacionesExceptions extends Exception {
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotificacionesExceptions.class)
-    public ResponseEntity<String> handleNotificacionesException(NotificacionesExceptions ex) {
+    @ExceptionHandler(BookingException.class)
+    public ResponseEntity<String> handleBookingNotFoundException(BookingException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
-
 }
