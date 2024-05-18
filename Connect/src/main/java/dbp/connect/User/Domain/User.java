@@ -1,6 +1,7 @@
 package dbp.connect.User.Domain;
 
 import dbp.connect.ChatGrupal.Domain.ChatGrupal;
+import dbp.connect.ChatIndividual.Domain.ChatIndividual;
 import dbp.connect.MensajeGrupal.Domain.MensajeGrupal;
 import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
 import jakarta.persistence.*;
@@ -25,13 +26,9 @@ public class User {
     private Status status;
     @Lob
     private byte[] foto;
-    @OneToMany(mappedBy = "mensajeI_recividos")
+    @OneToMany(mappedBy = "autor")
     private List<MensajeIndividual> mensajeIndividualRecividos = new ArrayList<>();
-    @OneToMany(mappedBy = "menssajeI_enviado")
-    private List<MensajeIndividual> menssajeIndividualIEnviados = new ArrayList<>();
-    @OneToMany(mappedBy = "mensaje_recividos")
-    private List<MensajeGrupal> mensajeGrupalRecividos = new ArrayList<>();
-    @OneToMany(mappedBy = "mensaje_enviados")
+    @OneToMany(mappedBy = "autorG")
     private List<MensajeGrupal> mensajeGrupalEnviados = new ArrayList<>();
     @ManyToMany
     @JoinTable(
@@ -40,14 +37,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "grupo_id")
     )
     private List<ChatGrupal> grupos = new ArrayList<>();
-    @OneToMany(mappedBy = "chats_individuales")
-    private List<ChatGrupal> chatsIndividuales = new ArrayList<>();
+    @OneToMany(mappedBy = "usuario")
+    private List<ChatIndividual> chatsIndividuales;
     @ManyToMany
     @JoinTable(
             name = "amigos",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "amigo_id")
     )
-    private List<User> amigos =new ArrayList<>();
+    private List<User> amigos = new ArrayList<>();
 
 }

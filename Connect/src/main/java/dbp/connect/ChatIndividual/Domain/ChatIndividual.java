@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -21,7 +22,9 @@ public class ChatIndividual {
     private Long Id;
 
     @ManyToOne
-    private User usuario1;
+    @JoinColumn(name = "usuario", nullable = false)
+    private User usuario2;
+    private Date fechaCreacion;
 
     @OneToMany(mappedBy = "chat")
     private List<MensajeIndividual> mensajes = new ArrayList<>();

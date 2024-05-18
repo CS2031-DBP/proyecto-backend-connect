@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,16 +22,18 @@ public class MensajeIndividual {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="chat_id")
+    @JoinColumn(name="chat_id", nullable = false)
     private ChatIndividual chat;
     @ManyToOne
-    @JoinColumn(name="autor_id")
+    @JoinColumn(name="autor_id", nullable = false)
     private User autor;
+    @JoinColumn(name="cuerpo")
     private String cuerpo;
+    @JoinColumn(name="status",nullable = false)
     private StatusMensaje statusMensaje;
     private LocalDateTime timestamp;
-    @OneToMany(mappedBy = "mensaje", cascade = CascadeType.ALL)
-    private List<MultimediaMensajeIndividual> archivosMultimedia;
+    @OneToMany(mappedBy = "mensaje", cascade = CascadeType.ALL,orphanRemoval = true )
+    private List<MultimediaMensajeIndividual> archivosMultimedia = new ArrayList<>();
 
 
 
