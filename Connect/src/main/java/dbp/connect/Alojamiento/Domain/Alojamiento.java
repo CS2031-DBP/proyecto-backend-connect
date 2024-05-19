@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +32,7 @@ public class Alojamiento {
     @Column(name="longitud",nullable = false)
     private Double longitude;
     @Column(name ="fechaPublicacion", nullable = false)
-    private Date fechaPublicacion;
+    private LocalDateTime fechaPublicacion;
     @Column(name="descripcion", nullable = false)
     private String descripcion;
     @Column(name="precio", nullable = false)

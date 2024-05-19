@@ -18,16 +18,4 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "accommodation_id", nullable = false)
-    private Accommodation accommodation;
-
-    @Column(nullable = false)
-    private Long tenantId;
-
-    @Column(nullable = false)
-    private Long landlordId;
-
-    @Column(nullable = false)
-    private Date bookingDate;
 }

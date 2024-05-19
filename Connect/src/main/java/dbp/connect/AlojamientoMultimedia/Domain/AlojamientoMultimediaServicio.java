@@ -3,6 +3,7 @@ package dbp.connect.AlojamientoMultimedia.Domain;
 import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
 import dbp.connect.AlojamientoMultimedia.Infrastructure.AlojamientoMultimediaRepositorio;
+import dbp.connect.Excepciones.RecursoNoEncontradoException;
 import dbp.connect.MultimediaMensajeIndividual.Domain.Tipo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,25 @@ public class AlojamientoMultimediaServicio {
             alojamientoMultimediaRepositorio.save(archivoMultimedia);
         } catch (IOException e) {
             throw new RuntimeException("Error al guardar el archivo",e);
+        }
+    }
+    public void modificarImagen(Long alojamientoId, Long imagenId, byte[] imagen) {
+        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
+        if (alojamientoOptional.isPresent()) {
+            Optional<AlojamientoMultimedia> multimediaOptional = alojamientoMultimediaRepositorio.findById(imagenId);
+            if (multimediaOptional.isPresent()) {
+                AlojamientoMultimedia multimedia = multimediaOptional.get();
+                if (multimedia.getAlojamiento().getId().equals(alojamientoId)) {
+                    multimedia.setContenido(imagen);
+                    alojamientoMultimediaRepositorio.save(multimedia);
+                } else {
+                    throw new RecursoNoEncontradoException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
+                }
+            } else {
+                throw new RecursoNoEncontradoException("No se encontró la imagen con id: " + imagenId);
+            }
+        } else {
+            throw new RecursoNoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
 
