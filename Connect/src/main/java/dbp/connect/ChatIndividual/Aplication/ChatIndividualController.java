@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,13 @@ import java.util.List;
 @RequestMapping("/chatIndividual")
 public class ChatIndividualController {
     @Autowired
-    ChatIndividualService chatIndividualService;
+    private final SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private final ChatIndividualService chatIndividualService;
+    public ChatIndividualController(SimpMessagingTemplate messagingTemplate, ChatIndividualService chatIndividualService) {
+        this.messagingTemplate = messagingTemplate;
+        this.chatIndividualService = chatIndividualService;
+    }
     @PostMapping("/crear")
     public ResponseEntity<ChatIndividual> crearChat(@RequestParam Long usuario1Id, @RequestParam Long usuario2Id) {
         ChatIndividual chat =  chatIndividualService.crearChat(usuario1Id, usuario2Id);
@@ -35,10 +42,9 @@ public class ChatIndividualController {
     }
     @MessageMapping("/chat/{chatId}")
     public void sendToChat(@DestinationVariable Long chatId, MensajeIndividual message) {
-        ChatIndividual chat = chatIndividualService.obtenerChatPorId(chatId, message.getAutor());
+        ChatIndividual chat = chatIndividualService.obtenerChatPorId(chatId, message.getAutor().getId());
         if (chat != null) {
-            chat.agregarMensaje(message);
-            chat = chatIndividualService.guardarChat(chat);
+            chatIndividualService.guardarChat(chat);
             messagingTemplate.convertAndSend("/topic/chat/" + chatId, message);
         }
     }

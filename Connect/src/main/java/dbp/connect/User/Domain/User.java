@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,8 +39,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "grupo_id")
     )
     private List<ChatGrupal> grupos = new ArrayList<>();
-    @OneToMany(mappedBy = "usuario")
-    private List<ChatIndividual> chatsIndividuales;
+    @OneToMany(mappedBy = "usuario1")
+    private List<ChatIndividual> chatsIndividuales1 = new ArrayList<>();
+    @OneToMany(mappedBy = "usuario2")
+    private List<ChatIndividual> chatsIndividuales2 = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "amigos",

@@ -22,7 +22,10 @@ public class ChatIndividual {
     private Long Id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario", nullable = false)
+    @JoinColumn(name = "usuario1_id", nullable = false)
+    private User usuario1;
+    @ManyToOne
+    @JoinColumn(name = "usuario2_id", nullable = false)
     private User usuario2;
     private Date fechaCreacion;
 
