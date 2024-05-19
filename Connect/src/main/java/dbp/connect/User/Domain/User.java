@@ -29,9 +29,9 @@ public class User {
     @Lob
     private byte[] foto;
     @OneToMany(mappedBy = "autor")
-    private List<MensajeIndividual> mensajeIndividualRecividos = new ArrayList<>();
+    private List<MensajeIndividual> mensajeIndividual= new ArrayList<>();
     @OneToMany(mappedBy = "autorG")
-    private List<MensajeGrupal> mensajeGrupalEnviados = new ArrayList<>();
+    private List<MensajeGrupal> mensajeGrupal = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "usuario_chatgrupo",
@@ -39,10 +39,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "grupo_id")
     )
     private List<ChatGrupal> grupos = new ArrayList<>();
-    @OneToMany(mappedBy = "usuario1")
-    private List<ChatIndividual> chatsIndividuales1 = new ArrayList<>();
-    @OneToMany(mappedBy = "usuario2")
-    private List<ChatIndividual> chatsIndividuales2 = new ArrayList<>();
+    @ManyToMany(mappedBy = "usuarios")
+    private List<ChatIndividual> chats;
     @ManyToMany
     @JoinTable(
             name = "amigos",

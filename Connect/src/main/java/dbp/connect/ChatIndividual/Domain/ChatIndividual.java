@@ -21,15 +21,21 @@ public class ChatIndividual {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario1_id", nullable = false)
-    private User usuario1;
-    @ManyToOne
-    @JoinColumn(name = "usuario2_id", nullable = false)
-    private User usuario2;
-    private Date fechaCreacion;
+    @ManyToMany
+    @JoinTable(
+            name = "chat_usuarios",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private List<User> usuarios;
+    public void agregarUsuario(User user) {
+        usuarios.add(user);
+    }
 
     @OneToMany(mappedBy = "chat")
     private List<MensajeIndividual> mensajes = new ArrayList<>();
-
+    public void agregarMensaje(MensajeIndividual mensaje) {
+        mensajes.add(mensaje);
+        mensaje.setChat(this);
+    }
 }

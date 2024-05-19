@@ -22,14 +22,14 @@ public class MensajeIndividual {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="chat_id", nullable = false)
+    @JoinColumn(name="chat_Id", nullable = false)
     private ChatIndividual chat;
     @ManyToOne
-    @JoinColumn(name="autor_id", nullable = false)
+    @JoinColumn(name="autor_Id", nullable = false)
     private User autor;
-    @JoinColumn(name="cuerpo")
+    @JoinColumn(name="cuerpo", nullable = false)
     private String cuerpo;
-    @JoinColumn(name="status",nullable = false)
+    @JoinColumn(name="status")
     private StatusMensaje statusMensaje;
     private LocalDateTime timestamp;
     @OneToMany(mappedBy = "mensaje", cascade = CascadeType.ALL,orphanRemoval = true )

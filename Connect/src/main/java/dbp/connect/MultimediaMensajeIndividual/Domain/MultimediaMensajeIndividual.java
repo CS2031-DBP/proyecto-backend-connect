@@ -11,12 +11,10 @@ import lombok.Setter;
 public class MultimediaMensajeIndividual {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private long Id;
+    private Long Id;
     @ManyToOne
     @JoinColumn(name = "mensaje_id")
     private MensajeIndividual mensaje;
-    @Column(name="nose")
-    private int edad;
     @Lob
     private byte[] contenido;
     private Tipo tipo;

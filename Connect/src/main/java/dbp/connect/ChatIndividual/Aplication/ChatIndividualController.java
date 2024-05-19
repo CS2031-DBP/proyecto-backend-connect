@@ -2,6 +2,7 @@ package dbp.connect.ChatIndividual.Aplication;
 
 import dbp.connect.ChatIndividual.Domain.ChatIndividual;
 import dbp.connect.ChatIndividual.Domain.ChatIndividualService;
+import dbp.connect.MensajeIndividual.DTOS.DTOMensajePost;
 import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class ChatIndividualController {
         this.chatIndividualService = chatIndividualService;
     }
     @PostMapping("/crear")
-    public ResponseEntity<ChatIndividual> crearChat(@RequestParam Long usuario1Id, @RequestParam Long usuario2Id) {
+    public ResponseEntity<ChatIndividual> crearChat(@RequestParam Long usuario1Id,
+                                                    @RequestParam Long usuario2Id) {
         ChatIndividual chat =  chatIndividualService.crearChat(usuario1Id, usuario2Id);
         if (chat != null) {
             return ResponseEntity.ok(chat);
@@ -40,12 +42,14 @@ public class ChatIndividualController {
         chatIndividualService.eliminarChat(id);
         return ResponseEntity.noContent().build();
     }
-    @MessageMapping("/chat/{chatId}")
-    public void sendToChat(@DestinationVariable Long chatId, MensajeIndividual message) {
-        ChatIndividual chat = chatIndividualService.obtenerChatPorId(chatId, message.getAutor().getId());
+    @MessageMapping("/{chatId}")
+    public void sendToChat(@DestinationVariable Long chatId, DTOMensajePost message) {
+
+        ChatIndividual chat = chatIndividualService.obtenerChatPorId(chatId);
         if (chat != null) {
             chatIndividualService.guardarChat(chat);
-            messagingTemplate.convertAndSend("/topic/chat/" + chatId, message);
+            String mensaje = chatIndividualService.obtenerMensajeDTO(message);
+            messagingTemplate.convertAndSend("/topic/chat/" + chatId, mensaje);
         }
     }
     @GetMapping("/{chatId}/mensajes")

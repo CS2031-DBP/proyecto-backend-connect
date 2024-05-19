@@ -14,6 +14,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MensajeIndividualService {
+    @Autowired
+    ChatIndividualService chatIndividualService;
+    @Autowired
+    ChatIndividualRepository chatIndividualRepository;
+    @Autowired
+    MensajeIndividualRepository mensajeIndividualRepository;
 
 
 }
