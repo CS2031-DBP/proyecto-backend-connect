@@ -1,5 +1,6 @@
 package dbp.connect.User.Domain;
 
+import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.ChatGrupal.Domain.ChatGrupal;
 import dbp.connect.ChatIndividual.Domain.ChatIndividual;
 import dbp.connect.MensajeGrupal.Domain.MensajeGrupal;
@@ -48,5 +49,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "amigo_id")
     )
     private List<User> amigos = new ArrayList<>();
+    @OneToMany(mappedBy = "propietario")
+    private List<Alojamiento> alojamientos = new ArrayList<>();
 
 }

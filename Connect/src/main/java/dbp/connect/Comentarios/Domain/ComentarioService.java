@@ -20,7 +20,7 @@ public class ComentarioService {
     }
     public Page<ComentarioDto> getComentario(Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page,size);
-        comentarioRepository.findById(id)
+        comentarioRepository.findById(id);
         Page<Comentario> =
 
 
