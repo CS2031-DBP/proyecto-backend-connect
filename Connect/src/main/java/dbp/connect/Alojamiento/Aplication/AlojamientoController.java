@@ -19,7 +19,7 @@ public class AlojamientoController {
     @Autowired
     AlojamientoServicio alojamientoServicio;
     @Autowired
-    private AlojamientoMultimediaServicio alojamientoMultimediaServicio;
+    AlojamientoMultimediaServicio alojamientoMultimediaServicio;
 
     @PostMapping("/crear")
     public ResponseEntity<Alojamiento> crearAlojamiento(@Valid @RequestBody AlojamientoRequest alojamientoRequest) {

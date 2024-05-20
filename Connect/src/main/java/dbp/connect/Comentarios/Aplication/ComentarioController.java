@@ -2,8 +2,10 @@ package dbp.connect.Comentarios.Aplication;
 
 
 import dbp.connect.Comentarios.DTOS.ComentarioDto;
+import dbp.connect.Comentarios.DTOS.ComentarioRespuestaDTO;
 import dbp.connect.Comentarios.Domain.Comentario;
 import dbp.connect.Comentarios.Domain.ComentarioService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,45 +24,46 @@ public class ComentarioController {
     private ComentarioService comentarioService;
     @Autowired
     ModelMapper modelMapper;
-    @GetMapping("/{id}")
-    public ResponseEntity<Page<ComentarioDto>> getComentario(
-                                                           @PathVariable Long comentarioId,
+
+    @PostMapping("/{publicacionId}")
+    public ResponseEntity<Comentario> agregarComentario(@PathVariable Long publicacionId,@Valid @RequestBody ComentarioDto comentarioDTO) {
+        Comentario comentario = comentarioService.createNewComentario(publicacionId,comentarioDTO);
+        return ResponseEntity.created(URI.create("/comentarios/" + comentario.getId())).build();
+    }
+    @PostMapping("/{publicacionId}/comments/{parentId}/respuestas")
+    public ResponseEntity<Page<Comentario>> agregarRespuesta(@PathVariable Long publicacionId,
+                                                             @PathVariable Long parentId,
+                                                             @RequestBody ComentarioDto comentarioDTO) {
+        Comentario comentario = comentarioService.createNewComentarioHijo(publicacionId, parentId,comentarioDTO);
+        return ResponseEntity.created(URI.create(parentId+"/comentarios/" + comentario.getId())).build();
+
+    }
+    @GetMapping("/{publicacionId}/comentario")
+    public ResponseEntity<Page<ComentarioRespuestaDTO>> getComentario(
+                                                           @PathVariable Long publicacionId,
                                                           @RequestParam int page,
                                                           @RequestParam int size) {
-        return ResponseEntity.ok(comentarioService.getComentario(comentarioId, page, size));
+        return ResponseEntity.ok(comentarioService.getComentario(publicacionId, page, size));
     }
 
-    @PostMapping
-    public ResponseEntity<Void> agregarComentario(@RequestBody ComentarioDto comentarioDTO) {
-        Long ComentId = comentarioService.createNewComentario(comentarioDTO);
-        URI uriLocation = URI.create("/comentario/" + ComentId);
-        return ResponseEntity.created(uriLocation).build(); ;
-    }
-
-    @PostMapping("/{parentId}/respuestas")
-    public ResponseEntity<Void> agregarRespuesta(@PathVariable Long parentId,
-                                                 @RequestBody ComentarioDto comentarioDTO) {
-        Long ComentId = comentarioService.createNewResponseComentaryId(parentId,comentarioDTO);
-        URI uriLocation = URI.create("/comentario/response/" + ComentId);
-        return ResponseEntity.created(uriLocation).build();
-    }
-
-    @GetMapping("/{id}/respuestas")
-    public ResponseEntity<Page<List<ComentarioDto>>> getRespuestas(@PathVariable Long id,
+    @GetMapping("/{publicacionId}/comentario/{parentId}/respuestas")
+    public ResponseEntity<Page<ComentarioRespuestaDTO>> getRespuestas(@PathVariable Long publicacionId,
+                                                                   @PathVariable Long parentId,
                                                                    @RequestParam int page,
                                                                    @RequestParam int size) {
-        return ResponseEntity.ok(comentarioService.getResponseComentarios(id, page, size));
+        return ResponseEntity.ok(comentarioService.getResponseComentarios(publicacionId,parentId, page, size));
     }
-    @DeleteMapping("{ComentarioId}")
-    public ResponseEntity<String> eliminarComentario(@PathVariable Long ComentarioId) {
-        comentarioService.deleteComentarioById(ComentarioId);
+    @DeleteMapping("{publicacionID}/comentarios/{ComentarioId}")
+    public ResponseEntity<Void> eliminarComentario(@PathVariable Long publicacionID,@PathVariable Long ComentarioId) {
+        comentarioService.deleteComentarioById(publicacionID,ComentarioId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("{parentID}/respuestas/{comentarioId}")
-    public ResponseEntity<String> eliminarRespuesta(@PathVariable Long parentID,
+    @DeleteMapping("{publicacionID}/comentarios/{parentID}/respuestas/{comentarioId}")
+    public ResponseEntity<Void> eliminarRespuesta(@PathVariable Long publicacionID,
+                                                    @PathVariable Long parentID,
                                                     @PathVariable Long comentarioId) {
-        comentarioService.deleteComentarioRespuestaById(parentID,comentarioId);
+        comentarioService.deleteComentarioRespuestaById(publicacionID,parentID,comentarioId);
         return ResponseEntity.noContent().build();
     }
 

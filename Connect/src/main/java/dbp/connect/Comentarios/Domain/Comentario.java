@@ -1,5 +1,6 @@
 package dbp.connect.Comentarios.Domain;
 
+import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimedia;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.User.Domain.User;
 import jakarta.persistence.*;
@@ -20,7 +21,7 @@ public class Comentario {
     @GeneratedValue( strategy = GenerationType.UUID)
     private Long id;
     @JsonIgnore
-    @Column(nullable = true)
+    @Column()
     private Long parentId;
 
     @Column(name = "message")
@@ -28,8 +29,8 @@ public class Comentario {
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
-    @JoinColumn(name ="user_id")
-    private User AutorId;
+    @JoinColumn(name ="autorM_id")
+    private User Autor;
 
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
@@ -42,6 +43,15 @@ public class Comentario {
         }
         replies.add(comment);
     }
+    @ManyToOne
+    @JoinColumn(name="publicacion_id",nullable = false)
+    private PublicacionInicio publicacion;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "multimedia_id")
+    private ComentarioMultimedia multimedia;
+    @JoinColumn(name="likes")
+    private Integer likes;
+
 
 
 }
