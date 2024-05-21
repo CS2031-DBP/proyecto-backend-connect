@@ -2,14 +2,12 @@ package dbp.connect.PublicacionAlojamiento.Domain;
 
 import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
-import dbp.connect.AlojamientoMultimedia.Infrastructure.AlojamientoMultimediaRepositorio;
 import dbp.connect.PublicacionAlojamiento.DTOS.PostPublicacionAlojamientoDTO;
 import dbp.connect.PublicacionAlojamiento.DTOS.ResponsePublicacionAlojamiento;
+import dbp.connect.PublicacionAlojamiento.Exceptions.PublicacionAlojamientoNotFoundException;
 import dbp.connect.PublicacionAlojamiento.Infrastructure.PublicacionAlojamientoRespositorio;
-import dbp.connect.User.Domain.User;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +19,19 @@ import java.util.Optional;
 public class PublicacionAlojamientoServicio {
     @Autowired
     private PublicacionAlojamientoRespositorio publicacionAlojamientoRepositorio;
-    @Autowired
-    private AlojamientoMultimediaRepositorio alojamientoMultimediaRepositorio;
+
     @Autowired
     private AlojamientoRepositorio alojamientoRepositorio;
     @Autowired
     private UserRepository userRepository;
 
     public ResponsePublicacionAlojamiento guardarPublicacionAlojamiento(PostPublicacionAlojamientoDTO publicacionAlojamientoDTO){
-        // Verificar si la publicación de alojamiento ya existe
+
         Optional<PublicacionAlojamiento> publicacionAlojamiento = publicacionAlojamientoRepositorio.findById(publicacionAlojamientoDTO.getId());
         if(publicacionAlojamiento.isPresent()) {
             throw new EntityExistsException("La publicacion ya existe");
         }
 
-        // Verificar si el alojamiento existe
         Optional<Alojamiento> alojamiento = alojamientoRepositorio.findById(publicacionAlojamientoDTO.getAlojamientoId());
         if(alojamiento.isEmpty()) {
             throw new EntityExistsException("El alojamiento no existe");
@@ -55,8 +51,42 @@ public class PublicacionAlojamientoServicio {
         ResponsePublicacionAlojamiento response = converToDTO(createdPublicacionAlojamiento);
 
         return response;
+    }
+    public ResponsePublicacionAlojamiento getPublicacionId(Long publicacionId) {
+        Optional<PublicacionAlojamiento> publicacionOpt = publicacionAlojamientoRepositorio.findById(publicacionId);
+        if (publicacionOpt.isPresent()) {
+            PublicacionAlojamiento publicacion = publicacionOpt.get();
+            return converToDTO(publicacion);
+        } else {
+            throw new PublicacionAlojamientoNotFoundException("PublicacionAlojamiento not found with id " + publicacionId);
+        }
+    }
+
+   /* public Page<ResponsePublicacionAlojamiento> getPublicacionRecomendadas(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PublicacionAlojamiento> publicaciones = publicacionAlojamientoRepositorio.findByUserId(u, );
+        return publicaciones.map(this::converToDTO);
+    }*/ //Mmmmm puede ser encontrar por publicaciones hechas por el autor del alojamiento?
+    //tambien implementar un sistema de recomendaciones
+    public void actualizarTituloAlojamiento(Long publicacionId, String titulo){
+        Optional<PublicacionAlojamiento> p = publicacionAlojamientoRepositorio.findById(publicacionId);
+        if(p.isEmpty()) {
+            throw new PublicacionAlojamientoNotFoundException("Publicacion no existe");
+        }
+        PublicacionAlojamiento publicacion = p.get();
+        publicacion.setTitulo(titulo);
+        publicacionAlojamientoRepositorio.save(publicacion);
 
 
+    }
+    public void eliminarPublicacion(Long publicacionId) {
+        Optional<PublicacionAlojamiento> publi = publicacionAlojamientoRepositorio.findById(publicacionId);
+        if(publi.isPresent()) {
+            publicacionAlojamientoRepositorio.delete(publi.get());
+        }
+        else{
+            throw new PublicacionAlojamientoNotFoundException("Publicacion no existe");
+        }
     }
     private ResponsePublicacionAlojamiento converToDTO(PublicacionAlojamiento publicacionAlojamiento){
         ResponsePublicacionAlojamiento response = new ResponsePublicacionAlojamiento();

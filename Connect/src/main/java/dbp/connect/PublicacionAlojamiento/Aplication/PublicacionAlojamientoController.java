@@ -1,19 +1,13 @@
 package dbp.connect.PublicacionAlojamiento.Aplication;
 
-import dbp.connect.Alojamiento.DTOS.AlojamientoRequest;
-import dbp.connect.Alojamiento.Domain.Alojamiento;
+
 import dbp.connect.PublicacionAlojamiento.DTOS.PostPublicacionAlojamientoDTO;
 import dbp.connect.PublicacionAlojamiento.DTOS.ResponsePublicacionAlojamiento;
-import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamiento;
 import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamientoServicio;
-import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -27,5 +21,37 @@ public class PublicacionAlojamientoController {
         ResponsePublicacionAlojamiento createdPublicacionAlojamiento = publicacionAlojamientoServicio.guardarPublicacionAlojamiento(publicacionAlojamientoDTO);
         return ResponseEntity.created(URI.create("/alojamiento/"+createdPublicacionAlojamiento.getId())).body(createdPublicacionAlojamiento);
     }
+    @GetMapping("/{publicacionId}")
+    public ResponseEntity<ResponsePublicacionAlojamiento> consultarPublicacionAlojamiento(@PathVariable Long publicacionId) {
+        return ResponseEntity.ok(publicacionAlojamientoServicio.getPublicacionId(publicacionId));
+    }
+   /* @GetMapping("{userId}")
+    public ResponseEntity<Page<ResponsePublicacionAlojamiento>> consultarPorPublicacionParaUsuario(@PathVariable Long userId,
+                                                                                           @RequestParam int page, int size) {
 
+        return ResponseEntity.ok(publicacionAlojamientoServicio.getPublicacionRecomendadas(userId,page,size));
+    }
+    @GetMapping("/{propietarioId}")
+    public ResponseEntity<Page<ResponsePublicacionAlojamiento>> consultarPorPublicacionParaPropietario(@PathVariable Long propietarioId,
+                                                                                           @RequestParam int page, int size) {
+
+        return ResponseEntity.ok(publicacionAlojamientoServicio.getPublicacionRecomendadas(userId,page,size));
+        }
+     @GetMapping("/ubicacion/{propietarioId}")
+    public ResponseEntity<Page<ResponsePublicacionAlojamiento>> consultarPorPublicacionParaPropietario(@PathVariable Long propietarioId, @RequestParam double latitude, @RequestParam Double longitud,
+                                                                                           @RequestParam int page, int size) {
+
+        return ResponseEntity.ok(publicacionAlojamientoServicio.getPublicacionRecomendadas(userId,page,size));
+        }
+    */
+    @PatchMapping("/publicacionId")
+    public ResponseEntity<Void> actualizarTItulo(@PathVariable Long publicacionId, @RequestBody  String titulo){
+        publicacionAlojamientoServicio.actualizarTituloAlojamiento(publicacionId, titulo);
+        return ResponseEntity.ok().build();
+    }
+    @DeleteMapping("/{publicacionId}")
+    public ResponseEntity<Void> eliminarPublicacionAlojamiento(@PathVariable Long publicacionId) {
+        publicacionAlojamientoServicio.eliminarPublicacion(publicacionId);
+        return ResponseEntity.noContent().build();
+    }
 }

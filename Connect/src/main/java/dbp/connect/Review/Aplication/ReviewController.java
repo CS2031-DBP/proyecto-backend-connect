@@ -1,20 +1,32 @@
 package dbp.connect.Review.Aplication;
 
+import dbp.connect.Review.DTOS.ReviewRequest;
 import dbp.connect.Review.Domain.Review;
+import dbp.connect.Review.Domain.ReviewServicio;
+import dbp.connect.Review.Infrastructure.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/review")
 public class ReviewController {
-
     @Autowired
-    private BookingService bookingService;
+    private ReviewRepository reviewRepository;
+    @Autowired
+    private ReviewServicio reviewServicio;
 
+    @PostMapping()
+    public ResponseEntity<Void> createReview(@RequestBody ReviewRequest reviewDTO) {
+        Long reviewId = reviewServicio.createReview(reviewDTO);
+        URI location = URI.create("/review/" + reviewId);
+        return ResponseEntity.created(location).build();
+    }
+    /*
     @GetMapping
     public ResponseEntity<List<Review>> obtenerTodasLasReseñas() {
         List<Review> reviews = bookingService.obtenerTodasLasReseñas();
@@ -61,5 +73,5 @@ public class ReviewController {
         } catch (ReviewNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 }
