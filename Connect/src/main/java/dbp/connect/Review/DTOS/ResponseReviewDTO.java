@@ -22,6 +22,6 @@ public class ResponseReviewDTO {
     private Integer calificacion;
     private byte[] autorFoto;
     @NotNull
-    private ZonedDateTime dateTime;
+    private ZonedDateTime dateTime; //Suficientes atributos?
 
 }
