@@ -26,16 +26,10 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "publicacionA_id",nullable = false)
     private PublicacionAlojamiento publicacionAlojamiento;
-    @Column(nullable = false)
-    private int calificacion;
-    @Column(nullable = false)
+    @Column(name="calificacion",nullable = false)
+    private Integer calificacion;
+    @Column(name="comentario",nullable = false)
     private String comentario;
-    @Column(nullable = false)
+    @Column(name="fecha",nullable = false)
     private LocalDateTime fecha;
-    public void setCalificacion(int calificacion) {
-        if (calificacion < 1 || calificacion > 5) {
-            throw new IllegalArgumentException("La calificación debe estar entre 1 y 5");
-        }
-        this.calificacion = calificacion;
-    }
 }

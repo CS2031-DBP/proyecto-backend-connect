@@ -1,14 +1,17 @@
 package dbp.connect.Review.Aplication;
 
+import dbp.connect.Review.DTOS.ResponseReviewDTO;
 import dbp.connect.Review.DTOS.ReviewRequest;
 import dbp.connect.Review.Domain.Review;
 import dbp.connect.Review.Domain.ReviewServicio;
 import dbp.connect.Review.Infrastructure.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.net.URI;
 import java.util.List;
 
@@ -25,6 +28,12 @@ public class ReviewController {
         Long reviewId = reviewServicio.createReview(reviewDTO);
         URI location = URI.create("/review/" + reviewId);
         return ResponseEntity.created(location).build();
+    }
+    @GetMapping("{publicacionId}")
+    public ResponseEntity<Page<ResponseReviewDTO>> obtenerReviews(@PathVariable Long publicacionId,
+                                                                  @RequestParam Integer page,
+                                                                  @RequestParam Integer size) {
+        return ResponseEntity.ok(reviewServicio.obtenerReviewsPorPublicacionId(publicacionId,page,size));
     }
     /*
     @GetMapping

@@ -107,7 +107,6 @@ public class ComentarioService {
             throw new RecursoNoEncontradoException("No se encontraron comentario s para esta publicación");
         }
 
-
         List<ComentarioRespuestaDTO> comentariosContent = comentarios.getContent().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
