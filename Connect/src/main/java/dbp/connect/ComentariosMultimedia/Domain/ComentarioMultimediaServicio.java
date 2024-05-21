@@ -28,7 +28,6 @@ public class ComentarioMultimediaServicio {
                 throw new IllegalArgumentException("Tipo de multimedia no valido");
 
             }
-            multimedia.setComentario(comentario);
 
             comentariosMultimediaRepositorio.save(multimedia);
         } catch (IOException e) {

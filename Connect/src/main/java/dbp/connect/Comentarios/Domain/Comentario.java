@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,8 @@ public class Comentario {
     private ComentarioMultimedia multimedia;
     @JoinColumn(name="likes")
     private Integer likes;
+    @JoinColumn(name = "date")
+    private LocalDateTime date;
 
 
 

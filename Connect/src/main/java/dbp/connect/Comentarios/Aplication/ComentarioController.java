@@ -1,6 +1,7 @@
 package dbp.connect.Comentarios.Aplication;
 
 
+import dbp.connect.Comentarios.DTOS.CambioContenidoDTO;
 import dbp.connect.Comentarios.DTOS.ComentarioDto;
 import dbp.connect.Comentarios.DTOS.ComentarioRespuestaDTO;
 import dbp.connect.Comentarios.Domain.Comentario;
@@ -30,7 +31,7 @@ public class ComentarioController {
         Comentario comentario = comentarioService.createNewComentario(publicacionId,comentarioDTO);
         return ResponseEntity.created(URI.create("/comentarios/" + comentario.getId())).build();
     }
-    @PostMapping("/{publicacionId}/comments/{parentId}/respuestas")
+    @PostMapping("/{publicacionId}/commentario/{parentId}/respuestas")
     public ResponseEntity<Page<Comentario>> agregarRespuesta(@PathVariable Long publicacionId,
                                                              @PathVariable Long parentId,
                                                              @RequestBody ComentarioDto comentarioDTO) {
@@ -53,13 +54,13 @@ public class ComentarioController {
                                                                    @RequestParam int size) {
         return ResponseEntity.ok(comentarioService.getResponseComentarios(publicacionId,parentId, page, size));
     }
-    @DeleteMapping("{publicacionID}/comentarios/{ComentarioId}")
+    @DeleteMapping("{publicacionID}/comentario/{ComentarioId}")
     public ResponseEntity<Void> eliminarComentario(@PathVariable Long publicacionID,@PathVariable Long ComentarioId) {
         comentarioService.deleteComentarioById(publicacionID,ComentarioId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("{publicacionID}/comentarios/{parentID}/respuestas/{comentarioId}")
+    @DeleteMapping("{publicacionID}/comentario/{parentID}/respuestas/{comentarioId}")
     public ResponseEntity<Void> eliminarRespuesta(@PathVariable Long publicacionID,
                                                     @PathVariable Long parentID,
                                                     @PathVariable Long comentarioId) {
@@ -67,18 +68,33 @@ public class ComentarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("{parentID}/respuestas/{comentarioId}")
-    public ResponseEntity<Void> actualizarRespuesComentarioId(@PathVariable Long parentID,
-                                                                       @PathVariable Long comentarioId,
-                                                                       @RequestBody ComentarioDto comentarioDTO) {
-        comentarioService.actualizarContenidoDeComentarioRespuesta(parentID,comentarioId,comentarioDTO);
+    @PatchMapping("/{publicacionId}/comentario/{comentarioId}")
+    public ResponseEntity<ComentarioRespuestaDTO> actualizarComentario(@PathVariable Long publicacionId,
+                                                     @PathVariable Long comentarioId,
+                                                     @RequestBody CambioContenidoDTO cambioContenidoDTO) {
+        ComentarioRespuestaDTO comentarioRespuestaDTO = comentarioService.actualizarComentario(publicacionId,comentarioId,cambioContenidoDTO);
+        return ResponseEntity.ok(comentarioRespuestaDTO);
+    }
+    @PatchMapping("{publicacionId}/comentario/{parentID}/respuestas/{comentarioId}")
+    public ResponseEntity<ComentarioRespuestaDTO> actualizarComentarioRespuesta(@PathVariable Long publicacionId,
+                                                              @PathVariable Long parentID,
+                                                              @PathVariable Long comentarioId,
+                                                              @RequestBody CambioContenidoDTO cambioContenidoDTO) {
+        ComentarioRespuestaDTO comentarioRespuestaDTO = comentarioService.actualizarContenidoDeComentarioRespuesta(publicacionId,parentID,comentarioId,cambioContenidoDTO);
+        return ResponseEntity.ok(comentarioRespuestaDTO);
+    }
+    @PatchMapping("/{publicacionId}/comentario/likes/{comentarioId}")
+    public ResponseEntity<Void> actualizarComentarioLikes(@PathVariable Long publicacionId,
+                                                                       @PathVariable Long comentarioId) {
+        comentarioService.actualizarComentariolikes(publicacionId,comentarioId);
+        return ResponseEntity.ok().build();
+    }
+    @PatchMapping("{publicacionId}/comentario/{parentID}/respuestas/likes/{comentarioId}")
+    public ResponseEntity<Void> actualizarComentarioRespuestaLikes(@PathVariable Long publicacionId,
+                                                                                @PathVariable Long parentID,
+                                                                                @PathVariable Long comentarioId) {
+        comentarioService.actualizarContenidoDeComentarioRespuestaLikes(publicacionId,parentID,comentarioId);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("{comentarioId}")
-    public ResponseEntity<Void> actualizarComentario(@PathVariable Long comentarioId,
-                                                     @RequestBody ComentarioDto comentarioDTO) {
-        comentarioService.actualizarComentario(comentarioId,comentarioDTO);
-        return ResponseEntity.ok().build();
-    }
 }
