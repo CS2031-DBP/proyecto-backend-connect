@@ -1,6 +1,7 @@
 package dbp.connect.Alojamiento.Domain;
 
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
+import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamiento;
 import dbp.connect.User.Domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class Alojamiento {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name="propietario_Id", nullable = false)
     private User propietario;
     @JoinColumn(name ="estado", nullable = false)
@@ -37,11 +38,14 @@ public class Alojamiento {
     private String descripcion;
     @Column(name="precio", nullable = false)
     private Double precio;
-    @OneToMany(mappedBy = "alojamiento", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "alojamiento", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<AlojamientoMultimedia> alojamientoMultimedia = new ArrayList<>();
     public void agregarArchivoMultimedia(AlojamientoMultimedia archivoMultimedia) {
         archivoMultimedia.setAlojamiento(this);
         this.alojamientoMultimedia.add(archivoMultimedia);
     }
+    @OneToOne(mappedBy = "alojamiento")
+    private PublicacionAlojamiento publicacionAlojamiento;
+
 
 }

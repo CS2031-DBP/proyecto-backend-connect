@@ -21,7 +21,7 @@ public class AlojamientoController {
     @Autowired
     AlojamientoMultimediaServicio alojamientoMultimediaServicio;
 
-    @PostMapping("/crear")
+    @PostMapping()
     public ResponseEntity<Alojamiento> crearAlojamiento(@Valid @RequestBody AlojamientoRequest alojamientoRequest) {
         Alojamiento createdAlojamiento = alojamientoServicio.guardarAlojamiento(alojamientoRequest);
         return ResponseEntity.created(URI.create("/alojamiento/"+createdAlojamiento.getId())).body(createdAlojamiento);
