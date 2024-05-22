@@ -1,12 +1,12 @@
 package dbp.connect.Review.Domain;
 
-import dbp.connect.Comentarios.DTOS.ComentarioRespuestaDTO;
 import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamiento;
 import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamientoServicio;
 import dbp.connect.PublicacionAlojamiento.Exceptions.PublicacionAlojamientoNotFoundException;
 import dbp.connect.PublicacionAlojamiento.Infrastructure.PublicacionAlojamientoRespositorio;
 import dbp.connect.Review.DTOS.ResponseReviewDTO;
 import dbp.connect.Review.DTOS.ReviewRequest;
+import dbp.connect.Review.Exceptions.ReviewNotFoundException;
 import dbp.connect.Review.Infrastructure.ReviewRepository;
 import dbp.connect.User.Domain.User;
 import dbp.connect.User.Infrastructure.UserRepository;
@@ -20,7 +20,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ReviewServicio {
@@ -65,6 +64,56 @@ public class ReviewServicio {
 
         return new PageImpl<>(reviewsContent, pageable, reviews.getTotalElements());
     }
+    public void eliminarReseña(Long id){
+        reviewRepository.deleteById(id);
+    }
+    public void actualizarContenido(Long publicacionAlojamientoId, Long reviewId,String contenido){
+        Optional<PublicacionAlojamiento> publicacionAlojamientoOptional = publicacionAlojamientoRespositorio.findById(publicacionAlojamientoId);
+        if (publicacionAlojamientoOptional.isEmpty()) {
+            throw new PublicacionAlojamientoNotFoundException("Publicación no encontrada");
+        }
+
+        PublicacionAlojamiento publicacionAlojamiento = publicacionAlojamientoOptional.get();
+        List<Review> reviews = publicacionAlojamiento.getReviews();
+
+        Optional<Review> reviewOptional = reviews.stream()
+                .filter(review -> review.getId().equals(reviewId))
+                .findAny();
+
+        if (reviewOptional.isPresent()) {
+            Review review = reviewOptional.get();
+            review.setComentario(contenido);
+            reviewRepository.save(review);
+        } else {
+            throw new ReviewNotFoundException("Revisión no encontrada en esta publicación");
+        }
+    }
+
+    public void actualizarRating(Long publicacionAlojamientoId, Long reviewId,Integer rating){
+        Optional<PublicacionAlojamiento> publicacionAlojamientoOptional = publicacionAlojamientoRespositorio.findById(publicacionAlojamientoId);
+        if (publicacionAlojamientoOptional.isEmpty()) {
+            throw new PublicacionAlojamientoNotFoundException("Publicación no encontrada");
+        }
+
+        PublicacionAlojamiento publicacionAlojamiento = publicacionAlojamientoOptional.get();
+        List<Review> reviews = publicacionAlojamiento.getReviews();
+
+        Optional<Review> reviewOptional = reviews.stream()
+                .filter(review -> review.getId().equals(reviewId))
+                .findAny();
+        if (reviewOptional.isPresent()) {
+            Review review = reviewOptional.get();
+            if(rating<5 && rating>1){
+                review.setCalificacion(rating);
+                reviewRepository.save(review);
+            }
+            else{
+                throw new IllegalArgumentException("Rating no valido");
+            }
+        } else {
+            throw new ReviewNotFoundException("Revisión no encontrada en esta publicación");
+        }
+    }
 
     private ResponseReviewDTO mapToResponseDTO(Review review) {
         ResponseReviewDTO dto = new ResponseReviewDTO();
@@ -79,5 +128,4 @@ public class ReviewServicio {
         dto.setDateTime(review.getFecha().atZone(ZoneId.systemDefault()));
         return dto;
     }
-
 }

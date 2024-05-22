@@ -16,7 +16,7 @@ public class PublicacionInicioController {
     @Autowired
     private final PublicacionInicioServicio publicacionInicioServicio;
     @Autowired
-    public final MultimediaInicioServicio multimediaInicioServicio;
+
     public PublicacionInicioController() {
         this.publicacionInicioServicio = new PublicacionInicioServicio();
         this.multimediaInicioServicio = new MultimediaInicioServicio();

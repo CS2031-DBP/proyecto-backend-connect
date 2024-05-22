@@ -4,6 +4,7 @@ import dbp.connect.Review.DTOS.ResponseReviewDTO;
 import dbp.connect.Review.DTOS.ReviewRequest;
 import dbp.connect.Review.Domain.Review;
 import dbp.connect.Review.Domain.ReviewServicio;
+import dbp.connect.Review.Exceptions.ReviewNotFoundException;
 import dbp.connect.Review.Infrastructure.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,7 +52,6 @@ public class ReviewController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
     @PostMapping
     public ResponseEntity<Review> crearReseña(@RequestBody Review review) {
         try {
@@ -61,7 +61,6 @@ public class ReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<Review> actualizarReseña(@PathVariable Long id, @RequestBody Review review) {
         try {
@@ -73,14 +72,14 @@ public class ReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarReseña(@PathVariable Long id) {
+*/
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> eliminarReseña(@PathVariable Long reviewId) {
         try {
-            bookingService.eliminarReseña(id);
+            reviewServicio.eliminarReseña(reviewId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (ReviewNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }*/
+    }
 }

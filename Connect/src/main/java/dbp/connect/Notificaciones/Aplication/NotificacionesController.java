@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/notificaciones")
 public class NotificacionesController {
-
+/*
     @Autowired
     private NotificacionesService notificacionesService;
 
@@ -55,4 +55,4 @@ public class NotificacionesController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-}
+}*/}

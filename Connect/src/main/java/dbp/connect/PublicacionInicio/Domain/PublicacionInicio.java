@@ -2,6 +2,7 @@ package dbp.connect.PublicacionInicio.Domain;
 
 import dbp.connect.Comentarios.Domain.Comentario;
 
+import dbp.connect.PublicacionInicioMultimedia.Domain.PublicacionInicioMultimedia;
 import dbp.connect.User.Domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,11 +21,11 @@ public class PublicacionInicio {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "autorP_id", nullable = false)
+    @JoinColumn(name = "autorP_Id", nullable = false)
     private User autor;
 
-    /*@OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MultimediaInicio> multimediaList;
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PublicacionInicioMultimedia> publicacionMultimedia;
     private String cuerpo;
 */
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)

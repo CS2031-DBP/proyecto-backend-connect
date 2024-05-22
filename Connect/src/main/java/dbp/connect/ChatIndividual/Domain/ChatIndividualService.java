@@ -5,7 +5,6 @@ import dbp.connect.MensajeGrupal.Domain.StatusMensaje;
 import dbp.connect.MensajeIndividual.DTOS.DTOMensajePost;
 import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
 import dbp.connect.MensajeIndividual.Infrastructure.MensajeIndividualRepository;
-import dbp.connect.MultimediaInicio.Domain.MultimediaInicioServicio;
 import dbp.connect.MultimediaMensajeIndividual.Domain.MultimediaMensajeIndividual;
 import dbp.connect.MultimediaMensajeIndividual.Domain.MultimediaMensajeIndividualServicio;
 import dbp.connect.User.Domain.User;

@@ -20,7 +20,7 @@ public class ReviewRequest {
     @NotNull
     private Long publicacionId;
     @NotNull
-    @Range(min = 0, max = 5)
+    @Range(min = 1, max = 5)
     private Integer rating;
 
 }
