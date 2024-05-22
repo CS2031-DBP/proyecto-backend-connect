@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @Getter
@@ -25,12 +27,15 @@ public class PublicacionInicio {
     private User autor;
 
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PublicacionInicioMultimedia> publicacionMultimedia;
+    private List<PublicacionInicioMultimedia> publicacionMultimedia = new ArrayList<>();
     private String cuerpo;
-*/
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comentario> comentarios;
-
+    private List<Comentario> comentarios = new ArrayList<>();
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaPublicacion;
+    private ZonedDateTime fechaPublicacion;
+    @JoinColumn(name = "cantidadLikes")
+    private Integer cantidadLikes;
+    @JoinColumn(name = "cantidadComentarios")
+    private Integer cantidadComentarios;
+
 }

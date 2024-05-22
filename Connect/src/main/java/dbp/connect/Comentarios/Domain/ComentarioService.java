@@ -45,7 +45,6 @@ public class ComentarioService {
             PublicacionInicio publicacion = publicacionInicio.get();
             Comentario comentario = new Comentario();
             comentario.setMessage(comentarioDTO.getMessage());
-
             User autor = userRepository.findById(comentarioDTO.getAutorId())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
             comentario.setAutor(autor);
@@ -58,13 +57,13 @@ public class ComentarioService {
             comentario.setLikes(0);
             comentario.setDate(LocalDateTime.now(ZoneId.systemDefault()));
             comentarioRepository.save(comentario);
+            publicacion.getComentarios().add(comentario);
+            publicacionInicioRepositorio.save(publicacion);
             return comentario;
         } else {
             throw new PublicacionNoEncontradoException("Publicacion no encontrada");
         }
-
     }
-
     public Comentario createNewComentarioHijo(Long publicacionID, Long parentId, ComentarioDto comentarioDTO) {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.findById(publicacionID);
         if (publicacionInicio.isPresent()) {
@@ -89,6 +88,8 @@ public class ComentarioService {
                 parentComentarioParent.addCommentReplies(comentario);
                 comentarioRepository.save(parentComentarioParent);
                 comentarioRepository.save(comentario);
+                publicacion.getComentarios().add(parentComentarioParent);
+                publicacionInicioRepositorio.save(publicacion);
                 return comentario;
             } else {
                 throw new ComentarioNoEncontradoException("Comentario no encontrado");
