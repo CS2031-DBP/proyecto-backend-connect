@@ -2,6 +2,7 @@ package dbp.connect.MensajeIndividual.Domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbp.connect.ChatIndividual.Domain.ChatIndividual;
+import dbp.connect.Likes.Domain.Like;
 import dbp.connect.MensajeGrupal.Domain.StatusMensaje;
 import dbp.connect.MultimediaMensajeIndividual.Domain.MultimediaMensajeIndividual;
 import dbp.connect.User.Domain.User;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 
@@ -55,6 +57,16 @@ public class MensajeIndividual {
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
+    }
+    public MensajeIndividual addMultimedia(MultimediaMensajeIndividual multimedia) {
+        this.archivosMultimedia.add(multimedia);
+        multimedia.setMensaje(this);
+        return this;
+    }
+    public MensajeIndividual removeMultimedia(MultimediaMensajeIndividual mensaje) {
+        this.archivosMultimedia.remove(mensaje);
+        mensaje.setMensaje(null);
+        return this;
     }
 
     @Override

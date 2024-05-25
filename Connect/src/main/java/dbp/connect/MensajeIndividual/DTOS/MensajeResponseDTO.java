@@ -11,14 +11,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.ZonedDateTime;
 import java.util.List;
-
-@Setter
 @Getter
+@Setter
 @Data
-public class DTOMensajePost {
+public class MensajeResponseDTO {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     private Long autorId;
@@ -27,5 +26,7 @@ public class DTOMensajePost {
     @NotNull
     @Size(min = 2, max=1000)
     private String contenido;
+    private StatusMensaje statusMensaje;
+    private ZonedDateTime fecha;
     private List<MultimediaMensajeIndividual> multimedia;
 }
