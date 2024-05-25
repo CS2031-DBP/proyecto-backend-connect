@@ -30,6 +30,8 @@ public class User {
     private String email;
     private String password;
     private Status status;
+    private Double latitude;
+    private Double longitud;
     @Lob
     private byte[] foto;
     @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL)
