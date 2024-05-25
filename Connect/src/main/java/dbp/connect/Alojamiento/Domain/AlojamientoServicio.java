@@ -6,7 +6,7 @@ import dbp.connect.Alojamiento.Excepciones.DescripcionIgualException;
 import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
 
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimediaServicio;
-import dbp.connect.Excepciones.RecursoNoEncontradoException;
+import dbp.connect.Excepciones.NoEncontradoException;
 import dbp.connect.User.Domain.User;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.transaction.Transactional;
@@ -58,14 +58,14 @@ public class AlojamientoServicio {
         if (alojamientoOptional.isPresent()) {
             return alojamientoOptional.get();
         } else {
-            throw new RecursoNoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
     public void eliminarById(Long alojamientoId) {
         if (alojamientoRepositorio.existsById(alojamientoId)) {
             alojamientoRepositorio.deleteById(alojamientoId);
         } else {
-            throw new RecursoNoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
     public void modificarPrecio(Long alojamientoId, Double precio) {
@@ -75,7 +75,7 @@ public class AlojamientoServicio {
             alojamiento.setPrecio(precio);
             alojamientoRepositorio.save(alojamiento);
         } else {
-            throw new RecursoNoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
     public void actualizarEstadoAlojamiento(Long alojamientoId) {
@@ -85,7 +85,7 @@ public class AlojamientoServicio {
             alojamiento.setEstado(Estado.NODISPONIBLE);
             alojamientoRepositorio.save(alojamiento);
         } else {
-            throw new RecursoNoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
     public void actualizarDescripcionAlojamiento(Long alojamientoId, ContenidoDTO contenidoDTO) {
@@ -99,7 +99,7 @@ public class AlojamientoServicio {
                 alojamientoRepositorio.save(alojamiento);
             }
         } else {
-            throw new RecursoNoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
 

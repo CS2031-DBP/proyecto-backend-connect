@@ -2,10 +2,10 @@ package dbp.connect.MensajeIndividual.DTOS;
 
 import dbp.connect.MensajeGrupal.Domain.StatusMensaje;
 import dbp.connect.MultimediaMensajeIndividual.Domain.MultimediaMensajeIndividual;
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;

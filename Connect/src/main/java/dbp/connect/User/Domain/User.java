@@ -7,6 +7,7 @@ import dbp.connect.Comentarios.Domain.Comentario;
 import dbp.connect.MensajeGrupal.Domain.MensajeGrupal;
 import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
+import dbp.connect.Review.Domain.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name="usuario")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -32,8 +34,8 @@ public class User {
     private byte[] foto;
     @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL)
     private List<MensajeIndividual> mensajeIndividual= new ArrayList<>();
-    @OneToMany(mappedBy = "autorG",cascade = CascadeType.ALL)
-    private List<MensajeGrupal> mensajeGrupal = new ArrayList<>();
+   // @OneToMany(mappedBy = "autorG",cascade = CascadeType.ALL)
+    //private List<MensajeGrupal> mensajeGrupal = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "usuario_chatgrupo",
@@ -54,6 +56,8 @@ public class User {
     private List<Alojamiento> alojamientos = new ArrayList<>();
     @OneToMany(mappedBy = "autorP", cascade = CascadeType.ALL)
     private List<PublicacionInicio> publicacionInicio = new ArrayList<>();
-    @OneToMany(mappedBy = "autorM", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "autorComentario", cascade = CascadeType.ALL)
     private List<Comentario> comentarios = new ArrayList<>();
+    @OneToMany(mappedBy = "autorR", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 }

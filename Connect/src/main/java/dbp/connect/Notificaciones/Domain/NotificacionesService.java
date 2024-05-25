@@ -1,5 +1,6 @@
 package dbp.connect.Notificaciones.Domain;
 
+import dbp.connect.Notificaciones.Infrastructure.NotificacionesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,8 @@ public class NotificacionesService {
 
     @Autowired
     private NotificacionesRepository notificacionesRepository;
-
+}
+/*
     public List<Notificaciones> obtenerTodasLasNotificaciones() {
         return notificacionesRepository.findAll();
     }
@@ -44,5 +46,5 @@ public class NotificacionesService {
         } else {
             throw new NotificacionesExceptions("Notificación no encontrada");
         }
-    }
-}
+    }*/
+

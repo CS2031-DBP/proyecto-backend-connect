@@ -28,14 +28,16 @@ public class ChatIndividual {
             inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private List<User> usuarios;
-    public void agregarUsuario(User user) {
-        usuarios.add(user);
-    }
 
     @OneToMany(mappedBy = "chat")
     private List<MensajeIndividual> mensajes = new ArrayList<>();
+
     public void agregarMensaje(MensajeIndividual mensaje) {
         mensajes.add(mensaje);
         mensaje.setChat(this);
+    }
+
+    public void agregarUsuario(User user) {
+        usuarios.add(user);
     }
 }

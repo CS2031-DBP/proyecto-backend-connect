@@ -19,7 +19,7 @@ public class PublicacionAlojamiento {
     private Long id;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "alojamientoP_id")
-    private Alojamiento alojamiento;
+    private Alojamiento alojamientoP;
 
     @Column(nullable = false)
     private ZonedDateTime fecha;
@@ -29,6 +29,6 @@ public class PublicacionAlojamiento {
     private Double promedioRating;
     @Column
     private Integer cantidadReseñas;
-    @OneToMany(mappedBy = "publicacionA",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "publicacionAlojamiento",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Review> reviews;
 }

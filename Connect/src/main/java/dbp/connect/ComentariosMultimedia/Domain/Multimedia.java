@@ -1,5 +1,5 @@
 package dbp.connect.ComentariosMultimedia.Domain;
 
-public enum MultimediaComentario {
+public enum Multimedia {
     FOTO,VIDEO
 }

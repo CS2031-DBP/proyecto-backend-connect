@@ -39,7 +39,7 @@ public class PublicacionAlojamientoServicio {
         Alojamiento alojamientoResponse = alojamientoRepositorio.save(alojamiento.get());
         PublicacionAlojamiento nuevaPublicacion = new PublicacionAlojamiento();
 
-        nuevaPublicacion.setAlojamiento(alojamientoResponse);
+        nuevaPublicacion.setAlojamientoP(alojamientoResponse);
         nuevaPublicacion.setId(alojamientoResponse.getId());
         nuevaPublicacion.setFecha(ZonedDateTime.now(ZoneId.systemDefault()));
         nuevaPublicacion.setCantidadReseñas(0);
@@ -92,20 +92,20 @@ public class PublicacionAlojamientoServicio {
         ResponsePublicacionAlojamiento response = new ResponsePublicacionAlojamiento();
         response.setId(publicacionAlojamiento.getId());
         response.setTitulo(publicacionAlojamiento.getTitulo());
-        response.setDescripcion(publicacionAlojamiento.getAlojamiento().getDescripcion());
-        response.setLatitue(publicacionAlojamiento.getAlojamiento().getLatitude());
-        response.setLongitud(publicacionAlojamiento.getAlojamiento().getLongitude());
+        response.setDescripcion(publicacionAlojamiento.getAlojamientoP().getDescripcion());
+        response.setLatitue(publicacionAlojamiento.getAlojamientoP().getLatitude());
+        response.setLongitud(publicacionAlojamiento.getAlojamientoP().getLongitude());
         response.setCantidadReviews(publicacionAlojamiento.getCantidadReseñas());
         response.setPromedioRating(publicacionAlojamiento.getPromedioRating());
-        response.setAutorFullName(publicacionAlojamiento.getAlojamiento().getPropietario().getFullname());
+        response.setAutorFullName(publicacionAlojamiento.getAlojamientoP().getPropietario().getFullname());
         response.setFechaPublicacion(publicacionAlojamiento.getFecha());
-        if (publicacionAlojamiento.getAlojamiento().getPropietario().getFoto() != null) {
-            response.setAutorPhoto(publicacionAlojamiento.getAlojamiento().getPropietario().getFoto());
+        if (publicacionAlojamiento.getAlojamientoP().getPropietario().getFoto() != null) {
+            response.setAutorPhoto(publicacionAlojamiento.getAlojamientoP().getPropietario().getFoto());
         } else {
             response.setAutorPhoto(null);
         }
-        if (publicacionAlojamiento.getAlojamiento().getAlojamientoMultimedia() != null) {
-            response.setAlojamientoMultimedia(publicacionAlojamiento.getAlojamiento().getAlojamientoMultimedia());
+        if (publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia() != null) {
+            response.setAlojamientoMultimedia(publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia());
         } else {
             response.setAlojamientoMultimedia(null);
         }

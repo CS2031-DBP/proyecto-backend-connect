@@ -13,8 +13,10 @@ import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class ReviewServicio {
     @Autowired
     private UserRepository userRepository;
 
-    public Long createReview(ReviewRequest reviewRequest) {
+    public Long createReview( ReviewRequest reviewRequest) {
         Optional<PublicacionAlojamiento> publicacionAlojamiento = publicacionAlojamientoRespositorio.findById(reviewRequest.getPublicacionId());
         if (publicacionAlojamiento.isEmpty()) {
             throw new PublicacionAlojamientoNotFoundException("Publicacion no encontrada");
@@ -43,12 +45,38 @@ public class ReviewServicio {
 
         Review review = new Review();
         review.setCalificacion(reviewRequest.getRating());
-        review.setAutor(autorReview);
+        review.setAutorR(autorReview);
         review.setComentario(reviewRequest.getContent());
         review.setPublicacionAlojamiento(publicacion);
         review.setFecha(LocalDateTime.now(ZoneId.systemDefault()));
         reviewRepository.save(review);
+        publicacion.getReviews().add(review);
+        publicacion.setCantidadReseñas(publicacion.getCantidadReseñas()+1);
+        int sum = 0;
+        for(Review r : publicacion.getReviews()) {
+            sum += r.getCalificacion();
+        }
+
+        double promedio = (double) sum / publicacion.getCantidadReseñas();
+        DecimalFormat df = new DecimalFormat("#.##");
+        String roundedPromedio = df.format(promedio);
+        promedio = Double.parseDouble(roundedPromedio);
+
+        publicacion.setPromedioRating(promedio);
+        publicacionAlojamientoRespositorio.save(publicacion);
         return review.getId();
+    }
+
+    public ResponseReviewDTO getReview(Long publicacionAiD, Long reviewId){
+        PublicacionAlojamiento alojamiento = publicacionAlojamientoRespositorio.findById(publicacionAiD).
+                orElseThrow(()->new EntityNotFoundException("Publicacion de alojamiento no encontrado"));
+        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new EntityNotFoundException("Review no encontrada"));
+        for(Review r: alojamiento.getReviews()){
+            if(!r.getId().equals(review.getId())){
+                throw new IllegalArgumentException("El review no pertenece al alojamiento");
+            }
+        }
+        return mapToResponseDTO(review);
     }
 
     public Page<ResponseReviewDTO> obtenerReviewsPorPublicacionId(Long publicacionAId, int page, int size) {
@@ -106,6 +134,20 @@ public class ReviewServicio {
             if(rating<5 && rating>1){
                 review.setCalificacion(rating);
                 reviewRepository.save(review);
+                int sum = 0;
+                for(Review r : publicacionAlojamiento.getReviews()) {
+                    sum += r.getCalificacion();
+                }
+                double promedio = (double) sum / publicacionAlojamiento.getReviews().size();
+
+                DecimalFormat df = new DecimalFormat("#.##");
+                String roundedPromedio = df.format(promedio);
+                promedio = Double.parseDouble(roundedPromedio);
+
+                publicacionAlojamiento.setPromedioRating(promedio);
+
+                publicacionAlojamientoRespositorio.save(publicacionAlojamiento);
+
             }
             else{
                 throw new IllegalArgumentException("Rating no valido");
@@ -117,11 +159,11 @@ public class ReviewServicio {
 
     private ResponseReviewDTO mapToResponseDTO(Review review) {
         ResponseReviewDTO dto = new ResponseReviewDTO();
-        dto.setAutorFullname(review.getAutor().getFullname());
+        dto.setAutorFullname(review.getAutorR().getFullname());
         dto.setContenido(review.getComentario());
         dto.setCalificacion(review.getCalificacion());
-        if (review.getAutor().getFoto() != null) {
-            dto.setAutorFoto(review.getAutor().getFoto());
+        if (review.getAutorR().getFoto() != null) {
+            dto.setAutorFoto(review.getAutorR().getFoto());
         } else {
             dto.setAutorFoto(null);
         }

@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 @Getter
 @Setter
@@ -19,23 +18,22 @@ import java.util.List;
 @Entity
 public class PublicacionInicio {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "autorP_Id", nullable = false)
-    private User autor;
-
-    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private User autorP;
+    @OneToMany(mappedBy = "publicacionInicio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PublicacionInicioMultimedia> publicacionMultimedia = new ArrayList<>();
     private String cuerpo;
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios = new ArrayList<>();
-    @Temporal(TemporalType.TIMESTAMP)
+    @JoinColumn(name="fechaPublicacion")
     private ZonedDateTime fechaPublicacion;
     @JoinColumn(name = "cantidadLikes")
     private Integer cantidadLikes;
     @JoinColumn(name = "cantidadComentarios")
     private Integer cantidadComentarios;
+
 
 }

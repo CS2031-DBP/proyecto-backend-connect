@@ -17,16 +17,19 @@ import java.util.List;
 @RestController("/publicacionInicio")
 public class PublicacionInicioController {
     @Autowired
-    private  PublicacionInicioServicio publicacionInicioServicio;
+    private PublicacionInicioServicio publicacionInicioServicio;
+
     @PostMapping()
     public ResponseEntity<Void> crearPublicacionInicio(@Valid @RequestBody PostInicioDTO postInicioDTO) {
         publicacionInicioServicio.createPostInicioDTO(postInicioDTO);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("{publicacionId}")
     public ResponseEntity<PublicacionInicioResponseDTO> obtenerPublicacionInicio(@PathVariable Long publicacionId) {
         return ResponseEntity.ok(publicacionInicioServicio.obtenerPublciacionesInicio(publicacionId));
     }
+
     @DeleteMapping("/{publicacionId}")
     public ResponseEntity<Void> eliminarPublicacion(@PathVariable Long publicacionId) {
         publicacionInicioServicio.eliminarPublicacionInicio(publicacionId);
@@ -36,23 +39,24 @@ public class PublicacionInicioController {
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<Page<PublicacionInicioResponseDTO>> obtenerPublicacionesUsuario(@PathVariable Long usuarioId,
                                                                                           @RequestParam Integer page,
-                                                                                          @@RequestParam Integer size){
+                                                                                          @RequestParam Integer size){
         return ResponseEntity.ok(publicacionInicioServicio.obtenerPublicacionByUsuario(usuarioId,page,size));
     }
     @PatchMapping("/{usuarioId}/{publicacionId}/contenido")
     public ResponseEntity<PublicacionInicioResponseDTO> cambiarContenido(@PathVariable Long usuarioId,
-                                                 @PathVariable Long publicacionId,
-                                                 @RequestParam String contenido){
+                                                                     @PathVariable Long publicacionId,
+                                                                     @RequestParam String contenido){
 
-        return ResponseEntity.accepted(publicacionInicioServicio.actualizarContenido(usuarioId, publicacionId, contenido));
-    }
+    return ResponseEntity.ok(publicacionInicioServicio.actualizarContenido(usuarioId, publicacionId, contenido));}
+
     @PatchMapping("/{usuarioId}/{publicacionId}/multimedia")
     public ResponseEntity<PublicacionInicioResponseDTO> cambiarMultimedia(@PathVariable Long usuarioId,
-                                                  @PathVariable Long publicacionId,
-                                                  @RequestParam List<MultipartFile> multimedia){
-        return ResponseEntity.accepted(publicacionInicioServicio.actualizarMultimedia(usuarioId, publicacionId, multimedia));
-    }
+                                                                      @PathVariable Long publicacionId,
+                                                                      @RequestParam List<MultipartFile> multimedia){
+    return ResponseEntity.ok(publicacionInicioServicio.actualizarMultimedia(usuarioId, publicacionId, multimedia));}
+}
     //Algunos endpoints para obtener por palabras que buscan.
     //Algunos para obtener por la lsita de amigos para la pagina de inicio.
-    //Falta avanzar mas.
-}
+    //Falta avanzar mas
+
+

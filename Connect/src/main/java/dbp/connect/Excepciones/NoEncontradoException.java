@@ -1,8 +1,8 @@
 package dbp.connect.Excepciones;
 
-public class RecursoNoEncontradoException extends RuntimeException {
+public class NoEncontradoException extends RuntimeException {
 
-    public RecursoNoEncontradoException(String message){
+    public NoEncontradoException(String message){
         super(message);
 
     }

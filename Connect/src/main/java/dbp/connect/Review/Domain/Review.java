@@ -21,11 +21,13 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "autor_id", nullable = false)
-    private User autor;
+    @JoinColumn(name = "autorR_id", nullable = false)
+    private User autorR;
+
     @ManyToOne
-    @JoinColumn(name = "publicacionA_id",nullable = false)
+    @JoinColumn(name = "publicacionAlojamiento_id",nullable = false)
     private PublicacionAlojamiento publicacionAlojamiento;
+
     @Column(name="calificacion",nullable = false)
     private Integer calificacion;
     @Column(name="comentario",nullable = false)

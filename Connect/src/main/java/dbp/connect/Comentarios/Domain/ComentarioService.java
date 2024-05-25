@@ -7,7 +7,8 @@ import dbp.connect.Comentarios.Excepciones.ComentarioNoEncontradoException;
 import dbp.connect.Comentarios.Excepciones.PublicacionNoEncontradoException;
 import dbp.connect.Comentarios.Infrastructure.ComentarioRepository;
 import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimediaServicio;
-import dbp.connect.Excepciones.RecursoNoEncontradoException;
+import dbp.connect.Excepciones.NoEncontradoException;
+import dbp.connect.PublicacionInicio.DTOS.PublicacionInicioResponseDTO;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.PublicacionInicio.Infrastructure.PublicacionInicioRepositorio;
 import dbp.connect.User.Domain.User;
@@ -46,13 +47,13 @@ public class ComentarioService {
             Comentario comentario = new Comentario();
             comentario.setMessage(comentarioDTO.getMessage());
             User autor = userRepository.findById(comentarioDTO.getAutorId())
-                    .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
-            comentario.setAutor(autor);
+                    .orElseThrow(() -> new NoEncontradoException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
+            comentario.setAutorComentario(autor);
             comentario.setPublicacion(publicacion);
             if (comentarioDTO.getMultimedia() != null && !comentarioDTO.getMultimedia().isEmpty()) {
                 comentarioMultimediaServicio.saveMultimedia(comentario, comentarioDTO.getMultimedia());
             } else {
-                throw new RecursoNoEncontradoException("Multimedia no encontrada");
+                throw new NoEncontradoException("Multimedia no encontrada");
             }
             comentario.setLikes(0);
             comentario.setDate(LocalDateTime.now(ZoneId.systemDefault()));
@@ -76,36 +77,37 @@ public class ComentarioService {
                 comentario.setMessage(comentarioDTO.getMessage());
 
                 User autor = userRepository.findById(comentarioDTO.getAutorId())
-                        .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
-                comentario.setAutor(autor);
+                        .orElseThrow(() -> new NoEncontradoException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
+                comentario.setAutorComentario(autor);
                 comentario.setLikes(0);
                 comentario.setDate(LocalDateTime.now(ZoneId.systemDefault()));
 
                 if (comentarioDTO.getMultimedia() != null && !comentarioDTO.getMultimedia().isEmpty()) {
                     comentarioMultimediaServicio.saveMultimedia(comentario, comentarioDTO.getMultimedia());
                 }
-                comentario.setParentId(parentComentarioParent.getId());
+                comentario.setParent(parentComentarioParent);
                 parentComentarioParent.addCommentReplies(comentario);
                 comentarioRepository.save(parentComentarioParent);
                 comentarioRepository.save(comentario);
-                publicacion.getComentarios().add(parentComentarioParent);
-                publicacionInicioRepositorio.save(publicacion);
+
+                if (publicacion.getComentarios().contains(parentComentarioParent)) {
+                    publicacion.getComentarios().add(parentComentarioParent);
+                    publicacionInicioRepositorio.save(publicacion);
+                }
                 return comentario;
             } else {
                 throw new ComentarioNoEncontradoException("Comentario no encontrado");
             }
-        }
-        else{
+        } else {
             throw new PublicacionNoEncontradoException("Publicacion no encontrada");
         }
     }
-
     public Page<ComentarioRespuestaDTO> getComentario(Long publicacionId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Comentario> comentarios = comentarioRepository.findByPublicacionId(publicacionId, pageable);
 
         if (comentarios.isEmpty()) {
-            throw new RecursoNoEncontradoException("No se encontraron comentario s para esta publicación");
+            throw new NoEncontradoException("No se encontraron comentario s para esta publicación");
         }
 
         List<ComentarioRespuestaDTO> comentariosContent = comentarios.getContent().stream()
@@ -210,6 +212,8 @@ public class ComentarioService {
             Comentario comentarioInicio = comentario.get();
             comentarioInicio.setMessage(cambioContenidoDTO.getContenido());
             comentarioRepository.save(comentarioInicio);
+            publicacion.getComentarios().add(comentarioInicio);
+            publicacionInicioRepositorio.save(publicacion);
             return convertToDto(comentarioInicio);
         }
         else{
@@ -236,7 +240,8 @@ public class ComentarioService {
             Comentario comentarioHijo = comentarioHijoOptional.get();
             comentarioHijo.setMessage(cambioContenidoDTO.getContenido());
             comentarioRepository.save(comentarioHijo);
-
+            publicacion.getComentarios().add(comentarioPadre);
+            publicacionInicioRepositorio.save(publicacion);
             return convertToDto(comentarioHijo);
         } else {
             throw new ComentarioNoEncontradoException("Comentario hijo no encontrado con ID: " + comentarioId);
@@ -245,11 +250,11 @@ public class ComentarioService {
 
     private ComentarioRespuestaDTO convertToDto(Comentario comentario) {
         ComentarioRespuestaDTO dto = new ComentarioRespuestaDTO();
-        dto.setAutorNombreCompleto(comentario.getAutor().getFullname());
+        dto.setAutorNombreCompleto(comentario.getAutorComentario().getFullname());
         dto.setMessage(comentario.getMessage());
 
-        if (comentario.getAutor().getFoto() != null) {
-            dto.setAutorImagen(comentario.getAutor().getFoto());
+        if (comentario.getAutorComentario().getFoto() != null) {
+            dto.setAutorImagen(comentario.getAutorComentario().getFoto());
         } else {
             dto.setAutorImagen(null);
         }
@@ -277,6 +282,8 @@ public class ComentarioService {
             throw new ComentarioNoEncontradoException("El comentario no pertenece a la publicación especificada");
         }
         comentarioInicio.setLikes(comentarioInicio.getLikes()+1);
+        publicacionInicio.getComentarios().add(comentarioInicio);
+        publicacionInicioRepositorio.save(publicacionInicio);
         comentarioRepository.save(comentarioInicio);
     }
 
@@ -300,5 +307,7 @@ public class ComentarioService {
 
         comentarioHijo.setLikes(comentarioHijo.getLikes()+1);
         comentarioRepository.save(comentarioHijo);
+        publicacionInicio.getComentarios().add(comentarioPadre);
+        publicacionInicioRepositorio.save(publicacionInicio);
     }
 }

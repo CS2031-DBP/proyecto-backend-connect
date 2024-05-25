@@ -21,7 +21,7 @@ import java.util.List;
 @Entity
 public class Alojamiento {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne()
     @JoinColumn(name="propietario_Id", nullable = false)
@@ -44,7 +44,7 @@ public class Alojamiento {
         archivoMultimedia.setAlojamiento(this);
         this.alojamientoMultimedia.add(archivoMultimedia);
     }
-    @OneToOne(mappedBy = "alojamiento")
+    @OneToOne(mappedBy = "alojamientoP")
     private PublicacionAlojamiento publicacionAlojamiento;
 
 

@@ -7,9 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,23 +18,21 @@ import java.util.List;
 @Entity
 public class Comentario {
     @Id
-    @GeneratedValue( strategy = GenerationType.UUID)
+    @GeneratedValue( strategy = GenerationType.AUTO)
     private Long id;
-    @JsonIgnore
-    @Column()
-    private Long parentId;
-
     @Column(name = "message")
     private String message;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
-    @JoinColumn(name ="autorM_id")
-    private User Autor;
+    @JoinColumn(name ="autorComentario_id")
+    private User autorComentario;
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Comentario parent;
 
-    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+    @OneToMany(mappedBy = "parent", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
-    @JoinColumn(name="parent_id")
     private List<Comentario> replies;
 
     public void addCommentReplies(Comentario comment) {
@@ -44,6 +40,8 @@ public class Comentario {
             replies = new ArrayList<>();
         }
         replies.add(comment);
+        comment.setParent(this);  //establecer el parent del comentario hijo
+
     }
     @ManyToOne
     @JoinColumn(name="publicacion_id",nullable = false)
@@ -55,7 +53,4 @@ public class Comentario {
     private Integer likes;
     @JoinColumn(name = "date")
     private LocalDateTime date;
-
-
-
 }
