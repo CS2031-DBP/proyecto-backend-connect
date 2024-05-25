@@ -1,14 +1,15 @@
 package dbp.connect.ChatIndividual.Domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
 import dbp.connect.User.Domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @Getter
 @Setter
@@ -16,28 +17,135 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-public class ChatIndividual {
+public class ChatIndividual implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @ManyToMany
-    @JoinTable(
-            name = "chat_usuarios",
-            joinColumns = @JoinColumn(name = "chat_id"),
-            inverseJoinColumns = @JoinColumn(name = "usuario_id")
-    )
-    private List<User> usuarios;
+    @Column(name= "fecha_creacion")
+    private ZonedDateTime fechaCreacion;
 
-    @OneToMany(mappedBy = "chat")
-    private List<MensajeIndividual> mensajes = new ArrayList<>();
+    @Column(name="ultima_vez_visto")
+    private ZonedDateTime ultimaVezVisto;
+    @ManyToMany(mappedBy = "chats")
+    @JsonIgnoreProperties("chats")
+    private Set<User> usuarios= new HashSet<>();
 
-    public void agregarMensaje(MensajeIndividual mensaje) {
-        mensajes.add(mensaje);
-        mensaje.setChat(this);
+    @OneToMany(mappedBy = "chatIndividual", cascade = CascadeType.REMOVE)
+    private Set<MensajeIndividual> mensajes = new HashSet<>();
+
+    public Long getId() {
+        return Id;
     }
 
-    public void agregarUsuario(User user) {
-        usuarios.add(user);
+    public void setId(Long id) {
+        this.Id = id;
+    }
+
+    public ZonedDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public ChatIndividual fechaCreacion(ZonedDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+        return this;
+    }
+
+    public void setFechaCreacion(ZonedDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public ZonedDateTime getUltimaVezVisto() {
+        return ultimaVezVisto;
+    }
+
+    public ChatIndividual ultimaVezVisto(ZonedDateTime ultimaVezVisto) {
+        this.ultimaVezVisto = ultimaVezVisto;
+        return this;
+    }
+
+    public void setUltimaVezVisto(ZonedDateTime ultimaVezVisto) {
+        this.ultimaVezVisto = ultimaVezVisto;
+    }
+
+    public Set<MensajeIndividual> getMensajes() {
+        return mensajes;
+    }
+
+    public ChatIndividual mensajes(Set<MensajeIndividual> mensajes) {
+        this.mensajes = mensajes;
+        return this;
+    }
+
+    public ChatIndividual addMensaje(MensajeIndividual mensaje) {
+        this.mensajes.add(mensaje);
+        mensaje.setChat(this);
+        return this;
+    }
+
+    public ChatIndividual removeMensaje(MensajeIndividual mensaje) {
+        this.mensajes.remove(mensaje);
+        mensaje.setChat(null);
+        return this;
+    }
+
+    public void setMensajes(Set<MensajeIndividual> mensajes) {
+        this.mensajes = mensajes;
+    }
+
+    public Set<User> getUsuarios() {
+        return usuarios;
+    }
+
+    public ChatIndividual usuarios(Set<User> usuarios) {
+        this.usuarios = usuarios;
+        return this;
+    }
+
+    public ChatIndividual addUsuario(User usuario) {
+        this.usuarios.add(usuario);
+        usuario.getChats().add(this);
+        return this;
+    }
+
+    public ChatIndividual removeUsuario(User usuario) {
+        this.usuarios.remove(usuario);
+        usuario.getChats().remove(this);
+        return this;
+    }
+
+    public void setUsuarios(Set<User> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChatIndividual chat = (ChatIndividual) o;
+        if (chat.getId() == null || getId() == null) {
+            return false;
+        }
+        return Objects.equals(getId(), chat.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "id=" + getId() +
+                ", fechaCreacion='" + getFechaCreacion() + "'" +
+                ", ultimaVezVisto='" + getUltimaVezVisto() + "'" +
+                "}";
     }
 }

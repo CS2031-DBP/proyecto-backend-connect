@@ -1,5 +1,6 @@
 package dbp.connect.MensajeIndividual.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbp.connect.ChatIndividual.Domain.ChatIndividual;
 import dbp.connect.MensajeGrupal.Domain.StatusMensaje;
 import dbp.connect.MultimediaMensajeIndividual.Domain.MultimediaMensajeIndividual;
@@ -10,6 +11,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 
@@ -22,7 +24,7 @@ public class MensajeIndividual {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="chat_Id", nullable = false)
+    @JsonIgnoreProperties("mensajes")
     private ChatIndividual chat;
     @ManyToOne
     @JoinColumn(name="autor_Id", nullable = false)
@@ -31,11 +33,37 @@ public class MensajeIndividual {
     private String cuerpo;
     @JoinColumn(name="status")
     private StatusMensaje statusMensaje;
-    private LocalDateTime timestamp;
+
+    private LocalDateTime fechaCreacion;
     @OneToMany(mappedBy = "mensaje", cascade = CascadeType.ALL,orphanRemoval = true )
     private List<MultimediaMensajeIndividual> archivosMultimedia = new ArrayList<>();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MensajeIndividual mensaje = (MensajeIndividual) o;
+        if (mensaje.getId() == null || getId() == null) {
+            return false;
+        }
+        return Objects.equals(getId(), mensaje.getId());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
 
-
+    @Override
+    public String toString() {
+        return "Mensaje{" +
+                "id=" + getId() +
+                ", texto='" + getCuerpo() + "'" +
+                ", fechaCreacion='" + getFechaCreacion() + "'" +
+                "}";
+    }
 
 }

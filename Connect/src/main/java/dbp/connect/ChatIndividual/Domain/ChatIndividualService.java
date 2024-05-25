@@ -18,11 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -105,10 +104,10 @@ public class ChatIndividualService {
             }
             mensajeIndividual.setArchivosMultimedia(multimedia);
             mensajeIndividual.setCuerpo(mensajePost.getContenido());
-            mensajeIndividual.setTimestamp(LocalDateTime.now(ZoneId.systemDefault()));
+            mensajeIndividual.setFechaCreacion(LocalDateTime.now(ZoneId.systemDefault()));
             mensajeIndividual.setStatusMensaje(StatusMensaje.ENVIADO);
             mensajeIndividualRepository.save(mensajeIndividual);
-            List<MensajeIndividual> mensajeTemporal = new ArrayList<>();
+            Set<MensajeIndividual> mensajeTemporal = new HashSet<>();
             currentChatIndividual.setMensajes(mensajeTemporal);
         return mensajePost.getContenido();
     }
