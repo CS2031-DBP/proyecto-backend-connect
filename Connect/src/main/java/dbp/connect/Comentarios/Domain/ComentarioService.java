@@ -106,18 +106,11 @@ public class ComentarioService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Comentario> comentarios = comentarioRepository.findByPublicacionId(publicacionId, pageable);
 
-        if (comentarios.isEmpty()) {
-            throw new NoEncontradoException("No se encontraron comentario s para esta publicación");
-        }
 
         List<ComentarioRespuestaDTO> comentariosContent = comentarios.getContent().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
 
-        while (comentariosContent.size() < size && !comentariosContent.isEmpty()) {
-            ComentarioRespuestaDTO defaultComentario = comentariosContent.get(comentariosContent.size() - 1);
-            comentariosContent.add(defaultComentario);
-        }
 
         return new PageImpl<>(comentariosContent, pageable, comentarios.getTotalElements());
     }
@@ -140,10 +133,6 @@ public class ComentarioService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
 
-        while (respuestasDTOs.size() < size && !respuestasDTOs.isEmpty()) {
-            ComentarioRespuestaDTO defaultRespuesta = respuestasDTOs.get(respuestasDTOs.size() - 1);
-            respuestasDTOs.add(defaultRespuesta);
-        }
         return new PageImpl<>(respuestasDTOs, pageable, respuestasPage.getTotalElements());
     }
 

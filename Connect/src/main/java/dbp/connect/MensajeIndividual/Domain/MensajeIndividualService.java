@@ -103,13 +103,7 @@ public class MensajeIndividualService {
                 .map(this::toDTOResponse)
                 .collect(Collectors.toSet());
 
-        while (comentariosContent.size() < size && !comentariosContent.isEmpty()) {
-            ComentarioRespuestaDTO defaultComentario = comentariosContent.get(comentariosContent.size() - 1);
-            comentariosContent.add(defaultComentario);
-        }
-
-        return new PageImpl<>(comentariosContent, pageable, comentarios.getTotalElements());
-    }
+        return new PageImpl<>(mensajesDTO.stream().collect(Collectors.toList()), pageable, mensajesPage.getTotalElements());    }
 
     private MensajeResponseDTO toDTOResponse(MensajeIndividual mensaje){
         MensajeResponseDTO mensajeResponseDTO = new MensajeResponseDTO();
