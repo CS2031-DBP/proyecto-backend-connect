@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
+import java.util.Objects;
 
 import com.example.Connect.Review.Domain.Review;
 import com.example.Connect.Booking.Domain.Booking;
@@ -50,5 +51,16 @@ public class P_Alojamiento {
   @PrePersist
   public void prePersist() {
       this.disponible = true;
+  }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    P_Alojamiento that = (P_Alojamiento) o;
+    return Objects.equals(getId(), that.getId());
+  }
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(getId());
   }
 }
