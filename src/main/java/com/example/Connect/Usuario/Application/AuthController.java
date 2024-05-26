@@ -1,10 +1,10 @@
-package com.example.forutec2.Usuario.Application;
+package com.example.Connect.Usuario.Application;
 
-import com.example.forutec2.Security.JwtUtil;
-import com.example.forutec2.Usuario.Domain.Usuario;
-import com.example.forutec2.Usuario.Dto.AuthRequest;
-import com.example.forutec2.Usuario.Dto.AuthResponse;
-import com.example.forutec2.Usuario.Infraestructure.UsuarioRepository;
+import com.example.Connect.Security.JwtUtil;
+import com.example.Connect.Usuario.Domain.Usuario;
+import com.example.Connect.Usuario.Dto.AuthRequest;
+import com.example.Connect.Usuario.Dto.AuthResponse;
+import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,11 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
-import com.example.forutec2.Usuario.Dto.UsuarioCreateDto;
-import org.springframework.validation.annotation.Validated;
-import com.example.forutec2.Usuario.Dto.UsuarioDto;
+import com.example.Connect.Usuario.Dto.UsuarioCreateDto;
+import com.example.Connect.Usuario.Dto.UsuarioDto;
 
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Exception.CustomException;
 
 import jakarta.validation.Valid;
 import java.util.HashMap;

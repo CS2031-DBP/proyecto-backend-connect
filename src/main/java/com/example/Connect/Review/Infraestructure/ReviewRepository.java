@@ -1,7 +1,7 @@
 
-package com.example.forutec2.Review.Infraestructure;
+package com.example.Connect.Review.Infraestructure;
 
-import com.example.forutec2.Review.Domain.Review;
+import com.example.Connect.Review.Domain.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

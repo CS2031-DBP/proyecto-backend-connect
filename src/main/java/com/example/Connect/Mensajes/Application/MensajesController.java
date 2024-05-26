@@ -1,18 +1,18 @@
-package com.example.forutec2.Mensajes.Application;
+package com.example.Connect.Mensajes.Application;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.example.forutec2.Mensajes.Domain.Mensajes;
-import com.example.forutec2.Mensajes.Dto.MensajeDto;
-import com.example.forutec2.Mensajes.Infraestructure.MensajesRepository;
-import com.example.forutec2.Mensajes.Infraestructure.ChatsRepository;
-import com.example.forutec2.Usuario.Infraestructure.UsuarioRepository;
-import com.example.forutec2.Mensajes.Domain.Chats;
-import com.example.forutec2.Usuario.Domain.Usuario;
+import com.example.Connect.Mensajes.Domain.Mensajes;
+import com.example.Connect.Mensajes.Dto.MensajeDto;
+import com.example.Connect.Mensajes.Infraestructure.MensajesRepository;
+import com.example.Connect.Mensajes.Infraestructure.ChatsRepository;
+import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
+import com.example.Connect.Mensajes.Domain.Chats;
+import com.example.Connect.Usuario.Domain.Usuario;
 
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Exception.CustomException;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

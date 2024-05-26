@@ -1,4 +1,4 @@
-package com.example.forutec2.Publicacion.Domain;
+package com.example.Connect.Publicacion.Domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import com.example.forutec2.Usuario.Domain.Usuario;
-import com.example.forutec2.Comentarios.Domain.Comentarios;
+import com.example.Connect.Usuario.Domain.Usuario;
+import com.example.Connect.Comentarios.Domain.Comentarios;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;

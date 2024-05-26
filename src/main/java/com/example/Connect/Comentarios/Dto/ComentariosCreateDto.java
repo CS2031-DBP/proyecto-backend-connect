@@ -1,11 +1,10 @@
-package com.example.forutec2.Comentarios.Dto;
+package com.example.Connect.Comentarios.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.ZonedDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor

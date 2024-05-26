@@ -1,24 +1,21 @@
-package com.example.forutec2.Review.Application;
+package com.example.Connect.Review.Application;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.forutec2.Security.JwtUtil;
+import com.example.Connect.Security.JwtUtil;
 
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.example.forutec2.Review.Application.ReviewService;
-
-import com.example.forutec2.Review.Dto.ReviewDto;
-import com.example.forutec2.Review.Dto.ReviewCreateDto;
+import com.example.Connect.Review.Dto.ReviewDto;
+import com.example.Connect.Review.Dto.ReviewCreateDto;
 
 @RestController
 @RequestMapping("/review")

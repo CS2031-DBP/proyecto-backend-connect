@@ -1,14 +1,13 @@
-package com.example.forutec2.Mensajes.Application;
+package com.example.Connect.Mensajes.Application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.forutec2.Mensajes.Domain.Chats;
-import com.example.forutec2.Mensajes.Dto.GroupChatCreateDto;
-import com.example.forutec2.Mensajes.Dto.SingleChatCreateDto;
+import com.example.Connect.Mensajes.Dto.GroupChatCreateDto;
+import com.example.Connect.Mensajes.Dto.SingleChatCreateDto;
 
-import com.example.forutec2.Mensajes.Dto.ChatDto;
+import com.example.Connect.Mensajes.Dto.ChatDto;
 
 @RestController
 @RequestMapping("/chats")

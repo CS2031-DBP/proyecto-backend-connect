@@ -1,4 +1,4 @@
-package com.example.forutec2.Usuario.Dto;
+package com.example.Connect.Usuario.Dto;
 
 public class AuthRequest {
     private String correo;

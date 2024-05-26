@@ -1,4 +1,4 @@
-package com.example.forutec2.Publicacion.Domain;
+package com.example.Connect.Publicacion.Domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
 
-import com.example.forutec2.Review.Domain.Review;
-import com.example.forutec2.Booking.Domain.Booking;
+import com.example.Connect.Review.Domain.Review;
+import com.example.Connect.Booking.Domain.Booking;
 
 @Entity
 @Getter

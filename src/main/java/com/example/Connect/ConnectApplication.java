@@ -1,4 +1,4 @@
-package com.example.forutec2;
+package com.example.Connect;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class Forutec2Application {
+public class ConnectApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Forutec2Application.class, args);
+        SpringApplication.run(ConnectApplication.class, args);
     }
     @Bean
     public ModelMapper modelMapper() {

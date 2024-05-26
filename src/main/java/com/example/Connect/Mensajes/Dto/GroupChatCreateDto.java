@@ -1,4 +1,4 @@
-package com.example.forutec2.Mensajes.Dto;
+package com.example.Connect.Mensajes.Dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,13 +1,12 @@
-package com.example.forutec2.Mensajes.Domain;
+package com.example.Connect.Mensajes.Domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import com.example.forutec2.Usuario.Domain.Usuario;
+import com.example.Connect.Usuario.Domain.Usuario;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Entity

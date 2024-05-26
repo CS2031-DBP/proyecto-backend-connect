@@ -1,4 +1,4 @@
-package com.example.forutec2.Exception;
+package com.example.Connect.Exception;
 
 public class ErrorResponse {
     private boolean status;

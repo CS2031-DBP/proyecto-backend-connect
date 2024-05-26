@@ -1,4 +1,4 @@
-package com.example.forutec2.config;
+package com.example.Connect.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

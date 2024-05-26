@@ -1,6 +1,6 @@
-package com.example.forutec2.Usuario.Infraestructure;
+package com.example.Connect.Usuario.Infraestructure;
 
-import com.example.forutec2.Usuario.Domain.Usuario;
+import com.example.Connect.Usuario.Domain.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

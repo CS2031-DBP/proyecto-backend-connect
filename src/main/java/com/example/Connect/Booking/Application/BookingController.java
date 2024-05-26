@@ -1,30 +1,21 @@
-package com.example.forutec2.Booking.Application;
+package com.example.Connect.Booking.Application;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.forutec2.Security.JwtUtil;
+import com.example.Connect.Security.JwtUtil;
 
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.example.forutec2.Booking.Domain.Booking;
-
-import com.example.forutec2.Booking.Application.BookingService;
-
-import com.example.forutec2.Booking.Dto.BookingDto;
-import com.example.forutec2.Booking.Dto.BookingCreateDto;
-
-import com.example.forutec2.Booking.Infraestructure.BookingRepository;
-
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Booking.Dto.BookingDto;
+import com.example.Connect.Booking.Dto.BookingCreateDto;
 
 @RestController
 @RequestMapping("/booking")

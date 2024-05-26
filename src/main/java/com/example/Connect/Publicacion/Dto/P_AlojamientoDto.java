@@ -1,14 +1,12 @@
-package com.example.forutec2.Publicacion.Dto; 
+package com.example.Connect.Publicacion.Dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.ZonedDateTime;
 
-import com.example.forutec2.Comentarios.Dto.ComentariosDto;
-import com.example.forutec2.Review.Dto.ReviewDto;
+import com.example.Connect.Comentarios.Dto.ComentariosDto;
+import com.example.Connect.Review.Dto.ReviewDto;
 
 import java.util.List;
 

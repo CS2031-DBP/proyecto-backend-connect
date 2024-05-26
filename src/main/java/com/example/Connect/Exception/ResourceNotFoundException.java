@@ -1,4 +1,4 @@
-package com.example.forutec2.Exception;
+package com.example.Connect.Exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

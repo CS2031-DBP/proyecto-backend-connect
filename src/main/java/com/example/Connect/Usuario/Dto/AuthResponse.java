@@ -1,5 +1,5 @@
 
-package com.example.forutec2.Usuario.Dto;
+package com.example.Connect.Usuario.Dto;
 
 public class AuthResponse {
     private String jwt;

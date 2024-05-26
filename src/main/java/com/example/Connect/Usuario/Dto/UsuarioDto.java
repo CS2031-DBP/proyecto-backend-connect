@@ -1,6 +1,6 @@
-package com.example.forutec2.Usuario.Dto;
+package com.example.Connect.Usuario.Dto;
 
-import com.example.forutec2.Usuario.Domain.UsuarioRol;
+import com.example.Connect.Usuario.Domain.UsuarioRol;
 import java.time.ZonedDateTime;
 
 public class UsuarioDto {

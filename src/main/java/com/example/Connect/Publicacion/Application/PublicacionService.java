@@ -1,38 +1,32 @@
-package com.example.forutec2.Publicacion.Application;
+package com.example.Connect.Publicacion.Application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
-import com.example.forutec2.Publicacion.Dto.PublicacionCreateDto;
-import com.example.forutec2.Publicacion.Dto.PublicacionDto;
-import com.example.forutec2.Publicacion.Dto.P_AlojamientoCreateDto;
-import com.example.forutec2.Publicacion.Dto.P_AlojamientoDto;
-import com.example.forutec2.Comentarios.Dto.ComentariosDto;
-import com.example.forutec2.Review.Dto.ReviewDto;
+import com.example.Connect.Publicacion.Dto.PublicacionCreateDto;
+import com.example.Connect.Publicacion.Dto.PublicacionDto;
+import com.example.Connect.Publicacion.Dto.P_AlojamientoCreateDto;
+import com.example.Connect.Publicacion.Dto.P_AlojamientoDto;
+import com.example.Connect.Comentarios.Dto.ComentariosDto;
+import com.example.Connect.Review.Dto.ReviewDto;
 
-import com.example.forutec2.Exception.CustomException;
-import com.example.forutec2.Usuario.Infraestructure.UsuarioRepository;
-import com.example.forutec2.Publicacion.Domain.Publicacion;
-import com.example.forutec2.Publicacion.Domain.P_Alojamiento;
-import com.example.forutec2.Usuario.Domain.Usuario;
-import com.example.forutec2.Publicacion.Infraestructure.PublicacionRepository;
-import com.example.forutec2.Publicacion.Infraestructure.P_AlojamientoRepository;
-import com.example.forutec2.Comentarios.Infraestructure.ComentariosRepository;
-import com.example.forutec2.Comentarios.Domain.Comentarios;
-import com.example.forutec2.Review.Domain.Review;
+import com.example.Connect.Exception.CustomException;
+import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
+import com.example.Connect.Publicacion.Domain.Publicacion;
+import com.example.Connect.Publicacion.Domain.P_Alojamiento;
+import com.example.Connect.Usuario.Domain.Usuario;
+import com.example.Connect.Publicacion.Infraestructure.PublicacionRepository;
+import com.example.Connect.Publicacion.Infraestructure.P_AlojamientoRepository;
+import com.example.Connect.Comentarios.Infraestructure.ComentariosRepository;
 import org.springframework.data.domain.Pageable;
 
-import com.example.forutec2.Security.JwtUtil;
+import com.example.Connect.Security.JwtUtil;
 
 @Service
 public class PublicacionService {

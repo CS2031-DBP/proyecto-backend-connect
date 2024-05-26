@@ -1,12 +1,12 @@
-package com.example.forutec2.Usuario.Application;
+package com.example.Connect.Usuario.Application;
 
-import com.example.forutec2.Usuario.Domain.Usuario;
-import com.example.forutec2.Usuario.Infraestructure.UsuarioRepository;
+import com.example.Connect.Usuario.Domain.Usuario;
+import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Exception.CustomException;
 
 import java.util.ArrayList;
 import java.util.Collections;

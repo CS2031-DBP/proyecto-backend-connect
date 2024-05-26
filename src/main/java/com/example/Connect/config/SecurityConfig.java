@@ -1,8 +1,8 @@
-package com.example.forutec2.config;
+package com.example.Connect.config;
 
-import com.example.forutec2.Security.JwtAuthenticationFilter;
-import com.example.forutec2.Security.JwtUtil;
-import com.example.forutec2.Usuario.Application.CustomUserDetailsService;
+import com.example.Connect.Security.JwtAuthenticationFilter;
+import com.example.Connect.Security.JwtUtil;
+import com.example.Connect.Usuario.Application.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +16,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Exception.CustomException;
 
 @Configuration
 @EnableWebSecurity
@@ -32,8 +32,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf().disable()
+        http.csrf().disable()
             .cors().and()
             .authorizeHttpRequests()
                 .requestMatchers("/auth/**").permitAll()

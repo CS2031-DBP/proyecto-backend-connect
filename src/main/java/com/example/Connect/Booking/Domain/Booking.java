@@ -1,4 +1,4 @@
-package com.example.forutec2.Booking.Domain;
+package com.example.Connect.Booking.Domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import com.example.forutec2.Usuario.Domain.Usuario;
-import com.example.forutec2.Publicacion.Domain.P_Alojamiento;
+import com.example.Connect.Usuario.Domain.Usuario;
+import com.example.Connect.Publicacion.Domain.P_Alojamiento;
 
 @Entity
 @Getter

@@ -1,4 +1,4 @@
-package com.example.forutec2.Usuario.Domain;
+package com.example.Connect.Usuario.Domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

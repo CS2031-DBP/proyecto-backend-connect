@@ -1,18 +1,18 @@
-package com.example.forutec2.Mensajes.Application;
+package com.example.Connect.Mensajes.Application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.forutec2.Mensajes.Domain.Chats;
-import com.example.forutec2.Mensajes.Domain.MembersChat;
-import com.example.forutec2.Mensajes.Infraestructure.ChatsRepository;
-import com.example.forutec2.Mensajes.Infraestructure.MembersChatRepository;
-import com.example.forutec2.Usuario.Domain.Usuario;
-import com.example.forutec2.Usuario.Infraestructure.UsuarioRepository;
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Mensajes.Domain.Chats;
+import com.example.Connect.Mensajes.Domain.MembersChat;
+import com.example.Connect.Mensajes.Infraestructure.ChatsRepository;
+import com.example.Connect.Mensajes.Infraestructure.MembersChatRepository;
+import com.example.Connect.Usuario.Domain.Usuario;
+import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
+import com.example.Connect.Exception.CustomException;
 
 import java.util.List;
 
-import com.example.forutec2.Mensajes.Dto.ChatDto;  
+import com.example.Connect.Mensajes.Dto.ChatDto;
 
 @Service
 public class ChatService {

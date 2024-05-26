@@ -1,18 +1,16 @@
-package com.example.forutec2.Comentarios.Application;
+package com.example.Connect.Comentarios.Application;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.forutec2.Security.JwtUtil;
-import com.example.forutec2.Comentarios.Application.ComentariosService;
+import com.example.Connect.Security.JwtUtil;
 
-import com.example.forutec2.Comentarios.Dto.ComentariosDto;
-import com.example.forutec2.Comentarios.Dto.ComentariosCreateDto;
+import com.example.Connect.Comentarios.Dto.ComentariosDto;
+import com.example.Connect.Comentarios.Dto.ComentariosCreateDto;
 
 import java.util.List;
 import java.util.Map;

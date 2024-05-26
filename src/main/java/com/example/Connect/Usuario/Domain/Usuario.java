@@ -1,4 +1,4 @@
-package com.example.forutec2.Usuario.Domain;
+package com.example.Connect.Usuario.Domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import com.example.forutec2.Publicacion.Domain.Publicacion;
-import com.example.forutec2.Comentarios.Domain.Comentarios;
-import com.example.forutec2.Booking.Domain.Booking;
+import com.example.Connect.Publicacion.Domain.Publicacion;
+import com.example.Connect.Comentarios.Domain.Comentarios;
+import com.example.Connect.Booking.Domain.Booking;
 import java.util.List;
 
 @Entity

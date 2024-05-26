@@ -22,10 +22,10 @@
     <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
     <script>
         var stompClient = null;
-        var authToken = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IkFSUkVOREFET1IiLCJleHAiOjE3MjAxNjY2MTgsImlhdCI6MTcxNjU2NjYxOH0.3ulwYeYgHf_i9MFVDeuctWvc_OQMTguZrJX6DrplrcY';
+        var authToken = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IkFSUkVOREFUQVJJTyIsImV4cCI6Mzc3MTY2OTE1NzEsImlhdCI6MTcxNjY5MTU3MX0.sSyh3wSodvYczSs-m3v-Xsz8-f1cdGUvG38F82kEvok';
 
         function connect() {
-            var socket = new SockJS('http://107.20.83.128:8080/ws');
+            var socket = new SockJS('http://127.0.0.1:8080/ws');
             stompClient = Stomp.over(socket);
 
             stompClient.connect({
@@ -43,7 +43,7 @@
 
         function sendMessage() {
             var userId = document.getElementById('userId').value;
-            var chatId = 5;
+            var chatId = 1;
             var messageInput = document.getElementById('message').value;
             var mensajeDto = {
                 body: messageInput,
@@ -63,7 +63,7 @@
         }
 
         function loadPreviousMessages() {
-            fetch(`http://107.20.83.128/mensajes?chatId=5`, {
+            fetch(`http://127.0.0.1:8080/mensajes?chatId=1`, {
                 method: 'GET',
                 headers: {
                     'Authorization': authToken

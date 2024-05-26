@@ -1,4 +1,4 @@
-package com.example.forutec2;
+package com.example.Connect;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -8,7 +8,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @TestConfiguration(proxyBeanMethods = false)
-public class TestForutec2Application {
+public class ConnectApplication {
 
     @Bean
     @ServiceConnection
@@ -17,7 +17,7 @@ public class TestForutec2Application {
     }
 
     public static void main(String[] args) {
-        SpringApplication.from(Forutec2Application::main).with(TestForutec2Application.class).run(args);
+        SpringApplication.from(ConnectApplication::main).with(ConnectApplication.class).run(args);
     }
 
 }

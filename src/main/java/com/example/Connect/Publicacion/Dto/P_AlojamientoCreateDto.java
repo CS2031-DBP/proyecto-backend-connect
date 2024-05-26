@@ -1,4 +1,4 @@
-package com.example.forutec2.Publicacion.Dto;
+package com.example.Connect.Publicacion.Dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

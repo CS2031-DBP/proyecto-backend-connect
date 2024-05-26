@@ -1,14 +1,12 @@
-package com.example.forutec2.Usuario.Application;
+package com.example.Connect.Usuario.Application;
 
-import com.example.forutec2.Security.JwtUtil;
-import com.example.forutec2.Usuario.Dto.UsuarioCreateDto;
-import com.example.forutec2.Usuario.Dto.UsuarioDto;
+import com.example.Connect.Security.JwtUtil;
+import com.example.Connect.Usuario.Dto.UsuarioCreateDto;
+import com.example.Connect.Usuario.Dto.UsuarioDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 

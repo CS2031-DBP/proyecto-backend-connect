@@ -1,33 +1,26 @@
-package com.example.forutec2.Booking.Application;
+package com.example.Connect.Booking.Application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
+import com.example.Connect.Security.JwtUtil;
 
-import com.example.forutec2.Security.JwtUtil;
+import com.example.Connect.Exception.CustomException;
 
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Booking.Domain.Booking;
+import com.example.Connect.Publicacion.Domain.P_Alojamiento;
+import com.example.Connect.Usuario.Domain.Usuario;
 
-import com.example.forutec2.Booking.Domain.Booking;
-import com.example.forutec2.Publicacion.Domain.P_Alojamiento;
-import com.example.forutec2.Usuario.Domain.Usuario;
+import com.example.Connect.Booking.Dto.BookingDto;
+import com.example.Connect.Booking.Dto.BookingCreateDto;
 
-import com.example.forutec2.Booking.Dto.BookingDto;
-import com.example.forutec2.Booking.Dto.BookingCreateDto;
-
-import com.example.forutec2.Booking.Infraestructure.BookingRepository;
-import com.example.forutec2.Publicacion.Infraestructure.P_AlojamientoRepository;
-import com.example.forutec2.Usuario.Infraestructure.UsuarioRepository;
+import com.example.Connect.Booking.Infraestructure.BookingRepository;
+import com.example.Connect.Publicacion.Infraestructure.P_AlojamientoRepository;
+import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
 
 @Service
 public class BookingService {

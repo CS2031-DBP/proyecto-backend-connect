@@ -1,7 +1,7 @@
-package com.example.forutec2.Security;
+package com.example.Connect.Security;
 
-import com.example.forutec2.Usuario.Application.CustomUserDetailsService;
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Usuario.Application.CustomUserDetailsService;
+import com.example.Connect.Exception.CustomException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.MalformedJwtException;

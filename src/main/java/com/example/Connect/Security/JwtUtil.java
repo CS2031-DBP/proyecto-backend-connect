@@ -1,4 +1,4 @@
-package com.example.forutec2.Security;
+package com.example.Connect.Security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

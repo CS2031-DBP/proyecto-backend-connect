@@ -1,32 +1,25 @@
-package com.example.forutec2.Comentarios.Application;
+package com.example.Connect.Comentarios.Application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
+import com.example.Connect.Security.JwtUtil;
 
-import com.example.forutec2.Security.JwtUtil;
+import com.example.Connect.Exception.CustomException;
 
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Usuario.Domain.Usuario;
+import com.example.Connect.Publicacion.Domain.Publicacion;
 
-import com.example.forutec2.Usuario.Domain.Usuario;
-import com.example.forutec2.Publicacion.Domain.Publicacion;
-
-import com.example.forutec2.Comentarios.Domain.Comentarios;
-import com.example.forutec2.Comentarios.Dto.ComentariosDto;
-import com.example.forutec2.Comentarios.Dto.ComentariosCreateDto;
-import com.example.forutec2.Comentarios.Infraestructure.ComentariosRepository;
-import com.example.forutec2.Publicacion.Infraestructure.PublicacionRepository;
-import com.example.forutec2.Usuario.Infraestructure.UsuarioRepository;
+import com.example.Connect.Comentarios.Domain.Comentarios;
+import com.example.Connect.Comentarios.Dto.ComentariosDto;
+import com.example.Connect.Comentarios.Dto.ComentariosCreateDto;
+import com.example.Connect.Comentarios.Infraestructure.ComentariosRepository;
+import com.example.Connect.Publicacion.Infraestructure.PublicacionRepository;
+import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
 
 @Service
 public class ComentariosService {

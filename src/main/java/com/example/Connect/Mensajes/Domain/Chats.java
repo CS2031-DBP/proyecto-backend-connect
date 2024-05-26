@@ -1,4 +1,4 @@
-package com.example.forutec2.Mensajes.Domain;
+package com.example.Connect.Mensajes.Domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

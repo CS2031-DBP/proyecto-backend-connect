@@ -1,6 +1,6 @@
-package com.example.forutec2.controller;
+package com.example.Connect.controller;
 
-import com.example.forutec2.Exception.ErrorResponse;
+import com.example.Connect.Exception.ErrorResponse;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;

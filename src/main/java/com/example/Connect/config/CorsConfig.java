@@ -1,4 +1,4 @@
-package com.example.forutec2.config;
+package com.example.Connect.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,8 +7,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
 public class CorsConfig {

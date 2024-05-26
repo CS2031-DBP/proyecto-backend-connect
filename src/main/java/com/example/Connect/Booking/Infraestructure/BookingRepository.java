@@ -1,6 +1,6 @@
-package com.example.forutec2.Booking.Infraestructure;
+package com.example.Connect.Booking.Infraestructure;
 
-import com.example.forutec2.Booking.Domain.Booking;
+import com.example.Connect.Booking.Domain.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.example.forutec2.Review.Dto;
+package com.example.Connect.Review.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

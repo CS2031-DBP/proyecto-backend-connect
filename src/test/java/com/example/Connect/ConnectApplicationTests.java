@@ -1,10 +1,10 @@
-package com.example.forutec2;
+package com.example.Connect;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Forutec2ApplicationTests {
+class ConnectApplicationTests {
 
     @Test
     void contextLoads() {

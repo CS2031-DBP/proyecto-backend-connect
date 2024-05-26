@@ -1,10 +1,9 @@
 
-package com.example.forutec2.Usuario.Dto;
+package com.example.Connect.Usuario.Dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 public class UsuarioCreateDto {
     @Email

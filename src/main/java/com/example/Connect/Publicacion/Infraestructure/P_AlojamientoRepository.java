@@ -1,6 +1,6 @@
-package com.example.forutec2.Publicacion.Infraestructure;
+package com.example.Connect.Publicacion.Infraestructure;
 
-import com.example.forutec2.Publicacion.Domain.P_Alojamiento;
+import com.example.Connect.Publicacion.Domain.P_Alojamiento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

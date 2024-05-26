@@ -1,6 +1,6 @@
-package com.example.forutec2.Comentarios.Infraestructure;
+package com.example.Connect.Comentarios.Infraestructure;
 
-import com.example.forutec2.Comentarios.Domain.Comentarios;
+import com.example.Connect.Comentarios.Domain.Comentarios;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

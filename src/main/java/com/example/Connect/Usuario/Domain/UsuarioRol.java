@@ -1,4 +1,4 @@
-package com.example.forutec2.Usuario.Domain;
+package com.example.Connect.Usuario.Domain;
 
 public enum UsuarioRol {
     ARRENDATARIO, // 0

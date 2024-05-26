@@ -1,7 +1,7 @@
-package com.example.forutec2.Mensajes.Infraestructure;
+package com.example.Connect.Mensajes.Infraestructure;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.forutec2.Mensajes.Domain.Chats;
+import com.example.Connect.Mensajes.Domain.Chats;
 
 public interface ChatsRepository extends JpaRepository<Chats, Long> {
 }

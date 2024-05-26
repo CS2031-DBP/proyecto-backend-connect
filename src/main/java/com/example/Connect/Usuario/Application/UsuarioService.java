@@ -1,20 +1,18 @@
-package com.example.forutec2.Usuario.Application;
+package com.example.Connect.Usuario.Application;
 
-import com.example.forutec2.Usuario.Domain.Usuario;
-import com.example.forutec2.Usuario.Domain.DatosUsuario;
-import com.example.forutec2.Usuario.Domain.UsuarioRol;
-import com.example.forutec2.Usuario.Dto.UsuarioCreateDto;
-import com.example.forutec2.Usuario.Dto.UsuarioDto;
-import com.example.forutec2.Usuario.Infraestructure.UsuarioRepository;
+import com.example.Connect.Usuario.Domain.Usuario;
+import com.example.Connect.Usuario.Domain.DatosUsuario;
+import com.example.Connect.Usuario.Domain.UsuarioRol;
+import com.example.Connect.Usuario.Dto.UsuarioCreateDto;
+import com.example.Connect.Usuario.Dto.UsuarioDto;
+import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-import com.example.forutec2.Exception.CustomException;
+import com.example.Connect.Exception.CustomException;
 
-import com.example.forutec2.Security.JwtUtil;
+import com.example.Connect.Security.JwtUtil;
 
 
 @Service

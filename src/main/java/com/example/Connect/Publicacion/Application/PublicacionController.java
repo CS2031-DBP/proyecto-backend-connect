@@ -1,4 +1,4 @@
-package com.example.forutec2.Usuario.Application;
+package com.example.Connect.Usuario.Application;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,18 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.forutec2.Security.JwtUtil;
+import com.example.Connect.Security.JwtUtil;
 
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.example.forutec2.Publicacion.Dto.PublicacionCreateDto;
-import com.example.forutec2.Publicacion.Dto.PublicacionDto;
-import com.example.forutec2.Publicacion.Dto.P_AlojamientoCreateDto;
-import com.example.forutec2.Publicacion.Dto.P_AlojamientoDto;
-import com.example.forutec2.Publicacion.Application.PublicacionService;
+import com.example.Connect.Publicacion.Dto.PublicacionCreateDto;
+import com.example.Connect.Publicacion.Dto.PublicacionDto;
+import com.example.Connect.Publicacion.Dto.P_AlojamientoCreateDto;
+import com.example.Connect.Publicacion.Dto.P_AlojamientoDto;
+import com.example.Connect.Publicacion.Application.PublicacionService;
 
 // import org.springframework.security.access.prepost.PreAuthorize;
 
