@@ -20,7 +20,7 @@ public class MensajeResponseDTO {
     @Id
     private Long id;
     @NotNull
-    private Long autorId;
+    private String username;
     @NotNull
     private Long chatId;
     @NotNull

@@ -1,9 +1,7 @@
 package dbp.connect.MultimediaMensajeIndividual.Domain;
 
-import dbp.connect.Comentarios.Domain.Comentario;
 import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimedia;
 import dbp.connect.ComentariosMultimedia.Domain.Multimedia;
-import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
 import dbp.connect.MultimediaMensajeIndividual.Infrastructure.MultimediaMensajeIndividualRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,22 +13,23 @@ import java.io.IOException;
 public class MultimediaMensajeIndividualServicio {
     @Autowired
     private MultimediaMensajeIndividualRepositorio multimediaRepositorio;
-    public void saveMultimedia(MensajeIndividual , MultipartFile file) {
+
+    public MultimediaMensajeIndividual saveMultimedia( MultipartFile file) {
         try {
-            ComentarioMultimedia multimedia = new ComentarioMultimedia();
+            MultimediaMensajeIndividual multimedia = new MultimediaMensajeIndividual();
             multimedia.setContenido(file.getBytes());
-            multimedia.setTipoConte(file.getContentType());
-            if(multimedia.getTipoConte().equalsIgnoreCase("image")){
-                multimedia.setTipo(Multimedia.FOTO);
+            multimedia.setTipoContenido(file.getContentType());
+            if(multimedia.getTipoContenido().equalsIgnoreCase("image")){
+                multimedia.setTipo(Tipo.FOTO);
             }
-            else if(multimedia.getTipoConte().equalsIgnoreCase("video")){
-                multimedia.setTipo(Multimedia.VIDEO);
+            else if(multimedia.getTipoContenido().equalsIgnoreCase("video")){
+                multimedia.setTipo(Tipo.VIDEO);
             }
             else{
                 throw new IllegalArgumentException("Tipo de multimedia no valido");
-
             }
-            comentariosMultimediaRepositorio.save(multimedia);
+            multimediaRepositorio.save(multimedia);
+            return multimedia;
         } catch (IOException e) {
             throw new RuntimeException("Error al guardar el archivo multimedia", e);
         }

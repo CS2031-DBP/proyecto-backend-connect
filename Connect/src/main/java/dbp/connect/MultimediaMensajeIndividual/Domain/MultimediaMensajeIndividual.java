@@ -19,5 +19,6 @@ public class MultimediaMensajeIndividual {
     private MensajeIndividual mensaje;
     @Lob
     private byte[] contenido;
+    private String tipoContenido;
     private Tipo tipo;
 }

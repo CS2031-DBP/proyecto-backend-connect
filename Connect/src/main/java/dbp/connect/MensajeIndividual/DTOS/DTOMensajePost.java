@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,5 +28,5 @@ public class DTOMensajePost {
     @NotNull
     @Size(min = 2, max=1000)
     private String contenido;
-    private List<MultimediaMensajeIndividual> multimedia;
+    private List<MultipartFile> multimedia;
 }

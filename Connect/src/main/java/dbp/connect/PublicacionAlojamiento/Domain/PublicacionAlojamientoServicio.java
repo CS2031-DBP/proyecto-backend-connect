@@ -10,9 +10,12 @@ import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -77,7 +80,6 @@ public class PublicacionAlojamientoServicio {
         publicacion.setTitulo(titulo);
         publicacionAlojamientoRepositorio.save(publicacion);
 
-
     }
     public void eliminarPublicacion(Long publicacionId) {
         Optional<PublicacionAlojamiento> publi = publicacionAlojamientoRepositorio.findById(publicacionId);
@@ -97,15 +99,17 @@ public class PublicacionAlojamientoServicio {
         response.setLongitud(publicacionAlojamiento.getAlojamientoP().getLongitude());
         response.setCantidadReviews(publicacionAlojamiento.getCantidadReseñas());
         response.setPromedioRating(publicacionAlojamiento.getPromedioRating());
-        response.setAutorFullName(publicacionAlojamiento.getAlojamientoP().getPropietario().getFullname());
+        response.setAutorFullName(publicacionAlojamiento.getAlojamientoP().getPropietario().getUsername());
         response.setFechaPublicacion(publicacionAlojamiento.getFecha());
         if (publicacionAlojamiento.getAlojamientoP().getPropietario().getFoto() != null) {
             response.setAutorPhoto(publicacionAlojamiento.getAlojamientoP().getPropietario().getFoto());
         } else {
             response.setAutorPhoto(null);
         }
+        List<MultipartFile> files = new ArrayList<>();
         if (publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia() != null) {
-            response.setAlojamientoMultimedia(publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia());
+            for(int i = 0; i <publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia().size(); i++ )
+            files.add(publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia().get(i).getContenido());
         } else {
             response.setAlojamientoMultimedia(null);
         }

@@ -6,11 +6,16 @@ import dbp.connect.MensajeGrupal.Domain.StatusMensaje;
 import dbp.connect.MensajeIndividual.DTOS.DTOMensajePost;
 import dbp.connect.MensajeIndividual.DTOS.MensajeResponseDTO;
 import dbp.connect.MensajeIndividual.Infrastructure.MensajeIndividualRepository;
+import dbp.connect.MultimediaMensajeIndividual.Domain.MultimediaMensajeIndividual;
+import dbp.connect.MultimediaMensajeIndividual.Domain.MultimediaMensajeIndividualServicio;
 import dbp.connect.User.Infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 
@@ -24,6 +29,8 @@ public class MensajeIndividualService {
     @Autowired
     private MensajeIndividualRepository mensajeIndividualRepository;
     private UserRepository userRepository;
+    @Autowired
+    private MultimediaMensajeIndividualServicio multimediaMensajeIndividualServicio;
 
     public MensajeResponseDTO save(DTOMensajePost mensaje){
         if (mensaje.getId() != null) {
@@ -32,25 +39,27 @@ public class MensajeIndividualService {
                 throw new IllegalArgumentException("El mensaje ya ha sido creado.");
             }
         }
-
-        // Crear y guardar el nuevo mensaje
         MensajeIndividual newMessage = new MensajeIndividual();
-        newMessage.setAutor(userRepository.findById(mensaje.getAutorId());
-        newMessage.setChat(chatIndividualRepository.findById(mensaje.getChatId());
+        newMessage.setAutor(userRepository.findById(mensaje.getAutorId()).get());
+        newMessage.setChat(chatIndividualRepository.findById(mensaje.getChatId()).get());
         newMessage.setCuerpo(mensaje.getContenido());
         newMessage.setStatusMensaje(StatusMensaje.ENVIADO);
-        newMessage.setMultimedia(mensaje.getMultimedia());
-
-
-        // Convertir la entidad guardada a DTO
-        MensajeResponseDTO responseDTO = new MensajeResponseDTO();
-        responseDTO.setId(savedMessage.getId());
-        responseDTO.setAutorId(savedMessage.getAutorId());
-        responseDTO.setChatId(savedMessage.getChatId());
-        responseDTO.setContenido(savedMessage.getContenido());
-        responseDTO.setStatusMensaje(savedMessage.getStatusMensaje());
-        responseDTO.setMultimedia(savedMessage.getMultimedia());
+        for(MultipartFile file: mensaje.getMultimedia()){
+            MultimediaMensajeIndividual multimedia = multimediaMensajeIndividualServicio.saveMultimedia(file);
+            newMessage.addMultimedia(multimedia);
+        }
+        newMessage.setFechaCreacion(ZonedDateTime.now(ZoneId.systemDefault()));
+        return toDTOResponse(newMessage);
     }
-
+    private MensajeResponseDTO toDTOResponse(MensajeIndividual mensaje){
+        MensajeResponseDTO mensajeResponseDTO = new MensajeResponseDTO();
+        mensajeResponseDTO.setId(mensaje.getId());
+        mensajeResponseDTO.setContenido(mensaje.getCuerpo());
+        mensajeResponseDTO.setStatusMensaje(mensaje.getStatusMensaje());
+        mensajeResponseDTO.setUsername(mensaje.getAutor().getUsername());
+        mensajeResponseDTO.setChatId(mensaje.getChat().getId());
+        mensajeResponseDTO.setFecha(mensaje.getFechaCreacion());
+        return mensajeResponseDTO; //Falta terminar
+    }
 
 }

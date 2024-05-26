@@ -2,7 +2,6 @@ package dbp.connect.MensajeIndividual.Domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbp.connect.ChatIndividual.Domain.ChatIndividual;
-import dbp.connect.Likes.Domain.Like;
 import dbp.connect.MensajeGrupal.Domain.StatusMensaje;
 import dbp.connect.MultimediaMensajeIndividual.Domain.MultimediaMensajeIndividual;
 import dbp.connect.User.Domain.User;
@@ -10,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class MensajeIndividual {
     @JoinColumn(name="status")
     private StatusMensaje statusMensaje;
 
-    private LocalDateTime fechaCreacion;
+    private ZonedDateTime fechaCreacion;
     @OneToMany(mappedBy = "mensaje", cascade = CascadeType.ALL,orphanRemoval = true )
     private List<MultimediaMensajeIndividual> archivosMultimedia = new ArrayList<>();
     @Override

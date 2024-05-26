@@ -48,4 +48,12 @@ public class Alojamiento {
     private PublicacionAlojamiento publicacionAlojamiento;
 
 
+
+    public void removerArchivoMultimedia(AlojamientoMultimedia archivoMultimedia) {
+        if (archivoMultimedia != null) {
+            archivoMultimedia.setAlojamiento(null);
+            this.alojamientoMultimedia.remove(archivoMultimedia);
+        }
+    }
+
 }

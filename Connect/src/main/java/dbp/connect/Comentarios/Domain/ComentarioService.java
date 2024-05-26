@@ -250,7 +250,7 @@ public class ComentarioService {
 
     private ComentarioRespuestaDTO convertToDto(Comentario comentario) {
         ComentarioRespuestaDTO dto = new ComentarioRespuestaDTO();
-        dto.setAutorNombreCompleto(comentario.getAutorComentario().getFullname());
+        dto.setAutorNombreCompleto(comentario.getAutorComentario().getUsername());
         dto.setMessage(comentario.getMessage());
 
         if (comentario.getAutorComentario().getFoto() != null) {
