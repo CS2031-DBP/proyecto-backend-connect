@@ -39,6 +39,13 @@ public class Comentarios {
 
   @PrePersist
   public void prePersist() {
-      this.fecha_publicacion = ZonedDateTime.now(ZoneId.of("America/Lima"));
+    this.fecha_publicacion = ZonedDateTime.now(ZoneId.of("America/Lima"));
+  }
+
+  public void setBody(String body) {
+    if (body == null) {
+      throw new IllegalArgumentException("El cuerpo del comentario no puede ser nulo");
+    }
+    this.body = body;
   }
 }
