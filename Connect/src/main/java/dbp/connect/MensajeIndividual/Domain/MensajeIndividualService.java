@@ -103,7 +103,15 @@ public class MensajeIndividualService {
                 .map(this::toDTOResponse)
                 .collect(Collectors.toSet());
 
-        return new PageImpl<>(mensajesDTO.stream().collect(Collectors.toList()), pageable, mensajesPage.getTotalElements());    }
+        return new PageImpl<>(mensajesDTO.stream().collect(Collectors.toList()), pageable, mensajesPage.getTotalElements());
+    }
+
+    public MensajeResponseDTO obtenerMensajePorchatIdYMensajeId(Long chatId, Long mensajeiD){
+
+        MensajeIndividual mensaje = mensajeIndividualRepository.findByChatIdAndId(chatId, mensajeiD)
+                .orElseThrow(()->new EntityNotFoundException("No se encontro el mensaje para el chat especificado"));
+        return toDTOResponse(mensaje);
+    }
 
     private MensajeResponseDTO toDTOResponse(MensajeIndividual mensaje){
         MensajeResponseDTO mensajeResponseDTO = new MensajeResponseDTO();
@@ -115,5 +123,6 @@ public class MensajeIndividualService {
         mensajeResponseDTO.setFecha(mensaje.getFechaCreacion());
         return mensajeResponseDTO; //Falta terminar
     }
+
 
 }

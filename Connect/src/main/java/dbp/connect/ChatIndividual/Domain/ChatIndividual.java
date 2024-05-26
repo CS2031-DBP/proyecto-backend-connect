@@ -118,7 +118,6 @@ public class ChatIndividual implements Serializable {
         this.usuarios = usuarios;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

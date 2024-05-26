@@ -3,11 +3,8 @@ package dbp.connect.MensajeIndividual.Aplication;
 import dbp.connect.MensajeIndividual.DTOS.ContentDTO;
 import dbp.connect.MensajeIndividual.DTOS.DTOMensajePost;
 import dbp.connect.MensajeIndividual.DTOS.MensajeResponseDTO;
-import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
 import dbp.connect.MensajeIndividual.Domain.MensajeIndividualService;
-import jdk.jfr.Timespan;
-import org.apache.coyote.BadRequestException;
-import org.apache.tomcat.util.http.HeaderUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +22,7 @@ public class MensajeIndividualController {
     public ResponseEntity<MensajeResponseDTO> createMensaje(@RequestBody DTOMensajePost mensaje) throws URISyntaxException {
 
         MensajeResponseDTO result = mensajeIndividualService.save(mensaje);
-        return ResponseEntity.created(new URI("/api/mensajes/" + result.getId());
+        return ResponseEntity.created(new URI("/api/mensajes/" + result.getId())).build();
     }
 
     @PatchMapping("/{chatId}/modificar")
