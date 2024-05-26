@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+</head>
+<body>
+    <h2>WebSocket Chat</h2>
+    <div>
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" />
+    </div>
+    <div>
+        <label for="message">Message:</label>
+        <input type="text" id="message" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <div id="messages"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
+        var authToken = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IkFSUkVOREFET1IiLCJleHAiOjE3MjAxNjY2MTgsImlhdCI6MTcxNjU2NjYxOH0.3ulwYeYgHf_i9MFVDeuctWvc_OQMTguZrJX6DrplrcY';
+
+        function connect() {
+            var socket = new SockJS('http://107.20.83.128:8080/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({
+                'Authorization': authToken
+            }, function(frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/mensajes', function(message) {
+                    showMessage(JSON.parse(message.body));
+                });
+                loadPreviousMessages();
+            }, function(error) {
+                console.log('Error: ' + error);
+            });
+        }
+
+        function sendMessage() {
+            var userId = document.getElementById('userId').value;
+            var chatId = 5;
+            var messageInput = document.getElementById('message').value;
+            var mensajeDto = {
+                body: messageInput,
+                chatId: parseInt(chatId),
+                userId: parseInt(userId)
+            };
+            stompClient.send("/app/send", {
+                'Authorization': authToken
+            }, JSON.stringify(mensajeDto));
+        }
+
+        function showMessage(message) {
+            var messagesDiv = document.getElementById('messages');
+            var messageElement = document.createElement('div');
+            messageElement.appendChild(document.createTextNode(`User ${message.userId}: ${message.body}`));
+            messagesDiv.appendChild(messageElement);
+        }
+
+        function loadPreviousMessages() {
+            fetch(`http://107.20.83.128/mensajes?chatId=5`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': authToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(showMessage);
+            })
+            .catch(error => console.error('Error loading messages:', error));
+        }
+
+        connect();
+    </script>
+</body>
+</html>
