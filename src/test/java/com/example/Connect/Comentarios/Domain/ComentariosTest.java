@@ -20,7 +20,6 @@ class ComentariosTest {
 
     @BeforeEach
     void setUp() {
-        // Configurar el usuario
         datosUsuario = new DatosUsuario();
         datosUsuario.setNombre("Juan");
         datosUsuario.setApellido("Perez");
@@ -34,19 +33,17 @@ class ComentariosTest {
         usuario.setContrasenia("password123");
         usuario.setRol(UsuarioRol.ARRENDATARIO);
 
-        // Configurar la publicación
         publicacion = new Publicacion();
         publicacion.setFecha_publicacion(ZonedDateTime.now(ZoneId.systemDefault()));
         publicacion.setBody("Esta es una publicación de prueba");
         publicacion.setTitulo("Prueba");
         publicacion.setUsuario(usuario);
 
-        // Configurar el comentario
         comentario = new Comentarios();
         comentario.setBody("Este es un comentario de prueba");
         comentario.setPublicacion(publicacion);
         comentario.setUsuario(usuario);
-        comentario.prePersist(); // Configura la fecha de publicación
+        comentario.prePersist();
     }
 
     @Test
