@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface MensajeIndividualRepository extends JpaRepository<MensajeIndividual, Long> {
     Page<MensajeIndividual> findByChatId(Long chatId, Pageable pageable);
     Optional<MensajeIndividual> findByAutor(User user);
+
 }
+
