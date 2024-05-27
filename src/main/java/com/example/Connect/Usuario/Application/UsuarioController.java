@@ -45,4 +45,5 @@ public class UsuarioController {
         UsuarioDto usuarioDto = usuarioService.actualizarUsuarioPorToken(token, usuarioCreateDto);
         return ResponseEntity.ok(usuarioDto);
     }
+
 }
