@@ -1,11 +1,13 @@
 package com.example.Connect.Usuario.Application;
 
+import com.example.Connect.Mail.MailRegistroEvent;
 import com.example.Connect.Security.JwtUtil;
 import com.example.Connect.Usuario.Domain.Usuario;
 import com.example.Connect.Usuario.Dto.AuthRequest;
 import com.example.Connect.Usuario.Dto.AuthResponse;
 import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,6 +41,8 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -62,7 +66,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<UsuarioDto> createUsuario(@Valid @RequestBody UsuarioCreateDto usuarioCreateDto) {
         UsuarioDto usuarioDto = usuarioService.createUsuario(usuarioCreateDto);
+        eventPublisher.publishEvent(new MailRegistroEvent(usuarioDto.getCorreo()));
         return ResponseEntity.ok(usuarioDto);
+
     }
 
     @PostMapping("/logout")
