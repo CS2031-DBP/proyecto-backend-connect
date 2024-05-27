@@ -11,6 +11,7 @@ import com.example.Connect.Usuario.Domain.Usuario;
 import com.example.Connect.Comentarios.Domain.Comentarios;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,7 +43,7 @@ public class Publicacion {
 
   @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
-  private List<Comentarios> comentarios;
+  private List<Comentarios> comentarios = new ArrayList<>();
 
 
 

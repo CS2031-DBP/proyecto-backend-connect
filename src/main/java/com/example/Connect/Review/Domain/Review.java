@@ -16,7 +16,7 @@ import com.example.Connect.Usuario.Domain.Usuario;
 @NoArgsConstructor
 @Table(name = "review")
 public class Review {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -41,6 +41,13 @@ public class Review {
 
   @PrePersist
   public void prePersist() {
-      this.fecha_publicacion = ZonedDateTime.now(ZoneId.of("America/Lima"));
+    this.fecha_publicacion = ZonedDateTime.now(ZoneId.of("America/Lima"));
+  }
+
+  public void setBody(String body) {
+    if (body == null) {
+      throw new IllegalArgumentException("El cuerpo de la reseña no puede ser nulo");
+    }
+    this.body = body;
   }
 }
