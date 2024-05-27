@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,12 +22,11 @@ import com.example.Connect.Booking.Domain.Booking;
 public class P_Alojamiento {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @OneToOne
-  @MapsId
-  @JoinColumn(name = "publicacion_id", nullable = false)
-  @JsonBackReference
+  @JoinColumn(name = "publicacion_id")
   private Publicacion publicacion;
 
   @Column(nullable = false)
@@ -42,11 +43,11 @@ public class P_Alojamiento {
 
   @OneToMany(mappedBy = "pAlojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
-  private List<Review> reviews;
+  private List<Review> reviews =new ArrayList<>();
 
   @OneToMany(mappedBy = "pAlojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
-  private List<Booking> bookings;
+  private List<Booking> bookings = new ArrayList<>();
 
   @PrePersist
   public void prePersist() {

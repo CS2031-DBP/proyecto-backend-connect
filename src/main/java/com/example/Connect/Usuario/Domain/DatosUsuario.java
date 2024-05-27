@@ -17,7 +17,13 @@ import java.time.ZonedDateTime;
 public class DatosUsuario {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @MapsId
+    @JsonBackReference
+    private Usuario usuario;
 
     @Column(length = 100, nullable = false)
     private String nombre;
@@ -33,11 +39,7 @@ public class DatosUsuario {
 
     private ZonedDateTime FechaCreacionPerfil;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
-    @JsonBackReference
-    private Usuario usuario;
+
 
     @PrePersist
     public void prePersist() {

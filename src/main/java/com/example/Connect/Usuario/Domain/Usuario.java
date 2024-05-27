@@ -31,7 +31,7 @@ public class Usuario {
   @Column(nullable = false)
   private UsuarioRol rol;
 
-  @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, optional = false)
+  @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, optional = true)
   @JsonManagedReference
   private DatosUsuario datosUsuario;
 
