@@ -27,6 +27,7 @@ public class ChatIndividual implements Serializable {
 
     @Column(name="ultima_vez_visto")
     private ZonedDateTime ultimaVezVisto;
+
     @ManyToMany(mappedBy = "chats")
     @JsonIgnoreProperties("chats")
     private Set<User> usuarios= new HashSet<>();

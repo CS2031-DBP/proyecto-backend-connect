@@ -1,22 +1,17 @@
 package dbp.connect.User.Domain;
 
 import dbp.connect.Alojamiento.Domain.Alojamiento;
-import dbp.connect.ChatGrupal.Domain.ChatGrupal;
 import dbp.connect.ChatIndividual.Domain.ChatIndividual;
 import dbp.connect.Comentarios.Domain.Comentario;
-import dbp.connect.Friends.Domain.Friends;
+import dbp.connect.FriendRequest.Domain.FriendshipRequest;
+import dbp.connect.Friendship.Domain.Friendship;
 import dbp.connect.Likes.Domain.Like;
-import dbp.connect.MensajeGrupal.Domain.MensajeGrupal;
 import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.Review.Domain.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -75,10 +70,15 @@ public class User implements Serializable {
    )
    private Set<ChatIndividual> chats = new HashSet<>();
 
-    //@LazyCollection(LazyCollectionOption.FALSE)
-    //@OneToMany(mappedBy = "friend")
-   // @JsonIgnore
-   // private List<Friends> friends;
+    // Lista de amistades
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Friendship> friendshipsInicializados = new HashSet<>();
+
+    // Lista de amistades en las que este usuario es el amigo
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Friendship> friendOf = new HashSet<>();
+
+    //No se si funcionara, se tiene que probar
     @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL)
     private List<Alojamiento> alojamientos = new ArrayList<>();
 
@@ -94,6 +94,11 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "usuarioLike", cascade = CascadeType.REMOVE)
     private Set<Like> likes = new HashSet<>();
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FriendshipRequest> sentFriendRequests = new HashSet<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FriendshipRequest> receivedFriendRequests = new HashSet<>();
 
     public User removeMensaje(MensajeIndividual mensaje) {
         this.mensajeIndividual.remove(mensaje);
@@ -135,5 +140,6 @@ public class User implements Serializable {
         chat.getUsuarios().remove(this);
         return this;
     }
+
 
 }

@@ -1,6 +1,7 @@
 package dbp.connect.User.Domain;
 
 import dbp.connect.User.Infrastructure.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,28 +12,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    public void saveUser(User user) {
-        user.setStatus((Status.ONLINE));
+    @Transactional
+    public void addFriend(Long userId, Long  friendId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        User friend = userRepository.findById(friendId).orElseThrow();
+        user.addFriend(friend);
         userRepository.save(user);
-
-    }
-    public void disconnect(User user){
-        var storeUser= userRepository.findById(user.getId()).
-                orElse(null);
-        if(storeUser != null){
-            storeUser.setStatus((Status.OFFLINE));
-            userRepository.save(storeUser);
-        }
-    }
-    public List<User> findfriendsUsers(User user){
-
-        return null;
-    }
-    public List<User> findConnectedUsers() {
-        return userRepository.findAllByStatus(Status.ONLINE);
+        userRepository.save(friend); // Guardar explícitamente el amigo también
     }
 
-    public Optional<User> getUserById( Long id) {
-        return userRepository.findById(id);
+    @Transactional
+    public void removeFriend(Long userId, Long friendId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        User friend = userRepository.findById(friendId).orElseThrow();
+        user.removeFriend(friend);
+        userRepository.save(user);
+        userRepository.save(friend); // Guardar explícitamente el amigo también
     }
 }
