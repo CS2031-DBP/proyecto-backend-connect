@@ -52,7 +52,7 @@ public class ComentariosControllerTest {
 
     @Test
     void testCreateComentarios() throws Exception {
-        Mockito.when(comentariosService.createComentarios(any(ComentariosCreateDto.class), anyLong(), anyLong()))
+        Mockito.when(comentariosService.createComentarios(any(ComentariosCreateDto.class), anyString(), anyLong()))
                 .thenReturn(comentariosDto);
 
         mockMvc.perform(post("/comentarios/create/publicacion/1")

@@ -21,23 +21,23 @@ import jakarta.validation.Valid;
 @RequestMapping("/comentarios")
 public class ComentariosController {
 
-  @Autowired
-  private ComentariosService comentariosService;
-  
-  @Autowired
-  private JwtUtil jwtUtil;
+  private final ComentariosService comentariosService;
 
-  @PostMapping("/create/publicacion/{id}")
+  public ComentariosController(ComentariosService comentariosService) {
+    this.comentariosService = comentariosService;
+  }
+
+
+  @PostMapping("/create/publicacion/{publicacionId}")
   public ResponseEntity<ComentariosDto> createComentarios(
       @RequestHeader("Authorization") String token,
       @Valid @RequestBody ComentariosCreateDto comentariosCreateDto,
-      @PathVariable Long id
+      @PathVariable Long publicacionId
   ){
-    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     ComentariosDto comentariosDto = comentariosService.createComentarios(
         comentariosCreateDto,
-        userId,
-        id
+        token,
+        publicacionId
     );
     return ResponseEntity.ok(comentariosDto);
   }

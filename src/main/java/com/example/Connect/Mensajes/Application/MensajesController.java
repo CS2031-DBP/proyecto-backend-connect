@@ -27,14 +27,17 @@ import java.util.List;
 @Controller
 public class MensajesController {
 
-  @Autowired
-  private MensajesRepository mensajesRepository;
+  private final MensajesRepository mensajesRepository;
 
-  @Autowired
-  private ChatsRepository chatsRepository;
+  private final ChatsRepository chatsRepository;
 
-  @Autowired
-  private UsuarioRepository usuarioRepository;
+  private final UsuarioRepository usuarioRepository;
+
+  public MensajesController(MensajesRepository mensajesRepository, ChatsRepository chatsRepository, UsuarioRepository usuarioRepository) {
+    this.mensajesRepository = mensajesRepository;
+    this.chatsRepository = chatsRepository;
+    this.usuarioRepository = usuarioRepository;
+  }
 
   @MessageMapping("/send")
   @SendTo("/topic/mensajes")

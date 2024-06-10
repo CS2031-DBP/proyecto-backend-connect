@@ -1,4 +1,4 @@
-package com.example.Connect.Usuario.Application;
+package com.example.Connect.Publicacion.Application;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,21 +27,20 @@ import com.example.Connect.Publicacion.Application.PublicacionService;
 @RequestMapping("/publicacion")
 public class PublicacionController {
 
-  @Autowired
-  private PublicacionService publicacionService;
+  private final PublicacionService publicacionService;
 
-  @Autowired
-  private JwtUtil jwtUtil;
+  public PublicacionController(PublicacionService publicacionService) {
+    this.publicacionService = publicacionService;
+  }
 
   @PostMapping("/create")
   public ResponseEntity<PublicacionDto> createPublicacion(
     @RequestHeader("Authorization") String token,
     @Valid @RequestBody PublicacionCreateDto publicacionCreateDto
   ){
-    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     PublicacionDto publicacionDto = publicacionService.createPublicacion(
         publicacionCreateDto,
-        userId
+        token
     );
     return ResponseEntity.ok(publicacionDto);
   }
@@ -51,10 +50,9 @@ public class PublicacionController {
       @RequestHeader("Authorization") String token,
       @Valid @RequestBody P_AlojamientoCreateDto alojamientoCreateDto
   ){
-    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     P_AlojamientoDto alojamientoDto = publicacionService.createAlojamiento(
         alojamientoCreateDto,
-        userId
+        token
     );
     return ResponseEntity.ok(alojamientoDto);
   }

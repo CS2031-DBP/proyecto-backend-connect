@@ -21,23 +21,20 @@ import com.example.Connect.Booking.Dto.BookingCreateDto;
 @RequestMapping("/booking")
 public class BookingController {
 
-  @Autowired
-  private BookingService bookingService;
+  private final BookingService bookingService;
 
-  @Autowired
-  private JwtUtil jwtUtil;
+  private final JwtUtil jwtUtil;
+
+  public BookingController(BookingService bookingService, JwtUtil jwtUtil) {
+    this.bookingService = bookingService;
+    this.jwtUtil = jwtUtil;
+  }
 
   @PostMapping("/protected/create")
   public ResponseEntity<BookingDto> createBooking(
     @RequestHeader("Authorization") String token,
-    @Valid @RequestBody BookingCreateDto bookingCreateDto
-  ) {
-
-    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
-    BookingDto BookingDto = bookingService.createBooking(
-      bookingCreateDto,
-      userId
-    );
+    @Valid @RequestBody BookingCreateDto bookingCreateDto) {
+    BookingDto BookingDto = bookingService.createBooking(bookingCreateDto,token);
     return ResponseEntity.ok(BookingDto);
   }
 
@@ -45,8 +42,7 @@ public class BookingController {
   public ResponseEntity<List<BookingDto>> getAllBookingsUser(
     @RequestHeader("Authorization") String token
   ) {
-    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
-    List<BookingDto> BookingDtos = bookingService.getAllBookings(userId);
+    List<BookingDto> BookingDtos = bookingService.getAllBookings(token);
     return ResponseEntity.ok(BookingDtos);
   }
 
@@ -55,9 +51,8 @@ public class BookingController {
     @RequestHeader("Authorization") String token,
     @PathVariable Long publicationId
   ) {
-    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     List<BookingDto> BookingDtos = bookingService.getAllBookingsPublication(
-      userId,
+      token,
       publicationId
     );
     return ResponseEntity.ok(BookingDtos);
@@ -68,8 +63,7 @@ public class BookingController {
     @RequestHeader("Authorization") String token,
     @PathVariable Long bookingId
   ) {
-    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
-    bookingService.deleteBooking(userId, bookingId);
+    bookingService.deleteBooking(token, bookingId);
     Map<String, Boolean> response = new HashMap<>();
     response.put("deleted", Boolean.TRUE);
     return ResponseEntity.ok(response);
