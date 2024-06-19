@@ -4,7 +4,7 @@ import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
 import dbp.connect.AlojamientoMultimedia.Infrastructure.AlojamientoMultimediaRepositorio;
 import dbp.connect.Excepciones.NoEncontradoException;
-import dbp.connect.MultimediaMensajeIndividual.Domain.Tipo;
+import dbp.connect.Tipo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +18,11 @@ public class AlojamientoMultimediaServicio {
     private AlojamientoMultimediaRepositorio alojamientoMultimediaRepositorio;
     @Autowired
     private AlojamientoRepositorio alojamientoRepositorio;
-    public void guardarArchivo(MultipartFile archivo,Long id) {
+    public void guardarArchivo(MultipartFile archivo,Long alojamientoid) {
         try {
             AlojamientoMultimedia archivoMultimedia = new AlojamientoMultimedia();
-            archivoMultimedia.setContenido(archivo.getBytes());
+
+            archivoMultimedia.
             archivoMultimedia.setTipoContenido(archivo.getContentType());
             if(archivoMultimedia.getTipoContenido().equalsIgnoreCase("image")){
                 archivoMultimedia.setTipo(Tipo.FOTO);

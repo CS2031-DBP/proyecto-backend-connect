@@ -1,8 +1,7 @@
 package dbp.connect.MultimediaMensajeIndividual.Domain;
 
-import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimedia;
-import dbp.connect.ComentariosMultimedia.Domain.Multimedia;
 import dbp.connect.MultimediaMensajeIndividual.Infrastructure.MultimediaMensajeIndividualRepositorio;
+import dbp.connect.Tipo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

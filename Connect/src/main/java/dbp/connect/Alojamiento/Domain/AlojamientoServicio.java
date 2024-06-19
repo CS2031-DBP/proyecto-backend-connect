@@ -1,10 +1,11 @@
 package dbp.connect.Alojamiento.Domain;
 
-import dbp.connect.Alojamiento.DTOS.AlojamientoRequest;
-import dbp.connect.Alojamiento.DTOS.ContenidoDTO;
+import dbp.connect.Alojamiento.DTOS.*;
 import dbp.connect.Alojamiento.Excepciones.DescripcionIgualException;
 import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
 
+import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
+import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimediaServicio;
 import dbp.connect.Excepciones.NoEncontradoException;
 import dbp.connect.User.Domain.User;
@@ -13,12 +14,18 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +38,7 @@ public class AlojamientoServicio {
     private UserRepository userRepository;
 
     @Transactional
-    public Alojamiento guardarAlojamiento(AlojamientoRequest alojamiento) {
+    public ResponseAlojamientoDTO guardarAlojamiento(AlojamientoRequest alojamiento) {
         Alojamiento alojamientoAux = new Alojamiento();
         if(alojamiento.getId()==null || alojamiento.getDescripcion()==null ||
         alojamiento.getLongitude()==null || alojamiento.getLatitude()==null  ){
@@ -51,16 +58,19 @@ public class AlojamientoServicio {
             alojamientoMultimediaServicio.guardarArchivo(archivo, alojamientoAux.getId());
         }
         alojamientoRepositorio.save(alojamientoAux);
-        return alojamientoAux;
+        ResponseAlojamientoDTO responseAlojamientoDTO = mapResponseAlojamientoDTO(alojamientoAux.getId());
+        return responseAlojamientoDTO;
     }
-    public Alojamiento obtenerAlojamiento(Long alojamientoId) {
+
+    public ResponseAlojamientoDTO obtenerAlojamiento(Long alojamientoId) {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
-            return alojamientoOptional.get();
+            return mapResponseAlojamientoDTO(alojamientoId);
         } else {
             throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
+
     public void eliminarById(Long alojamientoId) {
         if (alojamientoRepositorio.existsById(alojamientoId)) {
             alojamientoRepositorio.deleteById(alojamientoId);
@@ -68,16 +78,19 @@ public class AlojamientoServicio {
             throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
-    public void modificarPrecio(Long alojamientoId, Double precio) {
+
+    public void modificarPrecio(Long alojamientoId, PriceDTO precio) {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
             Alojamiento alojamiento = alojamientoOptional.get();
-            alojamiento.setPrecio(precio);
+            alojamiento.setPrecio(precio.getPrecio());
+            alojamiento.setTipoMoneda(precio.getTipoMoneda());
             alojamientoRepositorio.save(alojamiento);
         } else {
             throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
+
     public void actualizarEstadoAlojamiento(Long alojamientoId) {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
@@ -88,6 +101,7 @@ public class AlojamientoServicio {
             throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
+
     public void actualizarDescripcionAlojamiento(Long alojamientoId, ContenidoDTO contenidoDTO) {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
@@ -101,6 +115,132 @@ public class AlojamientoServicio {
         } else {
             throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
         }
+    }
+
+    public void actualizarUbicacionAlojamiento(Long id, UbicacionDTO ubicacionDTO) {
+        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(id);
+        if (alojamientoOptional.isPresent()) {
+            Alojamiento alojamiento = alojamientoOptional.get();
+            if (ubicacionDTO.getLatitude() == null || ubicacionDTO.getLongitude() == null) {
+                alojamiento.setLatitude(alojamiento.getLatitude());
+                alojamiento.setLongitude(alojamiento.getLongitude());
+
+            } else {
+                alojamiento.setLatitude(ubicacionDTO.getLatitude());
+                alojamiento.setLongitude(ubicacionDTO.getLongitude());
+            }
+            alojamiento.setUbicacion(ubicacionDTO.getUbicacion());
+            alojamientoRepositorio.save(alojamiento);
+        } else {
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + id);
+        }
+    }
+
+    public ResponseAlojamientoDTO actualizarAlojamiento(Long alojamientoId,
+                                                        AlojamientoRequest alojamientoRequest) {
+        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
+        if (alojamientoOptional.isPresent()) {
+            Alojamiento alojamiento = alojamientoOptional.get();
+            alojamiento.setDescripcion(alojamientoRequest.getDescripcion());
+            alojamiento.setPrecio(alojamientoRequest.getPrecio());
+            alojamiento.setTipoMoneda(alojamientoRequest.getTipoMoneda());
+            alojamiento.setLatitude(alojamientoRequest.getLatitude());
+            alojamiento.setLongitude(alojamientoRequest.getLongitude());
+            alojamiento.setUbicacion(alojamientoRequest.getUbicacion());
+            for(MultipartFile archivo: alojamientoRequest.getMultimedia()){
+                alojamientoMultimediaServicio.guardarArchivo(archivo, alojamiento.getId());
+            }
+            alojamientoRepositorio.save(alojamiento);
+            ResponseAlojamientoDTO responseAlojamientoDTO = mapResponseAlojamientoDTO(alojamientoId);
+            return responseAlojamientoDTO;
+        } else {
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+        }
+    }
+
+    public Page<ResponseAlojamientoDTO> obtenerAlojamientoPaginacion(Long propietarioId, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        User propietario = userRepository.findById(propietarioId).orElseThrow(()-> new RuntimeException("Propietario no encontrado"));
+        Page<Alojamiento> alojamientos = alojamientoRepositorio.findByPropietarioId(propietarioId, pageable);
+        if(alojamientos.isEmpty()){
+            throw new RuntimeException(propietario.getUsername()+ "No tiene alojamientos");
+        }
+        List<ResponseAlojamientoDTO> alojamientoDTOList = alojamientos.getContent().stream()
+                .map(alojamiento -> mapResponseAlojamientoDTO(alojamiento.getId()))
+                .toList();
+        return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalElements());
+    }
+
+    public Page<ResponseAlojamientoDTO> obtenerAlojamientoPaginacionNoDisponibles(Long propietarioId, int page, int size ){
+        Pageable pageable = PageRequest.of(page, size);
+        User propietario = userRepository.findById(propietarioId).orElseThrow(()-> new RuntimeException("Propietario no encontrado"));
+        Page<Alojamiento> alojamientos = alojamientoRepositorio.findByPropietarioIdAndEstado(propietarioId, Estado.NODISPONIBLE,pageable);
+        if(alojamientos.isEmpty()){
+            throw new RuntimeException(propietario.getUsername()+ "No tiene alojamientos");
+        }
+        List<ResponseAlojamientoDTO> alojamientoDTOList = alojamientos.getContent().stream()
+                .map(alojamiento -> mapResponseAlojamientoDTO(alojamiento.getId()))
+                .toList();
+        return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalElements());
+    }
+
+    public Page<ResponseAlojamientoDTO> obtenerAlojamientosPaginacionDisponibles(Long propietarioid, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        User propietario = userRepository.findById(propietarioid).orElseThrow(()-> new RuntimeException("Propietario no encontrado"));
+        Page<Alojamiento> alojamientos = alojamientoRepositorio.findByPropietarioIdAndEstado(propietarioid, Estado.DISPONIBLE, pageable);
+        if(alojamientos.isEmpty()){
+            throw new RuntimeException(propietario.getUsername()+ "No tiene alojamientos");
+        }
+        List<ResponseAlojamientoDTO> alojamientoDTOList = alojamientos.getContent().stream()
+                .map(alojamiento -> mapResponseAlojamientoDTO(alojamiento.getId()))
+                .toList();
+        return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalElements());
+    }
+
+    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, Long imagenId) {
+        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
+        if (alojamientoOptional.isPresent()) {
+            Alojamiento alojamiento = alojamientoOptional.get();
+            for (AlojamientoMultimedia multimedia : alojamiento.getAlojamientoMultimedia()) {
+                if (multimedia.getId().equals(imagenId)) {
+                    ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
+                    multimediaDTO.setId(multimedia.getId());
+                    multimediaDTO.setTipo(multimedia.getTipo());
+                    multimediaDTO.setUrl_contenido(multimedia.getUrl_contenido());
+                    return multimediaDTO;
+                }
+            }
+            throw new NoEncontradoException("No se encontró la imagen con id: " + imagenId);
+        } else {
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+        }
+    }
+
+    private ResponseAlojamientoDTO mapResponseAlojamientoDTO(Long alojamientoid){
+        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoid);
+        if (!alojamientoOptional.isPresent()) {
+            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoid);
+        }
+        Alojamiento alojamiento = alojamientoOptional.get();
+        ResponseAlojamientoDTO responseAlojamientoDTO = new ResponseAlojamientoDTO();
+        responseAlojamientoDTO.setId(alojamiento.getId());
+        responseAlojamientoDTO.setPropietarioId(alojamiento.getPropietario().getId());
+        responseAlojamientoDTO.setDescripcion(alojamiento.getDescripcion());
+        responseAlojamientoDTO.setPrecio(alojamiento.getPrecio());
+        responseAlojamientoDTO.setTipoMoneda(alojamiento.getTipoMoneda());
+        responseAlojamientoDTO.setLatitude(alojamiento.getLatitude());
+        responseAlojamientoDTO.setLongitude(alojamiento.getLongitude());
+        responseAlojamientoDTO.setUbicacion(alojamiento.getUbicacion());
+        List<ResponseMultimediaDTO> multimediaDTOList = new ArrayList<>();
+        for(AlojamientoMultimedia multimedia: alojamiento.getAlojamientoMultimedia()){
+            ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
+            multimediaDTO.setId(multimedia.getId());
+            multimediaDTO.setTipo(multimedia.getTipo());
+            multimedia.setUrl_contenido(multimedia.getUrl_contenido());
+            multimediaDTOList.add(multimediaDTO);
+        }
+        responseAlojamientoDTO.setMultimedia(multimediaDTOList);
+        return responseAlojamientoDTO;
     }
 
 }

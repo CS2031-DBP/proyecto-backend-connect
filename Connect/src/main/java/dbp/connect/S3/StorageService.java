@@ -25,47 +25,44 @@ public class StorageService {
     @Autowired
     private AmazonS3 s3Client;
 
-    private File convertMultiPartToFile(MultipartFile file) throws Exception {
-        File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+    private File convercionMultipartFile(MultipartFile file) throws Exception {
+        File fileConverted = new File(Objects.requireNonNull(file.getOriginalFilename()));
         try {
-            FileOutputStream fos = new FileOutputStream(convFile);
+            FileOutputStream fos = new FileOutputStream(fileConverted);
             fos.write(file.getBytes());
             fos.close();
         } catch (IOException e) {
-            throw new IOException("Error converting multipartFile to file", e);
+            throw new IOException("Error al convertir el archivo", e);
         }
-        return convFile;
+        return fileConverted;
     }
 
-    private void validateFile(MultipartFile file) throws Exception {
+    private void Validacion(MultipartFile file) throws Exception {
         if (file.isEmpty()) {
-            throw new IllegalArgumentException("Empty file");
+            throw new IllegalArgumentException("Archivo vacio");
         }
-        if (file.getSize() > 5242880) {
-            throw new IllegalArgumentException("File size exceeds 5MB");
+        if (file.getSize() > 500L*1024*1024) {
+            throw new IllegalArgumentException("El archivo excedio el tamaño permitido de 500MB");
         }
     }
 
-    private void validateObjectKey(String objectKey) throws Exception {
+    private void ValidacionKey(String objectKey) throws Exception {
         if (objectKey.isEmpty()) {
-            throw new IllegalArgumentException("Empty objectKey");
+            throw new IllegalArgumentException("El key esta vacio");
         }
-        if (
-                objectKey.endsWith("/") ||
-                        objectKey.startsWith("/") ||
-                        objectKey.startsWith("\\") ||
-                        objectKey.endsWith("\\") ||
-                        !objectKey.substring(objectKey.lastIndexOf("/") + 1).contains(".")
+        if (objectKey.endsWith("/") || objectKey.startsWith("/") || objectKey.startsWith("\\") ||
+                objectKey.endsWith("\\") || !objectKey.substring(objectKey.lastIndexOf(
+                        "/") + 1).contains(".")
         ) {
-            throw new IllegalArgumentException("Invalid ObjectKey format");
+            throw new IllegalArgumentException("Formato invalido");
         }
     }
 
-    public String uploadFile(MultipartFile file, String objectKey) throws Exception {
-        validateFile(file);
-        validateObjectKey(objectKey);
+    public String subiralS3File(MultipartFile file, String objectKey) throws Exception {
+        Validacion(file);
+        ValidacionKey(objectKey);
 
-        File fileObj = convertMultiPartToFile(file);
+        File fileObj = convercionMultipartFile(file);
         try {
             deleteFile(objectKey);
 
@@ -79,13 +76,13 @@ public class StorageService {
             return objectKey;
 
         } catch (AmazonS3Exception e) {
-            throw new S3AccessDeniedException("\nFailed to upload file to S3 with key " + objectKey + " " + e.getErrorCode() + e.getMessage());
+            throw new S3AccessDeniedException("\nNo se pudo subir el archivo " + objectKey + " " + e.getErrorCode() + e.getMessage());
         } finally {
             fileObj.delete();
         }
     }
 
-    public String generatePresignedUrl(String objectKey) {
+    public String obtenerURL(String objectKey) {
 
         boolean fileExist = s3Client.doesObjectExist(bucketName, objectKey);
         if (!fileExist) return "";
@@ -98,23 +95,23 @@ public class StorageService {
                             .withExpiration(expiration);
 
             String url = s3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
-
-            System.out.println("\nPresigned url from S3: " + url);
-            if (url.isEmpty()) return "";
+            if (url.isEmpty())
+                return "";
             return url;
         } catch (SdkClientException e) {
-            throw new SdkClientException("\nFailed to generate presigned url from S3" + e.getMessage());
+            throw new SdkClientException("\nNo se puedo generar el url" + e.getMessage());
         }
     }
 
     public void deleteFile(String objectKey) {
         try {
             boolean fileExist = s3Client.doesObjectExist(bucketName, objectKey);
-            if (!fileExist) return;
+            if (!fileExist)
+                return;
 
             s3Client.deleteObject(bucketName, objectKey);
         } catch (AmazonServiceException e) {
-            throw new AmazonServiceException("\nFailed to delete file from S3" + e.getMessage());
+            throw new AmazonServiceException("\nNo se pudo eliminar el archivo" + e.getMessage());
         }
     }
 

@@ -76,7 +76,7 @@ public class PublicacionInicioServicio {
         Pageable pageable = PageRequest.of(page, size);
         Page<PublicacionInicio> publicaciones = publicacionInicioRepositorio.findByAutorP_Id(usuarioId, pageable);
         if(publicaciones.isEmpty()){
-            throw new RuntimeException(usuario.getFullname()+ "No tiene publicaciones");
+            throw new RuntimeException(usuario.getUsername()+ "No tiene publicaciones");
         }
         List<PublicacionInicioResponseDTO> publicacionesInicio = publicaciones.getContent().stream()
                 .map(this::converToDto)
@@ -121,7 +121,8 @@ public class PublicacionInicioServicio {
         PublicacionInicioResponseDTO dto = new PublicacionInicioResponseDTO();
         dto.setCantidadComentarios(inicio.getCantidadComentarios());
         dto.setCantidadLikes(inicio.getCantidadLikes());
-        dto.setUserFullName(inicio.getAutorP().getFullname());
+        dto.setUserFullName(inicio.getAutorP().getPrimerNombre() + " " + inicio.getAutorP().getSegundoNombre()
+                + " "+ inicio.getAutorP().getPrimerApellido() + " " + inicio.getAutorP().getSegundoApellido());
         dto.setContenido(inicio.getCuerpo());
         for(PublicacionInicioMultimedia multimedia: inicio.getPublicacionMultimedia()){
             dto.getMultimedia().add(multimedia.getContenido());

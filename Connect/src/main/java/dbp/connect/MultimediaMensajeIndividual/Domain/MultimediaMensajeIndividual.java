@@ -1,6 +1,7 @@
 package dbp.connect.MultimediaMensajeIndividual.Domain;
 
 import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
+import dbp.connect.Tipo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
