@@ -27,16 +27,27 @@ public class AlojamientoController {
          ResponseAlojamientoDTO createdAlojamiento =alojamientoServicio.guardarAlojamiento(alojamientoRequest);
         return ResponseEntity.created(URI.create("/alojamiento/"+createdAlojamiento.getId())).body(createdAlojamiento);
     }
+
     @GetMapping("/{alojamientoId}")
     public ResponseEntity<ResponseAlojamientoDTO> getAlojamiento(@PathVariable Long alojamientoId) {
         ResponseAlojamientoDTO alojamiento= alojamientoServicio.obtenerAlojamiento(alojamientoId);
         return ResponseEntity.ok().body(alojamiento);
     }
+
     @GetMapping("/multimedia/{alojamientoId}/{imagenId}")
     public ResponseEntity<ResponseMultimediaDTO> getMultimedia(@PathVariable Long alojamientoId, @PathVariable Long imagenId) {
         ResponseMultimediaDTO multimediaDTO= alojamientoServicio.obtenerMultimedia(alojamientoId, imagenId);
         return ResponseEntity.ok().body(multimediaDTO);
     }
+
+    @GetMapping("/{alojamientoId}/multimedia")
+    public ResponseEntity<Page<ResponseMultimediaDTO>> getMultimedia(@PathVariable Long alojamientoId,
+                                                                     @RequestParam int page,
+                                                                     @RequestParam int size) {
+        alojamientoMultimediaServicio.obtenerMultimediaPaginacion(alojamientoId, page, size);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/alojamientos/{propietarioId}")
     public ResponseEntity<Page<ResponseAlojamientoDTO>> getAlojamientos(@PathVariable Long propietarioId,
                                                                         @RequestParam int page,
