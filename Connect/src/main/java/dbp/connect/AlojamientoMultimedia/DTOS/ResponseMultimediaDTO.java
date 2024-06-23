@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ResponseMultimediaDTO {
-    private Long id;
+    private String id;
     private String url_contenido;
     private Tipo tipo;
 }

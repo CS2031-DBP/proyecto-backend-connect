@@ -197,24 +197,7 @@ public class AlojamientoServicio {
         return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalElements());
     }
 
-    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, Long imagenId) {
-        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
-        if (alojamientoOptional.isPresent()) {
-            Alojamiento alojamiento = alojamientoOptional.get();
-            for (AlojamientoMultimedia multimedia : alojamiento.getAlojamientoMultimedia()) {
-                if (multimedia.getId().equals(imagenId)) {
-                    ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
-                    multimediaDTO.setId(multimedia.getId());
-                    multimediaDTO.setTipo(multimedia.getTipo());
-                    multimediaDTO.setUrl_contenido(multimedia.getUrl_contenido());
-                    return multimediaDTO;
-                }
-            }
-            throw new NoEncontradoException("No se encontró la imagen con id: " + imagenId);
-        } else {
-            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
-        }
-    }
+
 
     private ResponseAlojamientoDTO mapResponseAlojamientoDTO(Long alojamientoid){
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoid);
@@ -236,7 +219,7 @@ public class AlojamientoServicio {
             ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
             multimediaDTO.setId(multimedia.getId());
             multimediaDTO.setTipo(multimedia.getTipo());
-            multimedia.setUrl_contenido(multimedia.getUrl_contenido());
+            multimedia.setUrlContenido(multimedia.getUrlContenido());
             multimediaDTOList.add(multimediaDTO);
         }
         responseAlojamientoDTO.setMultimedia(multimediaDTOList);

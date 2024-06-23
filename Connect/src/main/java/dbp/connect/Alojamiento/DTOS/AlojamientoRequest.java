@@ -14,8 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
-@Setter
-@Getter
+
 @Data
 public class AlojamientoRequest {
     @Id

@@ -17,7 +17,7 @@ public class AlojamientoMultimedia {
     @Id
     private String id;
     @ManyToOne
-    @JoinColumn(name = "alojamiento_id")
+    @JoinColumn(name = "alojamiento_Id")
     private Alojamiento alojamiento;
     private String urlContenido;
     private Tipo tipo;

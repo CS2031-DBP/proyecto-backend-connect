@@ -36,7 +36,7 @@ public class AlojamientoController {
 
     @GetMapping("/multimedia/{alojamientoId}/{imagenId}")
     public ResponseEntity<ResponseMultimediaDTO> getMultimedia(@PathVariable Long alojamientoId, @PathVariable Long imagenId) {
-        ResponseMultimediaDTO multimediaDTO= alojamientoServicio.obtenerMultimedia(alojamientoId, imagenId);
+        ResponseMultimediaDTO multimediaDTO= alojamientoMultimediaServicio.obtenerMultimedia(alojamientoId, imagenId);
         return ResponseEntity.ok().body(multimediaDTO);
     }
 
@@ -57,7 +57,7 @@ public class AlojamientoController {
     }
 
     @PatchMapping("/imagen/{alojamientoId}/{imagenId}")
-    public ResponseEntity<Void> actualizarImagen(@PathVariable Long alojamientoId, @PathVariable Long imagenId, @RequestBody byte[] imagen) {
+    public ResponseEntity<Void> actualizarImagen(@PathVariable Long alojamientoId, @PathVariable String imagenId, @RequestBody byte[] imagen) {
         alojamientoMultimediaServicio.modificarImagen(alojamientoId, imagenId, imagen);
         return ResponseEntity.ok().build();
     }
@@ -100,5 +100,10 @@ public class AlojamientoController {
                                                                         @Valid @RequestBody AlojamientoRequest alojamientoRequest) {
         alojamientoServicio.actualizarAlojamiento(alojamientoId, alojamientoRequest);
         return ResponseEntity.ok().build();
+    }
+    @DeleteMapping("/eliminar/imagen/{alojamientoId}/{imagenId}")
+    public ResponseEntity<Void> eliminarImagen(@PathVariable Long alojamientoId, @PathVariable String imagenId) {
+        alojamientoMultimediaServicio.eliminarArchivo(alojamientoId, imagenId);
+        return ResponseEntity.noContent().build();
     }
 }

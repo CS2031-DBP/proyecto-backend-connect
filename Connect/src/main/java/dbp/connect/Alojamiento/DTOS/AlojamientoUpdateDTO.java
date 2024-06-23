@@ -5,6 +5,7 @@ import dbp.connect.Tipo;
 import dbp.connect.TipoMoneda;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,9 +15,8 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.List;
 
-@Setter
-@Getter
-@RequiredArgsConstructor
+
+@Data
 public class AlojamientoUpdateDTO {
     @NotNull
     private Long propietarioId;

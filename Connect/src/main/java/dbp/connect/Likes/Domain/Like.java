@@ -27,7 +27,6 @@ public class Like implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("likes")
     private PublicacionInicio publicacionInicio;
-
     @ManyToOne
     @JsonIgnoreProperties("usuarioLikes")
     private User usuarioLike;
