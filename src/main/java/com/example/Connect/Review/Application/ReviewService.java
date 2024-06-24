@@ -25,24 +25,27 @@ import com.example.Connect.Review.Dto.ReviewCreateDto;
 @Service
 public class ReviewService {
 
-  @Autowired
-  private JwtUtil jwtUtil;
+  private final JwtUtil jwtUtil;
 
-  @Autowired
-  private ReviewRepository reviewRepository;
+  private final ReviewRepository reviewRepository;
 
-  @Autowired
-  private P_AlojamientoRepository p_alojamientoRepository;
+  private final P_AlojamientoRepository p_alojamientoRepository;
 
-  @Autowired
-  private UsuarioRepository usuarioRepository;
+  private final UsuarioRepository usuarioRepository;
+
+  public ReviewService(JwtUtil jwtUtil, ReviewRepository reviewRepository, P_AlojamientoRepository p_alojamientoRepository, UsuarioRepository usuarioRepository) {
+    this.jwtUtil = jwtUtil;
+    this.reviewRepository = reviewRepository;
+    this.p_alojamientoRepository = p_alojamientoRepository;
+    this.usuarioRepository = usuarioRepository;
+  }
 
   public ReviewDto createReview(
     ReviewCreateDto reviewCreateDto,
     Long id,
-    Long userId
+    String token
   ) {
-
+      Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     P_Alojamiento p_alojamiento = p_alojamientoRepository.findById(id)
         .orElseThrow(() -> new CustomException(404, "Alojamiento no encontrado"));
 

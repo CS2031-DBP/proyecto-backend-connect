@@ -31,26 +31,29 @@ import com.example.Connect.Security.JwtUtil;
 @Service
 public class PublicacionService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private PublicacionRepository publicacionRepository;
+    private final PublicacionRepository publicacionRepository;
 
-    @Autowired
-    private P_AlojamientoRepository alojamientoRepository;
+    private final P_AlojamientoRepository alojamientoRepository;
 
-    @Autowired
-    private ComentariosRepository comentariosRepository;
+    private final ComentariosRepository comentariosRepository;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+
+    public PublicacionService(UsuarioRepository usuarioRepository, PublicacionRepository publicacionRepository, P_AlojamientoRepository alojamientoRepository, ComentariosRepository comentariosRepository, JwtUtil jwtUtil) {
+        this.usuarioRepository = usuarioRepository;
+        this.publicacionRepository = publicacionRepository;
+        this.alojamientoRepository = alojamientoRepository;
+        this.comentariosRepository = comentariosRepository;
+        this.jwtUtil = jwtUtil;
+    }
 
     public PublicacionDto createPublicacion(
       PublicacionCreateDto publicacionCreateDto,
-      Long userId
+      String token
     ) {
-
+    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
       Usuario usuario = usuarioRepository.findById(userId)
               .orElseThrow(() -> new CustomException(404, "Usuario no encontrado"));
 
@@ -75,8 +78,10 @@ public class PublicacionService {
 
     public P_AlojamientoDto createAlojamiento(
       P_AlojamientoCreateDto alojamientoCreateDto,
-      Long userId
+      String token
     ) {
+        Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
+
       Usuario usuario = usuarioRepository.findById(userId)
               .orElseThrow(() -> new CustomException(404, "Usuario no encontrado"));
 

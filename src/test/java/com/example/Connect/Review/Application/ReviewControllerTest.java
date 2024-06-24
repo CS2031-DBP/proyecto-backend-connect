@@ -56,7 +56,7 @@ public class ReviewControllerTest {
 
     @Test
     void testCreateReview() throws Exception {
-        Mockito.when(reviewService.createReview(any(ReviewCreateDto.class), anyLong(), anyLong()))
+        Mockito.when(reviewService.createReview(any(ReviewCreateDto.class), anyLong(), anyString()))
                 .thenReturn(reviewDto);
 
         mockMvc.perform(post("/review/create/p_alojamiento/1")

@@ -17,16 +17,19 @@ import com.example.Connect.Mensajes.Dto.ChatDto;
 @Service
 public class ChatService {
 
-  @Autowired
-  private ChatsRepository chatsRepository;
+  private final ChatsRepository chatsRepository;
 
-  @Autowired
-  private MembersChatRepository membersChatRepository;
+  private final MembersChatRepository membersChatRepository;
 
-  @Autowired
-  private UsuarioRepository usuarioRepository;
+  private final UsuarioRepository usuarioRepository;
 
-  public ChatDto createGroupChat(String nameChat, List<Long> userIds) {
+    public ChatService(MembersChatRepository membersChatRepository, ChatsRepository chatsRepository, UsuarioRepository usuarioRepository) {
+        this.membersChatRepository = membersChatRepository;
+        this.chatsRepository = chatsRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    public ChatDto createGroupChat(String nameChat, List<Long> userIds) {
       Chats chat = new Chats();
       chat.setIsGroup(true);
       chat.setNameChat(nameChat);

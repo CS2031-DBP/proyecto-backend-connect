@@ -21,23 +21,22 @@ import com.example.Connect.Review.Dto.ReviewCreateDto;
 @RequestMapping("/review")
 public class ReviewController {
   
-  @Autowired
-  private ReviewService reviewService;
+  private final ReviewService reviewService;
 
-  @Autowired
-  private JwtUtil jwtUtil;
- 
+  public ReviewController(ReviewService reviewService) {
+    this.reviewService = reviewService;
+  }
+
   @PostMapping("/create/p_alojamiento/{id}")
   public ResponseEntity<ReviewDto> createReview(
     @RequestHeader("Authorization") String token,
     @Valid @RequestBody ReviewCreateDto reviewCreateDto,
     @PathVariable Long id
   ) {
-    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     ReviewDto reviewDto = reviewService.createReview(
       reviewCreateDto,
       id,
-      userId
+      token
     );
     return ResponseEntity.ok(reviewDto);
   }

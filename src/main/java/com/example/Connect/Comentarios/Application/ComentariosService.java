@@ -24,24 +24,27 @@ import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
 @Service
 public class ComentariosService {
 
-  @Autowired
-  private JwtUtil jwtUtil;
+  private final JwtUtil jwtUtil;
 
-  @Autowired
-  private ComentariosRepository comentariosRepository;
+  private final ComentariosRepository comentariosRepository;
 
-  @Autowired
-  private PublicacionRepository publicacionRepository;
+  private final PublicacionRepository publicacionRepository;
 
-  @Autowired
-  private UsuarioRepository usuarioRepository;
+  private final UsuarioRepository usuarioRepository;
+
+  public ComentariosService(JwtUtil jwtUtil, ComentariosRepository comentariosRepository, PublicacionRepository publicacionRepository, UsuarioRepository usuarioRepository) {
+    this.jwtUtil = jwtUtil;
+    this.comentariosRepository = comentariosRepository;
+    this.publicacionRepository = publicacionRepository;
+    this.usuarioRepository = usuarioRepository;
+  }
 
   public ComentariosDto createComentarios(
     ComentariosCreateDto comentariosCreateDto,
-    Long userId,
+    String token,
     Long publicacionId
   ) {
-    
+    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     Publicacion publicacion = publicacionRepository.findById(publicacionId)
         .orElseThrow(() -> new CustomException(404, "Publicacion no encontrada"));
 
@@ -126,7 +129,6 @@ public class ComentariosService {
   }
 
   public ComentariosDto updateComentarios(Long id, ComentariosCreateDto comentariosCreateDto, String token) {
-
     Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     Comentarios comentario = comentariosRepository.findById(id)
       .orElseThrow(() -> new CustomException(404, "Comentario no encontrado"));

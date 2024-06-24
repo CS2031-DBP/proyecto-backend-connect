@@ -14,11 +14,11 @@ import java.util.Map;
 @RequestMapping("/usuario")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDto> obtenerUsuarioDto(@PathVariable Long id) {

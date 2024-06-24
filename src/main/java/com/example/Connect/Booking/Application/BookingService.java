@@ -25,23 +25,23 @@ import com.example.Connect.Usuario.Infraestructure.UsuarioRepository;
 @Service
 public class BookingService {
 
-  @Autowired
-  private JwtUtil jwtUtil;
+  private final JwtUtil jwtUtil;
 
-  @Autowired
-  private BookingRepository bookingRepository;
+  private final BookingRepository bookingRepository;
 
-  @Autowired
-  private P_AlojamientoRepository p_alojamientoRepository;
+  private final P_AlojamientoRepository p_alojamientoRepository;
 
-  @Autowired
-  private UsuarioRepository usuarioRepository;
+  private final UsuarioRepository usuarioRepository;
 
-  public BookingDto createBooking(
-    BookingCreateDto bookingCreateDto,
-    Long userId
-  ) {
+  public BookingService(JwtUtil jwtUtil, BookingRepository bookingRepository, P_AlojamientoRepository p_alojamientoRepository, UsuarioRepository usuarioRepository) {
+    this.jwtUtil = jwtUtil;
+    this.bookingRepository = bookingRepository;
+    this.p_alojamientoRepository = p_alojamientoRepository;
+    this.usuarioRepository = usuarioRepository;
+  }
 
+  public BookingDto createBooking(BookingCreateDto bookingCreateDto,String token) {
+    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     P_Alojamiento p_alojamiento = p_alojamientoRepository.findById(bookingCreateDto.getPalojamientoId()).
       orElseThrow(() -> new CustomException(404, "El alojamiento no existe"));
 
@@ -75,9 +75,9 @@ public class BookingService {
     }
   }
 
-  public List<BookingDto> getAllBookings(Long userId) {
-
-    Usuario usuario = usuarioRepository.findById(userId)
+  public List<BookingDto> getAllBookings(String token) {
+      Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
+      Usuario usuario = usuarioRepository.findById(userId)
         .orElseThrow(() -> new CustomException(404, "Usuario no encontrado"));
 
     List<Booking> bookings = bookingRepository.findByArrendadorId(userId);
@@ -90,8 +90,8 @@ public class BookingService {
     )).collect(Collectors.toList());
   }
 
-  public List<BookingDto> getAllBookingsPublication(Long userId, Long publicationId) {
-
+  public List<BookingDto> getAllBookingsPublication(String token, Long publicationId) {
+    Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     Usuario usuario = usuarioRepository.findById(userId)
         .orElseThrow(() -> new CustomException(404, "Usuario no encontrado"));
 
@@ -108,8 +108,8 @@ public class BookingService {
     )).collect(Collectors.toList());
   }
 
-  public void deleteBooking(Long userId, Long bookingId) {
-
+  public void deleteBooking(String token, Long bookingId) {
+      Long userId = Long.parseLong(jwtUtil.extractUsername(token.substring(7)));
     Usuario usuario = usuarioRepository.findById(userId)
         .orElseThrow(() -> new CustomException(404, "Usuario no encontrado"));
 

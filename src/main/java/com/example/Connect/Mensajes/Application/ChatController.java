@@ -13,8 +13,11 @@ import com.example.Connect.Mensajes.Dto.ChatDto;
 @RequestMapping("/chats")
 public class ChatController {
 
-    @Autowired
-    private ChatService chatService;
+    private final ChatService chatService;
+
+    public ChatController(ChatService chatService) {
+        this.chatService = chatService;
+    }
 
     @PostMapping("/group")
     public ResponseEntity<ChatDto> createGroupChat(
