@@ -1,7 +1,7 @@
 package dbp.connect.PublicacionInicio.Domain;
 
 import dbp.connect.Comentarios.Excepciones.PublicacionNoEncontradoException;
-import dbp.connect.Excepciones.NoEncontradoException;
+import dbp.connect.Configuracion.Excepciones.NoEncontradoException;
 import dbp.connect.PublicacionInicio.DTOS.PostInicioDTO;
 import dbp.connect.PublicacionInicio.DTOS.PublicacionInicioResponseDTO;
 import dbp.connect.PublicacionInicio.Exceptions.UsuarioNoCoincideId;

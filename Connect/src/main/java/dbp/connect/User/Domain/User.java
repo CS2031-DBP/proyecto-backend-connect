@@ -1,12 +1,12 @@
 package dbp.connect.User.Domain;
 
 import dbp.connect.Alojamiento.Domain.Alojamiento;
-import dbp.connect.ChatIndividual.Domain.ChatIndividual;
+import dbp.connect.Chat.Domain.Chat;
 import dbp.connect.Comentarios.Domain.Comentario;
 import dbp.connect.FriendRequest.Domain.FriendshipRequest;
 import dbp.connect.Friendship.Domain.Friendship;
 import dbp.connect.Likes.Domain.Like;
-import dbp.connect.MensajeIndividual.Domain.MensajeIndividual;
+import dbp.connect.Mensaje.Domain.Mensaje;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.Review.Domain.Review;
 import jakarta.persistence.*;
@@ -14,21 +14,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 @Getter
 @Setter
 @Entity
-@Table(name="usuario")
+@Table(name="User")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long Id;
-    @Column(name="usuario")
+    private Long id;
+    @Column(name="username")
     private String username;
     @Column(name="primer_nombre")
     private String primerNombre;
@@ -39,36 +36,37 @@ public class User implements Serializable {
     @Column(name="segundo_nombre")
     private String segundoApellido;
     @Column(name="edad")
-    private int edad;
+    private Integer edad;
     @Column(name="email")
     private String email;
     @Column(name="password")
     private String password;
-    @Column(name="latitude")
-    private Double latitude;
-    @Column(name="longitud")
-    private Double longitud;
-    @Lob
+    @Column(name="genero")
+    private String genero;
     @Column(name="foto")
-    private byte[] foto;
+    private String fotoUrl;
+    @Column(name="descripcion")
+    private String descripcion;
+    @Column(name="telefono")
+    private Integer telefono;
+    @Column(name = "fecha_Nacimiento")
+    private LocalDate fechaNacimiento;
+    @Column(name ="ciudad")
+    private String ciudad;
+    @Column(name = "pais")
+    private String pais;
+    @Column(name = "direccion")
+    private String direccion;
     @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL)
-    private Set<MensajeIndividual> mensajeIndividual = new HashSet<>();
-   // @OneToMany(mappedBy = "autorG",cascade = CascadeType.ALL)
-    //private List<MensajeGrupal> mensajeGrupal = new ArrayList<>();
-   // @ManyToMany
-    //@JoinTable(
-      //      name = "usuario_chatgrupo",
-        //    joinColumns = @JoinColumn(name = "usuario_id"),
-          //  inverseJoinColumns = @JoinColumn(name = "grupo_id")
-    //)
-    //private List<ChatGrupal> grupos = new ArrayList<>();
+    private Set<Mensaje> mensaje = new HashSet<>();
+
    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinTable(
-           name = "usuario_chat",
+           name = "user",
            joinColumns = @JoinColumn(name = "usuarios_id", referencedColumnName = "id"),
            inverseJoinColumns = @JoinColumn(name = "chats_id", referencedColumnName = "id")
    )
-   private Set<ChatIndividual> chats = new HashSet<>();
+   private Set<Chat> chats = new HashSet<>();
 
     // Lista de amistades
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -100,14 +98,14 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FriendshipRequest> receivedFriendRequests = new HashSet<>();
 
-    public User removeMensaje(MensajeIndividual mensaje) {
-        this.mensajeIndividual.remove(mensaje);
-        mensaje.setAutor(null);
+    public User removeMensaje(Mensaje mensaje) {
+        this.mensaje.remove(mensaje);
+        mensaje.setUser(null);
         return this;
     }
 
-    public void setMensajes(Set<MensajeIndividual> mensajes) {
-        this.mensajeIndividual = mensajes;
+    public void setMensajes(Set<Mensaje> mensajes) {
+        this.mensaje = mensajes;
     }
     public User likes(Set<Like> likes) {
         this.likes = likes;
@@ -124,22 +122,57 @@ public class User implements Serializable {
         like.setUsuarioLike(this);
         return this;
     }
-    public User chats(Set<ChatIndividual> chats) {
+    public User chats(Set<Chat> chats) {
         this.chats = chats;
         return this;
     }
 
-    public User addChat(ChatIndividual chat) {
+    public User addChat(Chat chat) {
         this.chats.add(chat);
-        chat.getUsuarios().add(this);
+        chat.getUsers().add(this);
         return this;
     }
 
-    public User removeChat(ChatIndividual chat) {
+    public User removeChat(Chat chat) {
         this.chats.remove(chat);
-        chat.getUsuarios().remove(this);
+        chat.getUsers().remove(this);
         return this;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return edad == user.edad && Objects.equals(id, user.id)
+                && Objects.equals(username, user.username) &&
+                Objects.equals(primerNombre, user.primerNombre) &&
+                Objects.equals(segundoNombre, user.segundoNombre) &&
+                Objects.equals(primerApellido, user.primerApellido) &&
+                Objects.equals(segundoApellido, user.segundoApellido) &&
+                Objects.equals(email, user.email) && Objects.equals(password,
+                user.password) && Objects.equals(genero, user.genero) &&
+                Objects.equals(fotoUrl, user.fotoUrl) &&
+                Objects.equals(descripcion, user.descripcion) &&
+                Objects.equals(telefono, user.telefono) &&
+                Objects.equals(fechaNacimiento, user.fechaNacimiento) &&
+                Objects.equals(ciudad, user.ciudad) && Objects.equals(pais, user.pais)
+                && Objects.equals(direccion, user.direccion) && Objects.equals(mensaje, user.mensaje)
+                && Objects.equals(chats, user.chats) &&
+                Objects.equals(friendshipsInicializados, user.friendshipsInicializados)
+                && Objects.equals(friendOf, user.friendOf) && Objects.equals(alojamientos,
+                user.alojamientos) && Objects.equals(publicacionInicio, user.publicacionInicio)
+                && Objects.equals(comentarios, user.comentarios) && Objects.equals(reviews, user.reviews)
+                && Objects.equals(likes, user.likes) && Objects.equals(sentFriendRequests,
+                user.sentFriendRequests) && Objects.equals(receivedFriendRequests,
+                user.receivedFriendRequests);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, primerNombre, segundoNombre, primerApellido,
+                segundoApellido, edad, email, password, genero, fotoUrl, descripcion,
+                telefono, fechaNacimiento, ciudad, pais, direccion, mensaje, chats,
+                friendshipsInicializados, friendOf, alojamientos, publicacionInicio,
+                comentarios, reviews, likes, sentFriendRequests, receivedFriendRequests);
+    }
 }

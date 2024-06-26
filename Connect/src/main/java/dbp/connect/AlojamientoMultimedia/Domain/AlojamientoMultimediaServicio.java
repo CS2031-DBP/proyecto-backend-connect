@@ -4,9 +4,9 @@ import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
 import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
 import dbp.connect.AlojamientoMultimedia.Infrastructure.AlojamientoMultimediaRepositorio;
-import dbp.connect.Excepciones.NoEncontradoException;
 import dbp.connect.S3.StorageService;
 import dbp.connect.Tipo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
-import static com.amazonaws.services.elasticbeanstalk.model.ConfigurationOptionValueType.List;
 
 @Service
 public class AlojamientoMultimediaServicio {
@@ -70,13 +68,13 @@ public class AlojamientoMultimediaServicio {
                     alojamientoMultimediaRepositorio.delete(multimedia);
                     alojamientoRepositorio.save(alojamientoOptional.get());
                 } else {
-                    throw new NoEncontradoException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
+                    throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
                 }
             } else {
-                throw new NoEncontradoException("No se encontró la imagen con id: " + imagenId);
+                throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
             }
         } else {
-            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
 
@@ -91,23 +89,23 @@ public class AlojamientoMultimediaServicio {
 
                     alojamientoMultimediaRepositorio.save(multimedia);
                 } else {
-                    throw new NoEncontradoException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
+                    throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
                 }
             } else {
-                throw new NoEncontradoException("No se encontró la imagen con id: " + imagenId);
+                throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
             }
         } else {
-            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
 
     public Page<ResponseMultimediaDTO> obtenerMultimediaPaginacion(Long alojamientoId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Alojamiento alojamiento = alojamientoRepositorio.findById(alojamientoId).orElseThrow(()->new NoEncontradoException("No se encontro el alojamiento"));
+        Alojamiento alojamiento = alojamientoRepositorio.findById(alojamientoId).orElseThrow(()->new EntityNotFoundException("No se encontro el alojamiento"));
         Page <AlojamientoMultimedia> multimediaPage = alojamientoMultimediaRepositorio.findByAlojamiento_Id(alojamientoId, pageable);
 
         if (multimediaPage.isEmpty()){
-            throw new NoEncontradoException("No se encontraron imagenes para el alojamiento con id: "+alojamientoId);
+            throw new EntityNotFoundException("No se encontraron imagenes para el alojamiento con id: "+alojamientoId);
         }
         List<ResponseMultimediaDTO> multimediaDTOList = multimediaPage.getContent().stream()
                 .map(multimedia -> mapResponseMultimediaDTO(multimedia))
@@ -130,9 +128,9 @@ public class AlojamientoMultimediaServicio {
                     return multimediaDTO;
                 }
             }
-            throw new NoEncontradoException("No se encontró la imagen con id: " + imagenId);
+            throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
         } else {
-            throw new NoEncontradoException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
     private ResponseMultimediaDTO mapResponseMultimediaDTO(AlojamientoMultimedia multimedia){

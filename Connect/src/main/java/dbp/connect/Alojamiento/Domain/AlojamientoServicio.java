@@ -7,7 +7,7 @@ import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
 import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimediaServicio;
-import dbp.connect.Excepciones.NoEncontradoException;
+import dbp.connect.Configuracion.Excepciones.NoEncontradoException;
 import dbp.connect.User.Domain.User;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.transaction.Transactional;
