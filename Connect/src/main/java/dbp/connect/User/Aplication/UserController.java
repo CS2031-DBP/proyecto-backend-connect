@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDTO> getProfile(@RequestHeader("Authorization") String token) throws BadCredentialException, UserException {
         UserProfileDTO userProfileDTO = userService.finddUserProfile(token);
-        return new ResponseEntity<UserPrMofileDTO>(userProfileDTO, HttpStatus.ACCEPTED);
+        return new ResponseEntity<UserProfileDTO>(userProfileDTO, HttpStatus.ACCEPTED);
     }
     @GetMapping("{query}")
     public ResponseEntity<List<UserSearchDTO>> searchUser(@PathVariable  String query) {
