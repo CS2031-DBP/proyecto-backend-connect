@@ -1,6 +1,8 @@
 package dbp.connect.User.Domain;
 
 import dbp.connect.S3.StorageService;
+import dbp.connect.Security.JWT.JwtService;
+import dbp.connect.Security.Utils.AuthorizationUtils;
 import dbp.connect.User.DTO.UpdateUserNameAndProfileDTO;
 import dbp.connect.User.DTO.UserProfileDTO;
 import dbp.connect.User.DTO.UserResponseDTO;
@@ -11,6 +13,10 @@ import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.management.Query;
@@ -20,8 +26,14 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    @Autowired
     private  UserRepository userRepository;
+    @Autowired
     private StorageService storageService;
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
+
+
 /*
     @Transactional
     public void addFriend(Long userId, Long  friendId) {
@@ -42,7 +54,19 @@ public class UserService {
     }
     public List<UserSearchDTO> searchuser(Query query) {
     }
+
 */
+
+
+    @Autowired
+    ModelMapper modelMapper;
+
+    public UserDetailsService userDetailsService() {
+        return username -> userRepository
+                .findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
     public UserResponseDTO findUserDTOById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         UserResponseDTO userResponseDTO = new UserResponseDTO();
@@ -59,7 +83,7 @@ public class UserService {
         throw new UserException("User not found"+id);
     }
     public UserProfileDTO finddUserProfile(String jwt) throws UserException, BadCredentialException {
-        String email = jwtService.getEmailFromToken(jwt);
+        String email = authorizationUtils.getEmailFromToken(jwt);
         if(email ==null){
             throw new BadCredentialException("You are not authorized");
         }
@@ -112,5 +136,6 @@ public class UserService {
     private String serializarId(Long imagenId){
         return "imagen-" + imagenId;
     }
+
 
 }

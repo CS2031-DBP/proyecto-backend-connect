@@ -87,7 +87,7 @@ public class StorageService {
         boolean fileExist = s3Client.doesObjectExist(bucketName, objectKey);
         if (!fileExist) return "";
 
-        Date expiration = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24);
+        Date expiration = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24*360);
 
         try {
             GeneratePresignedUrlRequest generatePresignedUrlRequest =

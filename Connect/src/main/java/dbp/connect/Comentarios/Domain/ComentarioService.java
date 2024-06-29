@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public class ComentarioService {
                 throw new NoEncontradoException("Multimedia no encontrada");
             }
             comentario.setLikes(0);
-            comentario.setDate(LocalDateTime.now(ZoneId.systemDefault()));
+            comentario.setDate(ZonedDateTime.now(ZoneId.systemDefault()));
             comentarioRepository.save(comentario);
             publicacion.getComentarios().add(comentario);
             publicacionInicioRepositorio.save(publicacion);

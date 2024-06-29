@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,5 +53,5 @@ public class Comentario {
     @JoinColumn(name="likes")
     private Integer likes;
     @JoinColumn(name = "date")
-    private LocalDateTime date;
+    private ZonedDateTime date;
 }

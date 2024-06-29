@@ -12,16 +12,20 @@ import dbp.connect.Review.Domain.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Getter
 @Setter
 @Entity
 @Table(name="User")
-public class User implements Serializable {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -35,13 +39,13 @@ public class User implements Serializable {
     private String primerApellido;
     @Column(name="segundo_nombre")
     private String segundoApellido;
-    @Column(name="edad")
+    @Column(name="edad", nullable = false)
     private Integer edad;
-    @Column(name="email")
+    @Column(name="email", nullable = false)
     private String email;
-    @Column(name="password")
+    @Column(name="password", nullable = false)
     private String password;
-    @Column(name="genero")
+    @Column(name="genero", nullable = false)
     private String genero;
     @Column(name="foto")
     private String fotoUrl;
@@ -57,6 +61,12 @@ public class User implements Serializable {
     private String pais;
     @Column(name = "direccion")
     private String direccion;
+    @Column(name = "role", nullable = false)
+    private Rol role;
+    @Column(name = "created_at", nullable = false)
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
+
     @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL)
     private Set<Mensaje> mensaje = new HashSet<>();
 
@@ -174,5 +184,38 @@ public class User implements Serializable {
                 telefono, fechaNacimiento, ciudad, pais, direccion, mensaje, chats,
                 friendshipsInicializados, friendOf, alojamientos, publicacionInicio,
                 comentarios, reviews, likes, sentFriendRequests, receivedFriendRequests);
+    }
+
+    @Transient
+    String role_prefix = "ROLE_";
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role_prefix + role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
