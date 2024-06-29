@@ -242,7 +242,7 @@ public class ComentarioService {
         dto.setAutorNombreCompleto(comentario.getAutorComentario().getUsername());
         dto.setMessage(comentario.getMessage());
 
-        if (comentario.getAutorComentario().getFoto() != null) {
+        if (comentario.getAutorComentario().getFotoUrl() != null) {
             dto.setAutorImagen(comentario.getAutorComentario().getFoto());
         } else {
             dto.setAutorImagen(null);
