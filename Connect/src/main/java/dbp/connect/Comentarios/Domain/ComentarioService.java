@@ -79,7 +79,7 @@ public class ComentarioService {
                         .orElseThrow(() -> new BadCredentialsException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
                 comentario.setAutorComentario(autor);
                 comentario.setLikes(0);
-                comentario.setDate(LocalDateTime.now(ZoneId.systemDefault()));
+                comentario.setDate(ZonedDateTime.now(ZoneId.systemDefault()));
 
                 if (comentarioDTO.getMultimedia() != null && !comentarioDTO.getMultimedia().isEmpty()) {
                     comentarioMultimediaServicio.saveMultimedia(comentario, comentarioDTO.getMultimedia());

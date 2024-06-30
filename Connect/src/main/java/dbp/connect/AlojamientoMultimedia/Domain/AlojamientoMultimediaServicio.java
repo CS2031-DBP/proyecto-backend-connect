@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,9 +30,7 @@ public class AlojamientoMultimediaServicio {
     @Autowired
     private AlojamientoMultimediaRepositorio alojamientoMultimediaRepositorio;
     @Autowired
-    private AlojamientoRepositorio alojamientoRepositorio;
-
-    public AlojamientoMultimedia guardarArchivo(MultipartFile archivo) {
+    private AlojamientoRepositorio alojamientoRepositorio;public AlojamientoMultimedia guardarArchivo(MultipartFile archivo) {
         try {
             AlojamientoMultimedia archivoMultimedia = new AlojamientoMultimedia();
             archivoMultimedia.setId(serializarId(generationId()));
@@ -42,7 +42,7 @@ public class AlojamientoMultimediaServicio {
             } else {
                 throw new IllegalArgumentException("Tipo de archivo no soportado");
             }
-
+            archivoMultimedia.setFechaCreacion(ZonedDateTime.now(ZoneId.systemDefault()));
             String key = storageService.subiralS3File(archivo, archivoMultimedia.getId());
             archivoMultimedia.setUrlContenido(storageService.obtenerURL(key));
             return archivoMultimedia;
@@ -86,6 +86,7 @@ public class AlojamientoMultimediaServicio {
                 if (multimedia.getAlojamiento().getId().equals(alojamientoId)) {
                     String key = storageService.subiralS3File(imagen, multimedia.getId());
                     multimedia.setUrlContenido(storageService.obtenerURL(key));
+                    multimedia.setFechaCreacion(ZonedDateTime.now(ZoneId.systemDefault()));
                     alojamientoMultimediaRepositorio.save(multimedia);
                 } else {
                     throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
@@ -146,5 +147,6 @@ public class AlojamientoMultimediaServicio {
     public Long generationId(){
         return ++idCounter;
     }
+
 
 }
