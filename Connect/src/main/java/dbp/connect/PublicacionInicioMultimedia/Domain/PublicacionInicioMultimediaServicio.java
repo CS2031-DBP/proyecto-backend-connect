@@ -1,20 +1,16 @@
 package dbp.connect.PublicacionInicioMultimedia.Domain;
 
-import dbp.connect.Alojamiento.Domain.Alojamiento;
-import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
-import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
+
 import dbp.connect.Comentarios.Excepciones.PublicacionNoEncontradoException;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.PublicacionInicio.Infrastructure.PublicacionInicioRepositorio;
+import dbp.connect.PublicacionInicioMultimedia.DTOS.MultimediaInicioDTO;
 import dbp.connect.PublicacionInicioMultimedia.Infrastructure.PublicacionInicioMultimediaRepositorio;
 import dbp.connect.S3.StorageService;
 import dbp.connect.Tipo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PublicacionInicioMultimediaServicio {
@@ -94,52 +91,57 @@ public class PublicacionInicioMultimediaServicio {
                     multimedia.setFechaCreacion(ZonedDateTime.now(ZoneId.systemDefault()));
                     publicacionInicioMultimediaRepositorio.save(multimedia);
                     publicacionInicioRepositorio.save(publicacionInicio);
-                }else{
+                }
+                else{
                     throw new EntityNotFoundException("La imagen no pertenece a la publicacion con id: " + publicacionId);
-                    }
+                }
             }
 
     }
 
-    public Page<ResponseMultimediaDTO> obtenerMultimediaPaginacion(Long publicacionId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        PublicacionInicio publicacionInicio = publicacionInicioMultimediaRepositorio.findById(publicacionId).orElseThrow(
-                ()->new EntityNotFoundException("No se encontro el alojamiento"));
-        Page <AlojamientoMultimedia> multimediaPage = publicacionInicioMultimediaRepositorio.findBy_publicacionId(alojamientoId, pageable);
+    public List<MultimediaInicioDTO> obtenerMultimediaPorPublicacion(Long publicacionId) {
+        PublicacionInicio publicacionInicio = publicacionInicioRepositorio.findById(publicacionId).orElseThrow(
+                () -> new EntityNotFoundException("No se encontró la publicación"));
 
-        if (multimediaPage.isEmpty()){
-            throw new EntityNotFoundException("No se encontraron imagenes para el alojamiento con id: "+alojamientoId);
+        List<PublicacionInicioMultimedia> multimediaList = publicacionInicioMultimediaRepositorio.findByPublicacionInicio(publicacionId);
+
+        if (multimediaList.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron imágenes para el alojamiento con id: " + publicacionId);
         }
-        List<ResponseMultimediaDTO> multimediaDTOList = multimediaPage.getContent().stream()
-                .map(multimedia -> mapResponseMultimediaDTO(multimedia))
-                .toList();
-        return new PageImpl<>(multimediaDTOList, pageable, multimediaPage.getTotalElements());
 
+        List<MultimediaInicioDTO> multimediaDTOList = multimediaList.stream()
+                .map(multimedia -> mapResponseMultimediaDTO(multimedia))
+                .collect(Collectors.toList());
+
+        return multimediaDTOList;
     }
 
-    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, String imagenId) {
-        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
-        if (alojamientoOptional.isPresent()) {
-            Alojamiento alojamiento = alojamientoOptional.get();
-            ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
-            for (AlojamientoMultimedia multimedia : alojamiento.getAlojamientoMultimedia()) {
-                if (multimedia.getId().equals((imagenId))) {
+
+    public MultimediaInicioDTO obtenerMultimedia(Long publicacionId, String archivoId) {
+        Optional<PublicacionInicio> publicacionInicioOptional = publicacionInicioRepositorio.findById(publicacionId);
+        if (publicacionInicioOptional.isPresent()) {
+            PublicacionInicio publicacionInicio = publicacionInicioOptional.get();
+            MultimediaInicioDTO multimediaDTO = new MultimediaInicioDTO();
+            for (PublicacionInicioMultimedia multimedia : publicacionInicio.getPublicacionMultimedia()) {
+                if (multimedia.getId().equals((archivoId))) {
                     multimediaDTO.setId(multimedia.getId());
                     multimediaDTO.setTipo(multimedia.getTipo());
-                    multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());
+                    multimediaDTO.setContenidoUrl(multimedia.getContenidoUrl());
+                    multimediaDTO.setFechaCreacion(multimedia.getFechaCreacion());
                     return multimediaDTO;
                 }
             }
-            throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
+            throw new EntityNotFoundException("No se encontró el archivo con id: " + archivoId);
         } else {
-            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Publicacion Inicio no encontrado con id: " + publicacionId);
         }
     }
-    private ResponseMultimediaDTO mapResponseMultimediaDTO(AlojamientoMultimedia multimedia){
-        ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
+    private MultimediaInicioDTO mapResponseMultimediaDTO(PublicacionInicioMultimedia multimedia){
+        MultimediaInicioDTO multimediaDTO = new MultimediaInicioDTO();
         multimediaDTO.setId(multimedia.getId());
         multimediaDTO.setTipo(multimedia.getTipo());
-        multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());
+        multimediaDTO.setContenidoUrl(multimedia.getContenidoUrl());
+        multimediaDTO.setFechaCreacion(multimedia.getFechaCreacion());
         return multimediaDTO;
     }
 

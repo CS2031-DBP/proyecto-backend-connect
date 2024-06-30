@@ -20,7 +20,7 @@ public class ResponseReviewDTO {
     @Range(min = 1, max = 5)
     @NotNull
     private Integer calificacion;
-    private byte[] autorFoto;
+    private String autorFotoUrl;
     @NotNull
     private ZonedDateTime dateTime; //Suficientes atributos?
 

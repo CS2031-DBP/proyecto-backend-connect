@@ -1,5 +1,6 @@
 package dbp.connect.PublicacionAlojamiento.DTOS;
 
+import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
 import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotNull;
@@ -25,16 +26,19 @@ public class ResponsePublicacionAlojamiento {
     @Size(min = 1, max = 1000)
     private String Descripcion;
     @Lob
-    private List<MultipartFile> alojamientoMultimedia;
+    private List<ResponseMultimediaDTO> alojamientoMultimedia;
     @NotNull
     private String autorFullName;
-    private byte[] autorPhoto;
+    private String autorPhotoUrl;
     private int cantidadReviews;
     private Double promedioRating;
     @NotNull
     private Double latitue;
     @NotNull
     private Double longitud;
+    private String direccion;
+    private String ciudad;
+    private String pais;
     @NotNull
     private ZonedDateTime fechaPublicacion;
 }

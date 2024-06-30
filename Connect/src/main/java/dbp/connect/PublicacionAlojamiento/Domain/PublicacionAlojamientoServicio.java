@@ -2,10 +2,14 @@ package dbp.connect.PublicacionAlojamiento.Domain;
 
 import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
+import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
+import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
 import dbp.connect.PublicacionAlojamiento.DTOS.PostPublicacionAlojamientoDTO;
 import dbp.connect.PublicacionAlojamiento.DTOS.ResponsePublicacionAlojamiento;
 import dbp.connect.PublicacionAlojamiento.Exceptions.PublicacionAlojamientoNotFoundException;
 import dbp.connect.PublicacionAlojamiento.Infrastructure.PublicacionAlojamientoRespositorio;
+import dbp.connect.PublicacionInicioMultimedia.DTOS.MultimediaInicioDTO;
+import dbp.connect.PublicacionInicioMultimedia.Domain.PublicacionInicioMultimedia;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,19 +105,27 @@ public class PublicacionAlojamientoServicio {
         response.setPromedioRating(publicacionAlojamiento.getPromedioRating());
         response.setAutorFullName(publicacionAlojamiento.getAlojamientoP().getPropietario().getUsername());
         response.setFechaPublicacion(publicacionAlojamiento.getFecha());
-        if (publicacionAlojamiento.getAlojamientoP().getPropietario().getFoto() != null) {
-            response.setAutorPhoto(publicacionAlojamiento.getAlojamientoP().getPropietario().getFoto());
+        if (publicacionAlojamiento.getAlojamientoP().getPropietario().getFotoUrl() != null) {
+            response.setAutorPhotoUrl(publicacionAlojamiento.getAlojamientoP().getPropietario().getFotoUrl());
         } else {
-            response.setAutorPhoto(null);
+            response.setAutorPhotoUrl(null);
         }
-        List<MultipartFile> files = new ArrayList<>();
-        if (publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia() != null) {
-            for(int i = 0; i <publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia().size(); i++ )
-            files.add(publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia().get(i).getContenido());
+
+        if (!publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia().isEmpty()) {
+            for(AlojamientoMultimedia multimedia: publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia()){
+                response.getAlojamientoMultimedia().add(converToDto(multimedia));
+            }
         } else {
             response.setAlojamientoMultimedia(null);
         }
         return response;
     }
 
+    private ResponseMultimediaDTO converToDto(AlojamientoMultimedia multimedia){
+        ResponseMultimediaDTO dto = new ResponseMultimediaDTO();
+        dto.setId(multimedia.getId());
+        dto.setTipo(multimedia.getTipo());
+        dto.setUrl_contenido(multimedia.getUrlContenido());
+        return dto;
+    }
 }

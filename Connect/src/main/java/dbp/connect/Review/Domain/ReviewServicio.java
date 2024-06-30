@@ -13,7 +13,6 @@ import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
@@ -159,13 +158,13 @@ public class ReviewServicio {
 
     private ResponseReviewDTO mapToResponseDTO(Review review) {
         ResponseReviewDTO dto = new ResponseReviewDTO();
-        dto.setAutorFullname(review.getAutorR().getFullname());
+        dto.setAutorFullname(review.getAutorR().getUsername());
         dto.setContenido(review.getComentario());
         dto.setCalificacion(review.getCalificacion());
-        if (review.getAutorR().getFoto() != null) {
-            dto.setAutorFoto(review.getAutorR().getFoto());
+        if (review.getAutorR().getFotoUrl() != null) {
+            dto.setAutorFotoUrl(review.getAutorR().getFotoUrl());
         } else {
-            dto.setAutorFoto(null);
+            dto.setAutorFotoUrl(null);
         }
         dto.setDateTime(review.getFecha().atZone(ZoneId.systemDefault()));
         return dto;

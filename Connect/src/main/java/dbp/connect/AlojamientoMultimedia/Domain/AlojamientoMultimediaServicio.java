@@ -113,7 +113,6 @@ public class AlojamientoMultimediaServicio {
                 .map(multimedia -> mapResponseMultimediaDTO(multimedia))
                 .toList();
         return new PageImpl<>(multimediaDTOList, pageable, multimediaPage.getTotalElements());
-
     }
 
     public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, String imagenId) {
