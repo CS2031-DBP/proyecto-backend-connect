@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -34,9 +35,9 @@ public class AlojamientoMultimediaServicio {
             AlojamientoMultimedia archivoMultimedia = new AlojamientoMultimedia();
             archivoMultimedia.setId(serializarId(generationId()));
 
-            if (archivo.getContentType().startsWith("image/")) {
+            if (Objects.requireNonNull(archivo.getContentType()).startsWith("image/")) {
                 archivoMultimedia.setTipo(Tipo.FOTO);
-            } else if (archivo.getContentType().startsWith("video/")) {
+            } else if (Objects.requireNonNull(archivo.getContentType()).startsWith("video/")) {
                 archivoMultimedia.setTipo(Tipo.VIDEO);
             } else {
                 throw new IllegalArgumentException("Tipo de archivo no soportado");

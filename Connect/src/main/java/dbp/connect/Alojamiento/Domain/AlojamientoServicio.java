@@ -154,8 +154,17 @@ public class AlojamientoServicio {
             alojamiento.setLatitude(alojamientoRequest.getLatitude());
             alojamiento.setLongitude(alojamientoRequest.getLongitude());
             alojamiento.setUbicacion(alojamientoRequest.getUbicacion());
-            for(MultipartFile archivo: alojamientoRequest.getMultimedia()){
-                alojamientoMultimediaServicio.guardarArchivo(archivo);
+            if(!alojamientoRequest.getMultimedia().isEmpty()){
+                for(AlojamientoMultimedia multimedia: alojamiento.getAlojamientoMultimedia()){
+                    alojamientoMultimediaRepositorio.delete(multimedia);
+                }
+                for (MultipartFile archivo : alojamientoRequest.getMultimedia()) {
+                    AlojamientoMultimedia multimedia = alojamientoMultimediaServicio.guardarArchivo(archivo);
+                    multimedia.setAlojamiento(alojamiento);
+                    alojamientoMultimediaRepositorio.save(multimedia);
+                    alojamiento.getAlojamientoMultimedia().add(multimedia);
+                }
+
             }
             alojamientoRepositorio.save(alojamiento);
             ResponseAlojamientoDTO responseAlojamientoDTO = mapResponseAlojamientoDTO(alojamientoId);
