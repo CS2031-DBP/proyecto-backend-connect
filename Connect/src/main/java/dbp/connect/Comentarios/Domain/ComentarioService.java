@@ -6,8 +6,9 @@ import dbp.connect.Comentarios.DTOS.ComentarioRespuestaDTO;
 import dbp.connect.Comentarios.Excepciones.ComentarioNoEncontradoException;
 import dbp.connect.Comentarios.Excepciones.PublicacionNoEncontradoException;
 import dbp.connect.Comentarios.Infrastructure.ComentarioRepository;
+import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimedia;
 import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimediaServicio;
-import dbp.connect.Configuracion.Excepciones.NoEncontradoException;
+import dbp.connect.ComentariosMultimedia.Infrastructure.ComentarioMultimediaRepositorio;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.PublicacionInicio.Infrastructure.PublicacionInicioRepositorio;
 import dbp.connect.User.Domain.User;
@@ -39,6 +40,8 @@ public class ComentarioService {
     private PublicacionInicioRepositorio publicacionInicioRepositorio;
     @Autowired
     private ComentarioMultimediaServicio comentarioMultimediaServicio;
+    @Autowired
+    private ComentarioMultimediaRepositorio comentarioMultimediaRepositorio;
 
     public Comentario createNewComentario(Long publicacionID, ComentarioDto comentarioDTO) {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.
@@ -52,7 +55,9 @@ public class ComentarioService {
             comentario.setAutorComentario(autor);
             comentario.setPublicacion(publicacion);
             if (comentarioDTO.getMultimedia() != null && !comentarioDTO.getMultimedia().isEmpty()) {
-                comentarioMultimediaServicio.guardarArchivo(comentarioDTO.getMultimedia(), comentario.getId();
+                ComentarioMultimedia comentarioMultimedia = comentarioMultimediaServicio.guardarArchivo(comentarioDTO.getMultimedia());
+                comentario.setComentarioMultimedia(comentarioMultimedia);
+                comentarioMultimediaRepositorio.save(comentarioMultimedia);
             }
             comentario.setLikes(0);
             comentario.setDate(ZonedDateTime.now(ZoneId.systemDefault()));
@@ -64,6 +69,7 @@ public class ComentarioService {
             throw new PublicacionNoEncontradoException("Publicacion no encontrada");
         }
     }
+
     public Comentario createNewComentarioHijo(Long publicacionID, Long parentId, ComentarioDto comentarioDTO) {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.findById(publicacionID);
         if (publicacionInicio.isPresent()) {
@@ -82,7 +88,9 @@ public class ComentarioService {
                 comentario.setDate(ZonedDateTime.now(ZoneId.systemDefault()));
 
                 if (comentarioDTO.getMultimedia() != null && !comentarioDTO.getMultimedia().isEmpty()) {
-                    comentarioMultimediaServicio.saveMultimedia(comentario, comentarioDTO.getMultimedia());
+                    ComentarioMultimedia comentarioMultimedia = comentarioMultimediaServicio.guardarArchivo(comentarioDTO.getMultimedia());
+                    comentario.setComentarioMultimedia(comentarioMultimedia);
+                    comentarioMultimediaRepositorio.save(comentarioMultimedia);
                 }
                 comentario.setParent(parentComentarioParent);
                 parentComentarioParent.addCommentReplies(comentario);
@@ -101,6 +109,8 @@ public class ComentarioService {
             throw new PublicacionNoEncontradoException("Publicacion no encontrada");
         }
     }
+
+
     public Page<ComentarioRespuestaDTO> getComentario(Long publicacionId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Comentario> comentarios = comentarioRepository.findByPublicacionId(publicacionId, pageable);

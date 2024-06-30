@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 @EqualsAndHashCode
 public class ComentarioMultimedia {
     @Id
-    private String Id;
+    private String id;
     private String urlContenido;
     private Tipo tipo;
     private ZonedDateTime fechaCreacion;

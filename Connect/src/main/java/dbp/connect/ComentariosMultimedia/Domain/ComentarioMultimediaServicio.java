@@ -1,10 +1,6 @@
 package dbp.connect.ComentariosMultimedia.Domain;
 
-import dbp.connect.Alojamiento.Domain.Alojamiento;
-import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
-import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
-import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
-import dbp.connect.AlojamientoMultimedia.Infrastructure.AlojamientoMultimediaRepositorio;
+
 import dbp.connect.Comentarios.Domain.Comentario;
 import dbp.connect.Comentarios.Infrastructure.ComentarioRepository;
 import dbp.connect.ComentariosMultimedia.DTOS.ResponseComMultimediaDTO;
@@ -13,17 +9,13 @@ import dbp.connect.S3.StorageService;
 import dbp.connect.Tipo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -63,86 +55,69 @@ public class ComentarioMultimediaServicio {
         }
     }
 
-    public void eliminarArchivo(Long alojamientoId, String imagenId) {
-        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
-        if (alojamientoOptional.isPresent()) {
-            Optional<AlojamientoMultimedia> multimediaOptional = alojamientoMultimediaRepositorio.findById(imagenId);
+    public void eliminarArchivo(Long comentarioId, String imagenId) {
+        Optional<Comentario> comentarioOptional = comentarioRepository.findById(comentarioId);
+        if (comentarioOptional.isPresent()) {
+            Optional<ComentarioMultimedia> multimediaOptional = comentariosMultimediaRepositorio.findById(imagenId);
             if (multimediaOptional.isPresent()) {
-                AlojamientoMultimedia multimedia = multimediaOptional.get();
-                if (multimedia.getAlojamiento().getId().equals(alojamientoId)) {
+                ComentarioMultimedia multimedia = multimediaOptional.get();
+                if (multimedia.getComentario().getId().equals(comentarioId)) {
                     storageService.deleteFile(multimedia.getId());
-                    alojamientoMultimediaRepositorio.delete(multimedia);
-                    alojamientoOptional.get().getAlojamientoMultimedia().remove(multimedia);
-                    alojamientoRepositorio.save(alojamientoOptional.get());
+                    comentariosMultimediaRepositorio.delete(multimedia);
+
                 } else {
-                    throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
+                    throw new EntityNotFoundException("La imagen no pertenece al comentario con id: " + comentarioId);
                 }
             } else {
                 throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
             }
         } else {
-            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Comentario no encontrado con id: " + comentarioId);
         }
     }
 
 
-    public void modificarArchivo(Long alojamientoId, String imagenId, MultipartFile imagen) throws Exception {
-        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
-        if (alojamientoOptional.isPresent()) {
-            Optional<AlojamientoMultimedia> multimediaOptional = alojamientoMultimediaRepositorio.findById(imagenId);
+    public void modificarArchivo(Long comentarioId, String imagenId, MultipartFile imagen) throws Exception {
+        Optional<Comentario> comentarioOptional = comentarioRepository.findById(comentarioId);
+        if (comentarioOptional.isPresent()) {
+            Optional<ComentarioMultimedia> multimediaOptional = comentariosMultimediaRepositorio.findById(imagenId);
             if (multimediaOptional.isPresent()) {
-                AlojamientoMultimedia multimedia = multimediaOptional.get();
-                if (multimedia.getAlojamiento().getId().equals(alojamientoId)) {
+                ComentarioMultimedia multimedia = multimediaOptional.get();
+                if (multimedia.getComentario().getId().equals(comentarioId)) {
                     String key = storageService.subiralS3File(imagen, multimedia.getId());
                     multimedia.setUrlContenido(storageService.obtenerURL(key));
-                    alojamientoMultimediaRepositorio.save(multimedia);
+                    comentariosMultimediaRepositorio.save(multimedia);
                 } else {
-                    throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
+                    throw new EntityNotFoundException("La imagen no pertenece al comentario con id: " + comentarioId);
                 }
             } else {
                 throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
             }
         } else {
-            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Comentario no encontrado con id: " + comentarioId);
         }
     }
 
-    public Page<ResponseMultimediaDTO> obtenerMultimediaPaginacion(Long alojamientoId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Alojamiento alojamiento = alojamientoRepositorio.findById(alojamientoId).orElseThrow(()->new EntityNotFoundException("No se encontro el alojamiento"));
-        Page <AlojamientoMultimedia> multimediaPage = alojamientoMultimediaRepositorio.findByAlojamiento_Id(alojamientoId, pageable);
+    public ResponseComMultimediaDTO obtenerMultimedia(Long comentarioId, String imagenId) {
+        Optional<Comentario> comentarioOptional = comentarioRepository.findById(comentarioId);
+        if (comentarioOptional.isPresent()) {
+            ComentarioMultimedia multimedia = comentariosMultimediaRepositorio.findById(imagenId).orElseThrow(() -> new EntityNotFoundException("No se encontró la imagen con id: " + imagenId));
+            ResponseComMultimediaDTO multimediaDTO = new ResponseComMultimediaDTO();
 
-        if (multimediaPage.isEmpty()){
-            throw new EntityNotFoundException("No se encontraron imagenes para el alojamiento con id: "+alojamientoId);
-        }
-        List<ResponseMultimediaDTO> multimediaDTOList = multimediaPage.getContent().stream()
-                .map(multimedia -> mapResponseMultimediaDTO(multimedia))
-                .toList();
-        return new PageImpl<>(multimediaDTOList, pageable, multimediaPage.getTotalElements());
+            if (multimedia.getId().equals((imagenId))) {
+                multimediaDTO.setId(multimedia.getId());
+                multimediaDTO.setTipo(multimedia.getTipo());
+                multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());
+                return multimediaDTO;
 
-
-    }
-
-    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, Long imagenId) {
-        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
-        if (alojamientoOptional.isPresent()) {
-            Alojamiento alojamiento = alojamientoOptional.get();
-            ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
-            for (AlojamientoMultimedia multimedia : alojamiento.getAlojamientoMultimedia()) {
-                if (multimedia.getId().equals(serializarId(imagenId))) {
-                    multimediaDTO.setId(multimedia.getId());
-                    multimediaDTO.setTipo(multimedia.getTipo());
-                    multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());
-                    return multimediaDTO;
-                }
             }
             throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
         } else {
-            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Coomentario no encontrado con id: " + comentarioId);
         }
     }
-    private ResponseMultimediaDTO mapResponseMultimediaDTO(AlojamientoMultimedia multimedia){
-        ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
+    private ResponseComMultimediaDTO mapResponseMultimediaDTO(ComentarioMultimedia multimedia){
+        ResponseComMultimediaDTO multimediaDTO = new ResponseComMultimediaDTO();
         multimediaDTO.setId(multimedia.getId());
         multimediaDTO.setTipo(multimedia.getTipo());
         multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());

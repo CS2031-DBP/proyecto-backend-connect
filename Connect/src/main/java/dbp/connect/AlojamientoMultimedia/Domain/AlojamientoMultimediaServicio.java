@@ -30,7 +30,9 @@ public class AlojamientoMultimediaServicio {
     @Autowired
     private AlojamientoMultimediaRepositorio alojamientoMultimediaRepositorio;
     @Autowired
-    private AlojamientoRepositorio alojamientoRepositorio;public AlojamientoMultimedia guardarArchivo(MultipartFile archivo) {
+    private AlojamientoRepositorio alojamientoRepositorio;
+
+    public AlojamientoMultimedia guardarArchivo(MultipartFile archivo) {
         try {
             AlojamientoMultimedia archivoMultimedia = new AlojamientoMultimedia();
             archivoMultimedia.setId(serializarId(generationId()));
@@ -57,19 +59,14 @@ public class AlojamientoMultimediaServicio {
     public void eliminarArchivo(Long alojamientoId, String imagenId) {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
-            Optional<AlojamientoMultimedia> multimediaOptional = alojamientoMultimediaRepositorio.findById(imagenId);
-            if (multimediaOptional.isPresent()) {
-                AlojamientoMultimedia multimedia = multimediaOptional.get();
-                if (multimedia.getAlojamiento().getId().equals(alojamientoId)) {
+            Alojamiento aloj= alojamientoOptional.get();
+            for(AlojamientoMultimedia multimedia: aloj.getAlojamientoMultimedia()){
+                if(multimedia.getId().equals(imagenId)){
                     storageService.deleteFile(multimedia.getId());
+                    aloj.getAlojamientoMultimedia().remove(multimedia);
                     alojamientoMultimediaRepositorio.delete(multimedia);
-                    alojamientoOptional.get().getAlojamientoMultimedia().remove(multimedia);
-                    alojamientoRepositorio.save(alojamientoOptional.get());
-                } else {
-                    throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
+                    alojamientoRepositorio.save(aloj);
                 }
-            } else {
-                throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
             }
         } else {
             throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
@@ -77,31 +74,36 @@ public class AlojamientoMultimediaServicio {
     }
 
 
-    public void modificarArchivo(Long alojamientoId, String imagenId, MultipartFile imagen) throws Exception {
+    public void modificarArchivo(Long alojamientoId, String imagenId, MultipartFile archivo) throws Exception {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
-            Optional<AlojamientoMultimedia> multimediaOptional = alojamientoMultimediaRepositorio.findById(imagenId);
-            if (multimediaOptional.isPresent()) {
-                AlojamientoMultimedia multimedia = multimediaOptional.get();
-                if (multimedia.getAlojamiento().getId().equals(alojamientoId)) {
-                    String key = storageService.subiralS3File(imagen, multimedia.getId());
+            Alojamiento aloj= alojamientoOptional.get();
+            for(AlojamientoMultimedia multimedia: aloj.getAlojamientoMultimedia()){
+                if(multimedia.getId().equals(imagenId)){
+                    if (Objects.requireNonNull(archivo.getContentType()).startsWith("image/")) {
+                        multimedia.setTipo(Tipo.FOTO);
+                    } else if (Objects.requireNonNull(archivo.getContentType()).startsWith("video/")) {
+                        multimedia.setTipo(Tipo.VIDEO);
+                    } else {
+                        throw new IllegalArgumentException("Tipo de archivo no soportado");
+                    }
+                    String key = storageService.subiralS3File(archivo, multimedia.getId());
                     multimedia.setUrlContenido(storageService.obtenerURL(key));
                     multimedia.setFechaCreacion(ZonedDateTime.now(ZoneId.systemDefault()));
                     alojamientoMultimediaRepositorio.save(multimedia);
-                } else {
-                    throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
+                    alojamientoRepositorio.save(aloj);
                 }
-            } else {
-                throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
             }
-        } else {
+        }
+        else {
             throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
         }
     }
 
     public Page<ResponseMultimediaDTO> obtenerMultimediaPaginacion(Long alojamientoId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Alojamiento alojamiento = alojamientoRepositorio.findById(alojamientoId).orElseThrow(()->new EntityNotFoundException("No se encontro el alojamiento"));
+        Alojamiento alojamiento = alojamientoRepositorio.findById(alojamientoId).orElseThrow(
+                ()->new EntityNotFoundException("No se encontro el alojamiento"));
         Page <AlojamientoMultimedia> multimediaPage = alojamientoMultimediaRepositorio.findByAlojamiento_Id(alojamientoId, pageable);
 
         if (multimediaPage.isEmpty()){
@@ -112,16 +114,15 @@ public class AlojamientoMultimediaServicio {
                 .toList();
         return new PageImpl<>(multimediaDTOList, pageable, multimediaPage.getTotalElements());
 
-
     }
 
-    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, Long imagenId) {
+    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, String imagenId) {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
             Alojamiento alojamiento = alojamientoOptional.get();
             ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
             for (AlojamientoMultimedia multimedia : alojamiento.getAlojamientoMultimedia()) {
-                if (multimedia.getId().equals(serializarId(imagenId))) {
+                if (multimedia.getId().equals((imagenId))) {
                     multimediaDTO.setId(multimedia.getId());
                     multimediaDTO.setTipo(multimedia.getTipo());
                     multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());

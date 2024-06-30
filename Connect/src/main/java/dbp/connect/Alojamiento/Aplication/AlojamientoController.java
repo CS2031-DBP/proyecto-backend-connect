@@ -37,7 +37,7 @@ public class AlojamientoController {
     }
 
     @GetMapping("/multimedia/{alojamientoId}/{imagenId}")
-    public ResponseEntity<ResponseMultimediaDTO> getMultimedia(@PathVariable Long alojamientoId, @PathVariable Long imagenId) {
+    public ResponseEntity<ResponseMultimediaDTO> getMultimedia(@PathVariable Long alojamientoId, @PathVariable String imagenId) {
         ResponseMultimediaDTO multimediaDTO= alojamientoMultimediaServicio.obtenerMultimedia(alojamientoId, imagenId);
         return ResponseEntity.ok().body(multimediaDTO);
     }
