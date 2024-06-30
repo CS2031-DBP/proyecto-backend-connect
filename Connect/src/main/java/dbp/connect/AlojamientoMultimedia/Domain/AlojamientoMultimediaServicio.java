@@ -29,27 +29,23 @@ public class AlojamientoMultimediaServicio {
     @Autowired
     private AlojamientoRepositorio alojamientoRepositorio;
 
-    public void guardarArchivo(MultipartFile archivo,Long alojamientoid) {
+    public AlojamientoMultimedia guardarArchivo(MultipartFile archivo) {
         try {
             AlojamientoMultimedia archivoMultimedia = new AlojamientoMultimedia();
             archivoMultimedia.setId(serializarId(generationId()));
 
-            if(archivo.getContentType().equalsIgnoreCase("image")){
+            if (archivo.getContentType().startsWith("image/")) {
                 archivoMultimedia.setTipo(Tipo.FOTO);
-            }
-            else {
+            } else if (archivo.getContentType().startsWith("video/")) {
                 archivoMultimedia.setTipo(Tipo.VIDEO);
+            } else {
+                throw new IllegalArgumentException("Tipo de archivo no soportado");
             }
+
             String key = storageService.subiralS3File(archivo, archivoMultimedia.getId());
             archivoMultimedia.setUrlContenido(storageService.obtenerURL(key));
-            Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoid);
-            if (alojamientoOptional.isPresent()) {
-                Alojamiento alojamiento = alojamientoOptional.get();
-                archivoMultimedia.setAlojamiento(alojamiento);
-                alojamiento.getAlojamientoMultimedia().add(archivoMultimedia);
-                alojamientoRepositorio.save(alojamiento);
-            }
-            alojamientoMultimediaRepositorio.save(archivoMultimedia);
+            return archivoMultimedia;
+
         } catch (IOException e) {
             throw new RuntimeException("Error al guardar el archivo",e);
         } catch (Exception e) {
@@ -66,6 +62,7 @@ public class AlojamientoMultimediaServicio {
                 if (multimedia.getAlojamiento().getId().equals(alojamientoId)) {
                     storageService.deleteFile(multimedia.getId());
                     alojamientoMultimediaRepositorio.delete(multimedia);
+                    alojamientoOptional.get().getAlojamientoMultimedia().remove(multimedia);
                     alojamientoRepositorio.save(alojamientoOptional.get());
                 } else {
                     throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);
@@ -79,14 +76,15 @@ public class AlojamientoMultimediaServicio {
     }
 
 
-    public void modificarImagen(Long alojamientoId, String imagenId, byte[] imagen) {
+    public void modificarArchivo(Long alojamientoId, String imagenId, MultipartFile imagen) throws Exception {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
             Optional<AlojamientoMultimedia> multimediaOptional = alojamientoMultimediaRepositorio.findById(imagenId);
             if (multimediaOptional.isPresent()) {
                 AlojamientoMultimedia multimedia = multimediaOptional.get();
                 if (multimedia.getAlojamiento().getId().equals(alojamientoId)) {
-
+                    String key = storageService.subiralS3File(imagen, multimedia.getId());
+                    multimedia.setUrlContenido(storageService.obtenerURL(key));
                     alojamientoMultimediaRepositorio.save(multimedia);
                 } else {
                     throw new EntityNotFoundException("La imagen no pertenece al alojamiento con id: " + alojamientoId);

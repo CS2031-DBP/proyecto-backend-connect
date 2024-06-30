@@ -4,6 +4,7 @@ package dbp.connect.Alojamiento.Aplication;
 import dbp.connect.Alojamiento.DTOS.*;
 import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.Alojamiento.Domain.AlojamientoServicio;
+import dbp.connect.Alojamiento.Excepciones.AlojamientoNotFound;
 import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimediaServicio;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 
@@ -23,13 +25,13 @@ public class AlojamientoController {
     AlojamientoMultimediaServicio alojamientoMultimediaServicio;
 
     @PostMapping()
-    public ResponseEntity<ResponseAlojamientoDTO> crearAlojamiento(@Valid @RequestBody AlojamientoRequest alojamientoRequest) {
+    public ResponseEntity<ResponseAlojamientoDTO> crearAlojamiento(@Valid @RequestBody AlojamientoRequest alojamientoRequest) throws AlojamientoNotFound {
          ResponseAlojamientoDTO createdAlojamiento =alojamientoServicio.guardarAlojamiento(alojamientoRequest);
         return ResponseEntity.created(URI.create("/alojamiento/"+createdAlojamiento.getId())).body(createdAlojamiento);
     }
 
     @GetMapping("/{alojamientoId}")
-    public ResponseEntity<ResponseAlojamientoDTO> getAlojamiento(@PathVariable Long alojamientoId) {
+    public ResponseEntity<ResponseAlojamientoDTO> getAlojamiento(@PathVariable Long alojamientoId) throws AlojamientoNotFound {
         ResponseAlojamientoDTO alojamiento= alojamientoServicio.obtenerAlojamiento(alojamientoId);
         return ResponseEntity.ok().body(alojamiento);
     }
@@ -57,47 +59,47 @@ public class AlojamientoController {
     }
 
     @PatchMapping("/imagen/{alojamientoId}/{imagenId}")
-    public ResponseEntity<Void> actualizarImagen(@PathVariable Long alojamientoId, @PathVariable String imagenId, @RequestBody byte[] imagen) {
-        alojamientoMultimediaServicio.modificarImagen(alojamientoId, imagenId, imagen);
+    public ResponseEntity<Void> actualizarImagen(@PathVariable Long alojamientoId, @PathVariable String imagenId, @RequestBody MultipartFile imagen) throws Exception {
+        alojamientoMultimediaServicio.modificarArchivo(alojamientoId, imagenId, imagen);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/eliminar/{alojamientoId}")
-    public ResponseEntity<Void> eliminarAlojamiento(@PathVariable Long alojamientoId) {
+    public ResponseEntity<Void> eliminarAlojamiento(@PathVariable Long alojamientoId) throws AlojamientoNotFound {
         alojamientoServicio.eliminarById(alojamientoId);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/alojamientos/{alojamientoId}")
     public ResponseEntity<Void> actualizarPrecio(@PathVariable Long alojamientoId,
-                                                 @Valid @RequestBody PriceDTO precio) {
+                                                 @Valid @RequestBody PriceDTO precio) throws AlojamientoNotFound {
         alojamientoServicio.modificarPrecio(alojamientoId,precio);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/disponibilidad/{alojamientoId}")
-    public ResponseEntity<Void> actualizarEstado(@PathVariable Long alojamientoId) {
+    public ResponseEntity<Void> actualizarEstado(@PathVariable Long alojamientoId) throws AlojamientoNotFound {
         alojamientoServicio.actualizarEstadoAlojamiento(alojamientoId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/alojamientos/descripcion/{alojamientoId}")
     public ResponseEntity<Void> actualizarDescripcion(@PathVariable Long alojamientoId,
-                                                      @Valid @RequestBody ContenidoDTO contenidoDTO) {
+                                                      @Valid @RequestBody ContenidoDTO contenidoDTO) throws AlojamientoNotFound {
         alojamientoServicio.actualizarDescripcionAlojamiento(alojamientoId, contenidoDTO);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/alojamientos/ubicacion/{alojamientoId}")
     public ResponseEntity<Void> actualizarUbicacion(@PathVariable Long alojamientoId,
-                                                      @Valid @RequestBody UbicacionDTO ubicacionDTO) {
+                                                      @Valid @RequestBody UbicacionDTO ubicacionDTO) throws AlojamientoNotFound {
         alojamientoServicio.actualizarUbicacionAlojamiento(alojamientoId, ubicacionDTO);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{alojamientoId}")
     public ResponseEntity<ResponseAlojamientoDTO> actualizarAlojamiento(@PathVariable Long alojamientoId,
-                                                                        @Valid @RequestBody AlojamientoRequest alojamientoRequest) {
+                                                                        @Valid @RequestBody AlojamientoRequest alojamientoRequest) throws AlojamientoNotFound {
         alojamientoServicio.actualizarAlojamiento(alojamientoId, alojamientoRequest);
         return ResponseEntity.ok().build();
     }

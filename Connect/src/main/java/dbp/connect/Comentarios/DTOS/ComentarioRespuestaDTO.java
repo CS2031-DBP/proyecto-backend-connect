@@ -18,8 +18,8 @@ public class ComentarioRespuestaDTO {
     @NotEmpty()
     @Size(min=0, max = 500)
     private String message;
-    private byte[] autorImagen;
+    private String urlAutorImagen;
     private Integer likes;
-    private byte[] mulimedia;
+    private String urlMulimedia;
     private LocalDateTime fechaCreacion;
 }

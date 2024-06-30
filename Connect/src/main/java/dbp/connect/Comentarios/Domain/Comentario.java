@@ -4,9 +4,7 @@ import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimedia;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.User.Domain.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -16,6 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 @Entity
 public class Comentario {
     @Id
@@ -23,6 +23,11 @@ public class Comentario {
     private Long id;
     @Column(name = "message")
     private String message;
+    @Column(name="likes")
+    private Integer likes;
+    @Column(name = "date")
+    private ZonedDateTime date;
+
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
@@ -48,10 +53,7 @@ public class Comentario {
     @JoinColumn(name="publicacion_id",nullable = false)
     private PublicacionInicio publicacion;
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "multimedia_id")
-    private ComentarioMultimedia multimedia;
-    @JoinColumn(name="likes")
-    private Integer likes;
-    @JoinColumn(name = "date")
-    private ZonedDateTime date;
+    @JoinColumn(name = "comentario_multimedia_id")
+    private ComentarioMultimedia comentarioMultimedia;
+
 }

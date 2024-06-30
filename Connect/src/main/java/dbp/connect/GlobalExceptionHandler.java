@@ -1,5 +1,6 @@
 package dbp.connect;
 
+import dbp.connect.Alojamiento.Excepciones.AlojamientoNotFound;
 import dbp.connect.Alojamiento.Excepciones.DescripcionIgualException;
 import dbp.connect.Chat.Exceptions.ChatNotFound;
 import dbp.connect.Chat.Exceptions.NotAllowedPermissionChat;
@@ -76,6 +77,14 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(ChatNotFound.class)
     public ResponseEntity<ErrorDetail> ChatNotFoundHandler(ChatNotFound e, WebRequest req){
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setMessage(e.getMessage());
+        errorDetail.setError(req.getDescription(false));
+        errorDetail.setTimestamp(java.time.ZonedDateTime.now());
+        return new ResponseEntity<>(errorDetail, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(AlojamientoNotFound.class)
+    public ResponseEntity<ErrorDetail> AlojamientoNotFoundHandler(AlojamientoNotFound e, WebRequest req){
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setMessage(e.getMessage());
         errorDetail.setError(req.getDescription(false));

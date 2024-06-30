@@ -1,6 +1,5 @@
 package dbp.connect.PublicacionInicioMultimedia.Domain;
 
-import dbp.connect.ComentariosMultimedia.Domain.Multimedia;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,13 +48,11 @@ public class ComentarioService {
             Comentario comentario = new Comentario();
             comentario.setMessage(comentarioDTO.getMessage());
             User autor = userRepository.findById(comentarioDTO.getAutorId())
-                    .orElseThrow(() -> new NoEncontradoException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
+                    .orElseThrow(() -> new BadCredentialsException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
             comentario.setAutorComentario(autor);
             comentario.setPublicacion(publicacion);
             if (comentarioDTO.getMultimedia() != null && !comentarioDTO.getMultimedia().isEmpty()) {
-                comentarioMultimediaServicio.saveMultimedia(comentario, comentarioDTO.getMultimedia());
-            } else {
-                throw new NoEncontradoException("Multimedia no encontrada");
+                comentarioMultimediaServicio.guardarArchivo(comentarioDTO.getMultimedia(), comentario.getId();
             }
             comentario.setLikes(0);
             comentario.setDate(ZonedDateTime.now(ZoneId.systemDefault()));
@@ -77,7 +76,7 @@ public class ComentarioService {
                 comentario.setMessage(comentarioDTO.getMessage());
 
                 User autor = userRepository.findById(comentarioDTO.getAutorId())
-                        .orElseThrow(() -> new NoEncontradoException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
+                        .orElseThrow(() -> new BadCredentialsException("Usuario no encontrado con id: " + comentarioDTO.getAutorId()));
                 comentario.setAutorComentario(autor);
                 comentario.setLikes(0);
                 comentario.setDate(LocalDateTime.now(ZoneId.systemDefault()));
