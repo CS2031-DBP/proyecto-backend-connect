@@ -252,16 +252,16 @@ public class ComentarioService {
         dto.setMessage(comentario.getMessage());
 
         if (comentario.getAutorComentario().getFotoUrl() != null) {
-            dto.setAutorImagen(comentario.getAutorComentario().getFoto());
+            dto.setUrlAutorImagen(comentario.getAutorComentario().getFotoUrl());
         } else {
-            dto.setAutorImagen(null);
+            dto.setUrlAutorImagen(null);
         }
         dto.setLikes(comentario.getLikes());
         dto.setFechaCreacion(comentario.getDate());
-        if (comentario.getMultimedia() != null) {
-            dto.setMulimedia(comentario.getMultimedia().getContenido());
+        if (comentario.getComentarioMultimedia() != null) {
+            dto.setUrlMulimedia(comentario.getComentarioMultimedia().getUrlContenido());
         } else {
-            dto.setMulimedia(null);
+            dto.setUrlMulimedia(null);
         }
 
         return dto;

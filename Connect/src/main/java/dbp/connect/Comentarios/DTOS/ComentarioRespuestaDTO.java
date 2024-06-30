@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 
 @Data
@@ -19,5 +19,5 @@ public class ComentarioRespuestaDTO {
     private String urlAutorImagen;
     private Integer likes;
     private String urlMulimedia;
-    private LocalDateTime fechaCreacion;
+    private ZonedDateTime fechaCreacion;
 }

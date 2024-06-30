@@ -1,24 +1,30 @@
 package dbp.connect.PublicacionInicioMultimedia.Domain;
 
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
+import dbp.connect.Tipo;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
+import java.time.ZonedDateTime;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
+@Getter
 @Entity
 public class PublicacionInicioMultimedia {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Lob
-    private byte[] contenido;
-    private Multimedia tipo;
-    private String tipoConte;
+    private String id;
+    private String contenidoUrl;
+    private Tipo tipo;
+    private ZonedDateTime fechaCreacion;
     @ManyToOne
     @JoinColumn(name="publicacionInicio_id")
     private PublicacionInicio publicacionInicio;
+
 
 
 }

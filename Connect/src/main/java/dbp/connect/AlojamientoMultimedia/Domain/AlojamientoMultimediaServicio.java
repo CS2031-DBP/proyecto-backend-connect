@@ -145,9 +145,7 @@ public class AlojamientoMultimediaServicio {
     private String serializarId(Long imagenId){
         return "imagen-" + imagenId;
     }
-    public Long generationId(){
+    public Long generationId() {
         return ++idCounter;
     }
-
-
 }

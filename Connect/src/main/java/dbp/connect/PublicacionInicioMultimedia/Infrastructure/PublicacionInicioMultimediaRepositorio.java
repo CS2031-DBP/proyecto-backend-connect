@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PublicacionInicioMultimediaRepositorio extends JpaRepository<PublicacionInicioMultimedia, Long> {
+public interface PublicacionInicioMultimediaRepositorio extends JpaRepository<PublicacionInicioMultimedia, String> {
 }
