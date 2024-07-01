@@ -1,35 +1,27 @@
 package dbp.connect.MultimediaMensaje.Domain;
 
-import dbp.connect.Alojamiento.Domain.Alojamiento;
-import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
-import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
-import dbp.connect.Mensaje.DTOS.MensajeResponseDTO;
 import dbp.connect.Mensaje.Domain.Mensaje;
 import dbp.connect.Mensaje.Infrastructure.MensajeRepository;
 import dbp.connect.MultimediaMensaje.DTO.MensajeMultimediaDTO;
-import dbp.connect.MultimediaMensaje.Infrastructure.MultimediaMensajeIndividualRepositorio;
+import dbp.connect.MultimediaMensaje.Infrastructure.MultimediaMensajeRepositorio;
 import dbp.connect.S3.StorageService;
 import dbp.connect.Tipo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class MultimediaMensajeServicio {
     @Autowired
-    private MultimediaMensajeIndividualRepositorio multimediaMensajeIndividualRepositorio;
+    private MultimediaMensajeRepositorio multimediaMensajeRepositorio;
     @Autowired
     private StorageService storageService;
     @Autowired
@@ -66,25 +58,26 @@ public class MultimediaMensajeServicio {
         Optional<Mensaje> mensajeOptional = mensajeRepository.findById(mensajeId);
         if (mensajeOptional.isPresent()) {
             Mensaje mensaje= mensajeOptional.get();
-            for(MultimediaMensaje multimedia: mensaje.getMultimediaMensaje()){
+            Iterator<MultimediaMensaje> iterator = mensaje.getMultimediaMensaje().iterator();
+            while(iterator.hasNext()){
+                MultimediaMensaje multimedia = iterator.next();
                 if(multimedia.getId().equals(imagenId)){
                     storageService.deleteFile(multimedia.getId());
-                    multimedia.getMensaje().re(multimedia);
-                     multimediaMensajeIndividualRepositorio.delete(multimedia);
-                    alojamientoRepositorio.save(aloj);
+                    iterator.remove();
+                    multimediaMensajeRepositorio.delete(multimedia);
                 }
             }
+            mensajeRepository.save(mensaje);
         } else {
-            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + mensajeId);
         }
     }
 
-
-    public void modificarArchivo(Long alojamientoId, String imagenId, MultipartFile archivo) throws Exception {
-        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
-        if (alojamientoOptional.isPresent()) {
-            Alojamiento aloj= alojamientoOptional.get();
-            for(AlojamientoMultimedia multimedia: aloj.getAlojamientoMultimedia()){
+    public void modificarArchivo(Long mensajeId, String imagenId, MultipartFile archivo) throws Exception {
+        Optional<Mensaje> mensajeOptioanl = mensajeRepository.findById(mensajeId);
+        if (mensajeOptioanl.isPresent()) {
+            Mensaje mensaje= mensajeOptioanl.get();
+            for(MultimediaMensaje multimedia: mensaje.getMultimediaMensaje()){
                 if(multimedia.getId().equals(imagenId)){
                     if (Objects.requireNonNull(archivo.getContentType()).startsWith("image/")) {
                         multimedia.setTipo(Tipo.FOTO);
@@ -94,43 +87,37 @@ public class MultimediaMensajeServicio {
                         throw new IllegalArgumentException("Tipo de archivo no soportado");
                     }
                     String key = storageService.subiralS3File(archivo, multimedia.getId());
-                    multimedia.setUrlContenido(storageService.obtenerURL(key));
-                    multimedia.setFechaCreacion(ZonedDateTime.now(ZoneId.systemDefault()));
-                    alojamientoMultimediaRepositorio.save(multimedia);
-                    alojamientoRepositorio.save(aloj);
+                    multimedia.setUrl(storageService.obtenerURL(key));
+                    multimedia.setFecha(ZonedDateTime.now(ZoneId.systemDefault()));
+                    multimediaMensajeRepositorio.save(multimedia);
+                    mensajeRepository.save(mensaje);
                 }
             }
         }
         else {
-            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + mensajeId);
         }
     }
 
-    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, String imagenId) {
-        Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
-        if (alojamientoOptional.isPresent()) {
-            Alojamiento alojamiento = alojamientoOptional.get();
-            ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
-            for (AlojamientoMultimedia multimedia : alojamiento.getAlojamientoMultimedia()) {
+    public MensajeMultimediaDTO obtenerMultimedia(Long mensajeId, String imagenId) {
+        Optional<Mensaje> mensajeOptional = mensajeRepository.findById(mensajeId);
+        if (mensajeOptional.isPresent()) {
+            Mensaje mensaje = mensajeOptional.get();
+            MensajeMultimediaDTO multimediaDTO = new MensajeMultimediaDTO();
+            for (MultimediaMensaje multimedia : mensaje.getMultimediaMensaje()) {
                 if (multimedia.getId().equals((imagenId))) {
                     multimediaDTO.setId(multimedia.getId());
                     multimediaDTO.setTipo(multimedia.getTipo());
-                    multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());
+                    multimediaDTO.setUrl(multimedia.getUrl());
                     return multimediaDTO;
                 }
             }
             throw new EntityNotFoundException("No se encontró la imagen con id: " + imagenId);
         } else {
-            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + alojamientoId);
+            throw new EntityNotFoundException("Alojamiento no encontrado con id: " + mensajeId);
         }
     }
-    private ResponseMultimediaDTO mapResponseMultimediaDTO(AlojamientoMultimedia multimedia){
-        ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
-        multimediaDTO.setId(multimedia.getId());
-        multimediaDTO.setTipo(multimedia.getTipo());
-        multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());
-        return multimediaDTO;
-    }
+
 
     private String serializarId(Long imagenId){
         return "imagen-" + imagenId;

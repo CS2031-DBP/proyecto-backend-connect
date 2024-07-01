@@ -33,14 +33,15 @@ public class HandShakeInterceptor implements HandshakeInterceptor, WebSocketHand
             log.error("No se ha encontrado el token de autenticación");
             return false;
         }
-        String name = userService.findUsernameWithWsToken(jwtToken);
+       /* String name = userService.findUsernameWithWsToken(jwtToken);
         Long userId = userService.findUserIdWithToken(jwtToken);
         if(request instanceof ServletServerHttpRequest servletRequest){
             HttpSession session = servletRequest.getServletRequest().getSession();
             attributes.put("sessionId", session.getId());
             userService.getWsSessions().put(userId, session.getId());
-        }
-        return StringUtils.hasLength(name);
+        }*/
+        //TODO
+        return StringUtils.hasLength("name");
     }
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,

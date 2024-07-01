@@ -10,6 +10,7 @@ import dbp.connect.Mensaje.DTOS.MensajeResponseDTO;
 import dbp.connect.Mensaje.Infrastructure.MensajeRepository;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensaje;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensajeServicio;
+import dbp.connect.MultimediaMensaje.Infrastructure.MultimediaMensajeRepositorio;
 import dbp.connect.User.Domain.User;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,10 +38,12 @@ public class MensajeServicio {
     private ChatRepository chatRepository;
     @Autowired
     private MensajeRepository mensajeRepository;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private MultimediaMensajeServicio multimediaMensajeIndividualServicio;
-
+    @Autowired
+    private MultimediaMensajeRepositorio multimediaMensajeRepositorio;
 
     public MensajeResponseDTO sendMessage(DTOMensajePost mensaje) {
         User user = userRepository.findById(mensaje.getUserId()).orElseThrow(
@@ -58,8 +60,11 @@ public class MensajeServicio {
         newMessage.setFecha_mensaje(ZonedDateTime.now(ZoneId.systemDefault()));
         for (MultipartFile file : mensaje.getMultimedia()) {
             MultimediaMensaje multimedia = multimediaMensajeIndividualServicio.saveMultimedia(file);
-            newMessage.addMultimedia(multimedia);
+            multimedia.setMensaje(newMessage);
+            multimediaMensajeRepositorio.save(multimedia);
+            newMessage.getMultimediaMensaje().add(multimedia);
         }
+        mensajeRepository.save(newMessage);
         return toDTOResponse(newMessage);
     }
 
