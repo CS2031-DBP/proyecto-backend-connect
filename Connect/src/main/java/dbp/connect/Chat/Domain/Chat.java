@@ -29,16 +29,6 @@ public class Chat implements Serializable {
     @Column(name = "chat_image")
     private String chat_image;
 
-    @Column(name = "is_group")
-    private boolean isGroup;
-
-    @ManyToMany
-    private Set<User> admins = new HashSet<>();
-
-    @JoinColumn(name = "created_by")
-    @ManyToOne
-    private User createdBy;
-    
     @ManyToMany
     private Set<User> users = new HashSet<>();
 

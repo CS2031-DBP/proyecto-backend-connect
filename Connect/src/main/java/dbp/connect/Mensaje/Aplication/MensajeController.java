@@ -56,7 +56,6 @@ public class MensajeController {
 
     }
 
-
     @GetMapping("/{charId}/{mensajeId}")
     public ResponseEntity<MensajeResponseDTO> getMensaje(@PathVariable Long charId,
                                                          @PathVariable Long mensajeId) {
