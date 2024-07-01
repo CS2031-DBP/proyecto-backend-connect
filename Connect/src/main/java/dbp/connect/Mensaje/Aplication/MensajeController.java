@@ -18,7 +18,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 
-@RestController("api/messages")
+@RestController
+@RequestMapping("api/messages")
 public class MensajeController {
     @Autowired
     private MensajeServicio mensajeServicio;
@@ -62,6 +63,22 @@ public class MensajeController {
 
         return ResponseEntity.ok(mensajeServicio.obtenerMensajePorchatIdYMensajeId(charId,mensajeId));
     }
+    @DeleteMapping("/{chatId}/mensajes/{userId}/{mensajeId}")
+    public ResponseEntity<Void> deleteMensaje(@PathVariable Long chatId, @PathVariable Long userId, @PathVariable Long mensajeId) {
+        mensajeServicio.deleteMessageById(chatId,userId,mensajeId);
+        return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/{chatId}/mensajes/{mensajeId}")
+    public ResponseEntity<MensajeResponseDTO> updateMensaje(@PathVariable Long chatId, @PathVariable Long mensajeId) {
+        MensajeResponseDTO mensajeResponseDTO = mensajeServicio.updateStatus(chatId,mensajeId);
+        return ResponseEntity.ok(mensajeResponseDTO);
+    }
+    @GetMapping("/{mensajeId}")
+    public ResponseEntity<MensajeResponseDTO> getMensaje(@PathVariable Long mensajeId) {
+        return ResponseEntity.ok(mensajeServicio.findMessageById(mensajeId));
+    }
+
+
 
 
 }

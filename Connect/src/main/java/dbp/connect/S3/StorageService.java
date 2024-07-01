@@ -19,7 +19,7 @@ import java.util.*;
 @Service
 public class StorageService {
 
-    @Value("${application.bucket.name}")
+    @Value("${AWS_BUCKET_NAME}")
     private String bucketName;
 
     @Autowired

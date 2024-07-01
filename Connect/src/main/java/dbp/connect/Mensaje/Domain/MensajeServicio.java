@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -101,9 +102,9 @@ public class MensajeServicio {
         Page<Mensaje> mensajesPage = mensajeRepository.findByChatId(chatId, pageable);
 
 
-        Set<MensajeResponseDTO> mensajesDTO = mensajesPage.getContent().stream()
+        List<MensajeResponseDTO> mensajesDTO = mensajesPage.getContent().stream()
                 .map(this::toDTOResponse)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         return new PageImpl<>(mensajesDTO.stream().collect(Collectors.toList()), pageable, mensajesPage.getTotalElements());
     }
@@ -119,6 +120,28 @@ public class MensajeServicio {
                 ()->new EntityNotFoundException("Mensaje no encontrado"));
         return toDTOResponse(mensaje);
     }
+
+    public void deleteMessageById(Long chatId, Long userId, Long id){
+        Mensaje mensaje = mensajeRepository.findById(id).orElseThrow(
+                ()->new EntityNotFoundException("Mensaje no encontrado"));
+        if(!mensaje.getChat().getId().equals(chatId)){
+            throw new EntityNotFoundException("No se puede eliminar el mensaje");
+        }
+        if(!mensaje.getAutor().getId().equals(userId)){
+            throw new EntityNotFoundException("No se puede eliminar el mensaje");
+        }
+        mensajeRepository.deleteById(id);
+    }
+    public MensajeResponseDTO updateStatus(Long chatId,Long MensajeId){
+        Mensaje mensaje = mensajeRepository.findByChatIdAndId(chatId,MensajeId)
+                .orElseThrow(()->new EntityNotFoundException("No se encontro el mensaje para el chat especificado"));
+        mensaje.setStatus(StatusMensaje.VISTO);
+        mensajeRepository.save(mensaje);
+        return toDTOResponse(mensaje);
+    }
+
+
+
     private MensajeResponseDTO toDTOResponse(Mensaje mensaje){
         MensajeResponseDTO mensajeResponseDTO = new MensajeResponseDTO();
         mensajeResponseDTO.setId(mensaje.getId());

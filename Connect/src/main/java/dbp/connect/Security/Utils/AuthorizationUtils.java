@@ -22,8 +22,6 @@ public class AuthorizationUtils {
     @Autowired
     PasswordEncoder encoder;
 
-    @Autowired
-    JwtService jwtService;
 
     public String authenticateUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -34,10 +32,7 @@ public class AuthorizationUtils {
             throw new IllegalStateException("User not authenticated");
         }
     }
-    public String getEmailFromToken(String token) {
-        String email = JwtService.extractUsername(token);
-        return email;
-    }
+
 
     public void verifyUserAuthorization(String userEmail, Long id) throws AccessDeniedException {
         User usuarioEmail = usuarioRepository.findByEmail(userEmail).orElseThrow(

@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,6 @@ public class UserService {
     private StorageService storageService;
     @Autowired
     private AuthorizationUtils authorizationUtils;
-
 
 /*
     @Transactional
@@ -56,7 +56,6 @@ public class UserService {
     }
 
 */
-
 
     @Autowired
     ModelMapper modelMapper;
@@ -83,7 +82,7 @@ public class UserService {
         throw new UserException("User not found"+id);
     }
     public UserProfileDTO finddUserProfile(String jwt) throws UserException, BadCredentialException {
-        String email = authorizationUtils.getEmailFromToken(jwt);
+        String email =  authorizationUtils.authenticateUser();
         if(email ==null){
             throw new BadCredentialException("You are not authorized");
         }
