@@ -20,7 +20,7 @@ public class ChatGrupal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String nombre;
+    /*private String nombre;
     private String descripcion;
     private String imagenUrl;
     private ZonedDateTime fechaCreacion;
@@ -33,4 +33,4 @@ public class ChatGrupal {
     private Set<User> users = new HashSet<>();
     @OneToMany(mappedBy = "chatGrupal", cascade = CascadeType.ALL)
     private List<MensajeGrupal> mensajes = new ArrayList<>();
-}
+*/}

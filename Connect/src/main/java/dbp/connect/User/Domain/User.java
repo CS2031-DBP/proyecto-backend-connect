@@ -10,83 +10,99 @@ import dbp.connect.Mensaje.Domain.Mensaje;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.Review.Domain.Review;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import java.io.Serializable;
+
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name="User")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     @Column(name="username")
     private String username;
+
     @Column(name="primer_nombre")
     private String primerNombre;
+
     @Column(name="segundo_nombre")
     private String segundoNombre;
+
     @Column(name="primer_apellido")
     private String primerApellido;
-    @Column(name="segundo_nombre")
+
+    @Column(name="segundo_apellido")
     private String segundoApellido;
+
     @Column(name="edad", nullable = false)
     private Integer edad;
+
     @Column(name="email", nullable = false)
     private String email;
+
     @Column(name="password", nullable = false)
     private String password;
+
     @Column(name="genero", nullable = false)
     private String genero;
+
     @Column(name="foto")
     private String fotoUrl;
+
     @Column(name="descripcion")
     private String descripcion;
+
     @Column(name="telefono")
     private Integer telefono;
+
     @Column(name = "fecha_Nacimiento")
     private LocalDate fechaNacimiento;
+
     @Column(name ="ciudad")
     private String ciudad;
+
     @Column(name = "pais")
     private String pais;
+
     @Column(name = "direccion")
     private String direccion;
+
     @Column(name = "role", nullable = false)
     private Rol role;
+
     @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
 
-    @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
     private Set<Mensaje> mensaje = new HashSet<>();
 
-   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinTable(
-           name = "user",
-           joinColumns = @JoinColumn(name = "usuarios_id", referencedColumnName = "id"),
-           inverseJoinColumns = @JoinColumn(name = "chats_id", referencedColumnName = "id")
-   )
-   private Set<Chat> chats = new HashSet<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "user_chat",
+            joinColumns = @JoinColumn(name = "usuarios_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "chats_id", referencedColumnName = "id")
+    )
+    private Set<Chat> chats = new HashSet<>();
 
-    // Lista de amistades
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Friendship> friendshipsInicializados = new HashSet<>();
 
-    // Lista de amistades en las que este usuario es el amigo
     @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Friendship> friendOf = new HashSet<>();
 
-    //No se si funcionara, se tiene que probar
     @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL)
     private List<Alojamiento> alojamientos = new ArrayList<>();
 
@@ -107,10 +123,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FriendshipRequest> receivedFriendRequests = new HashSet<>();
-
     public User removeMensaje(Mensaje mensaje) {
         this.mensaje.remove(mensaje);
-        mensaje.setUser(null);
+        mensaje.setAutor(null);
         return this;
     }
 

@@ -17,11 +17,11 @@ public class MensajeGrupal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    private String mensaje;
+    /*private String mensaje;
     @ManyToOne
     private User autor;
     @ManyToOne
     @JoinColumn(name="chat_id", nullable = false)
     private ChatGrupal chat;
     private ZonedDateTime fecha;
-}
+*/}

@@ -1,6 +1,5 @@
 package dbp.connect.Mensaje.Domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbp.connect.Chat.Domain.Chat;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensaje;
 import dbp.connect.User.Domain.User;
@@ -10,7 +9,6 @@ import lombok.*;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @Getter
@@ -27,7 +25,8 @@ public class Mensaje {
     @JoinColumn(name="chat_id", nullable = false)
     private Chat chat;
     @ManyToOne
-    private User user;
+    @JoinColumn(name="autor_id", nullable = false)
+    private User autor;
     @Column(name="cuerpo", nullable = false)
     private String cuerpo;
     @Column(name="status")

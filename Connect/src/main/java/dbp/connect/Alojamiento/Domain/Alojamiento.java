@@ -21,9 +21,6 @@ public class Alojamiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne()
-    @JoinColumn(name="propietarioId", nullable = false)
-    private User propietario;
     @JoinColumn(name ="estado", nullable = false)
     private Estado estado;
     @Column(name="latitude",nullable = false)
@@ -46,5 +43,7 @@ public class Alojamiento {
     @OneToOne(mappedBy = "alojamientoP")
     private PublicacionAlojamiento publicacionAlojamiento;
 
-
+    @ManyToOne
+    @JoinColumn(name = "propietario_id", referencedColumnName = "id")
+    private User propietario;
 }

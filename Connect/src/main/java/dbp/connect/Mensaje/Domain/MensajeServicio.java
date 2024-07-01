@@ -52,7 +52,7 @@ public class MensajeServicio {
                 () -> new EntityNotFoundException("Chat no encontrado"));
 
         Mensaje newMessage = new Mensaje();
-        newMessage.setUser(user);
+        newMessage.setAutor(user);
         newMessage.setChat(chat);
         newMessage.setCuerpo(mensaje.getContenido());
         newMessage.setStatus(StatusMensaje.ENVIADO);
@@ -124,7 +124,7 @@ public class MensajeServicio {
         mensajeResponseDTO.setId(mensaje.getId());
         mensajeResponseDTO.setContenido(mensaje.getCuerpo());
         mensajeResponseDTO.setStatusMensaje(mensaje.getStatus());
-        mensajeResponseDTO.setUsername(mensaje.getUser().getUsername());
+        mensajeResponseDTO.setUsername(mensaje.getAutor().getUsername());
         mensajeResponseDTO.setChatId(mensaje.getChat().getId());
         mensajeResponseDTO.setFecha(mensaje.getFecha_mensaje());
         return mensajeResponseDTO; //Falta terminar
