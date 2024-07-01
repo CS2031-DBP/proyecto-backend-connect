@@ -231,8 +231,6 @@ public class AlojamientoServicio {
         return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalElements());
     }
 
-
-
     private ResponseAlojamientoDTO mapResponseAlojamientoDTO(Long alojamientoid) throws AlojamientoNotFound {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoid);
         if (!alojamientoOptional.isPresent()) {

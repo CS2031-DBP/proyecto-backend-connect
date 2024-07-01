@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.User.Domain.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,6 +15,9 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 public class Like implements Serializable {
     @Id
@@ -30,33 +32,5 @@ public class Like implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("usuarioLikes")
     private User usuarioLike;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Like like = (Like) o;
-        if (like.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), like.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "Like{" +
-                "id=" + getId() +
-                ", fechaLike='" + getFechaLike() + "'" +
-                "}";
-    }
 
 }
