@@ -53,7 +53,7 @@ public class AuthService {
         User newuser = mapear(authRegisterRequest);
         newuser.setPassword(passwordEncoder.encode(authRegisterRequest.getPassword()));
         newuser.setCreatedAt(ZonedDateTime.now(ZoneId.systemDefault()));
-        if(authRegisterRequest.getRole() != null){
+        if(!authRegisterRequest.getRole().isEmpty()){
             if(authRegisterRequest.getRole().equals("TRAVELER")){
                 newuser.setRole(Rol.TRAVELER);}
             else if(authRegisterRequest.getRole().equals("HOST")){
@@ -61,6 +61,8 @@ public class AuthService {
             else if(authRegisterRequest.getRole().equals("BOTH")){
                 newuser.setRole(Rol.BOTH);}
         }
+        System.out.println(newuser);
+        System.out.println(newuser.getRole());
         userRepository.save(newuser);
         AuthJwtResponse response = new AuthJwtResponse();
         response.setToken(jwtService.generateToken(newuser));
@@ -87,7 +89,7 @@ public class AuthService {
         user.setDireccion(authRegisterRequest.getDireccion());
         user.setCiudad(authRegisterRequest.getCiudad());
         user.setPais(authRegisterRequest.getPais());
-
+        user.setEmail(authRegisterRequest.getEmail());
         return user;
     }
 }

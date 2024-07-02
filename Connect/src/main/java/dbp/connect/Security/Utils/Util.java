@@ -27,9 +27,4 @@ public class Util {
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
-
-
-
-
 }
