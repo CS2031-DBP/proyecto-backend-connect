@@ -1,6 +1,5 @@
 package dbp.connect.Mensaje.Domain;
 
-import com.amazonaws.services.connect.model.UserNotFoundException;
 import dbp.connect.Chat.Domain.Chat;
 import dbp.connect.Chat.Domain.ChatService;
 import dbp.connect.Chat.Infrastructure.ChatRepository;
@@ -20,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,7 +48,7 @@ public class MensajeServicio {
 
     public MensajeResponseDTO sendMessage(DTOMensajePost mensaje) {
         User user = userRepository.findById(mensaje.getUserId()).orElseThrow(
-                () -> new UserNotFoundException("Usuario no encontrado"));
+                () -> new UsernameNotFoundException("Usuario no encontrado"));
         Chat chat = chatRepository.findById(mensaje.getChatId()).orElseThrow(
                 () -> new EntityNotFoundException("Chat no encontrado"));
 

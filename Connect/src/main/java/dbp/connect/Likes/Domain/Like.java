@@ -19,6 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
+@Table(name = "likes")
 public class Like implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

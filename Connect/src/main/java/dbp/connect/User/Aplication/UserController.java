@@ -1,6 +1,5 @@
 package dbp.connect.User.Aplication;
 
-import com.amazonaws.services.opsworks.model.UserProfile;
 import dbp.connect.User.DTO.UpdateUserNameAndProfileDTO;
 import dbp.connect.User.DTO.UserProfileDTO;
 import dbp.connect.User.DTO.UserSearchDTO;
