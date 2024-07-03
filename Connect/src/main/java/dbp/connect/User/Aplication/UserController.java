@@ -42,5 +42,40 @@ public class UserController {
         userService.UpdateUser(userProfDTO.getId(), update);
         return ResponseEntity.accepted().build();
     }
+    /*// Cambiar Contraseña
+@PostMapping("/changePassword")
+public ResponseEntity<Void> changePassword(@RequestHeader("Authorization") String token, @RequestBody ChangePasswordDTO changePasswordDTO) throws Exception {
+    userService.changePassword(token, changePasswordDTO);
+    return ResponseEntity.ok().build();
+}
 
+// Obtener Usuarios por ID
+@GetMapping("/findById/{userId}")
+public ResponseEntity<UserProfileDTO> getUserById(@PathVariable Long userId) {
+    UserProfileDTO userProfileDTO = userService.findUserProfileById(userId);
+    return new ResponseEntity<>(userProfileDTO, HttpStatus.OK);
+}
+
+// Eliminar Usuario
+@DeleteMapping("/delete")
+public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String token) throws Exception {
+    userService.deleteUser(token);
+    return ResponseEntity.noContent().build();
+}
+@PostMapping("/actualizarEstado/{userId}")
+public ResponseEntity<Void> actualizarEstado(@PathVariable Long userId, @RequestBody String estado) {
+    userService.actualizarEstado(userId, estado);
+    return ResponseEntity.ok().build();
+}
+@GetMapping("/sugerenciasAmigos/{userId}")
+public ResponseEntity<List<UserProfileDTO>> obtenerSugerenciasAmigos(@PathVariable Long userId) {
+    List<UserProfileDTO> sugerencias = userService.obtenerSugerenciasAmigos(userId);
+    return ResponseEntity.ok(sugerencias);
+}
+@GetMapping("/verificarAmistad/{userId}/{otherUserId}")
+public ResponseEntity<Boolean> verificarAmistad(@PathVariable Long userId, @PathVariable Long otherUserId) {
+    boolean esAmigo = userService.verificarAmistad(userId, otherUserId);
+    return ResponseEntity.ok(esAmigo);
+}
+*/
 }

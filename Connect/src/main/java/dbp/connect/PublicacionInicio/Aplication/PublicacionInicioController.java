@@ -8,6 +8,9 @@ import dbp.connect.PublicacionInicio.Domain.PublicacionInicioServicio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,9 +57,40 @@ public class PublicacionInicioController {
                                                                       @PathVariable Long publicacionId,
                                                                       @RequestParam List<MultipartFile> multimedia){
     return ResponseEntity.ok(publicacionInicioServicio.actualizarMultimedia(usuarioId, publicacionId, multimedia));}
+/*
+    @GetMapping("/buscar")
+    public ResponseEntity<Page<PublicacionInicioResponseDTO>> buscarPublicaciones(@RequestParam String palabraClave,
+                                                                                  @RequestParam Integer page,
+                                                                                  @RequestParam Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(publicacionInicioServicio.buscarPorPalabraClave(palabraClave, pageable));
+    }
+
+    @GetMapping("/amigos/{usuarioId}")
+    public ResponseEntity<Page<PublicacionInicioResponseDTO>> obtenerPublicacionesAmigos(@PathVariable Long usuarioId,
+                                                                                         @RequestParam Integer page,
+                                                                                         @RequestParam Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(publicacionInicioServicio.obtenerPublicacionesAmigos(usuarioId, pageable));
+    }
+
+
+
+    @GetMapping("/recientes")
+    public ResponseEntity<Page<PublicacionInicioResponseDTO>> obtenerPublicacionesRecientes(@RequestParam Integer page,
+                                                                                            @RequestParam Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(publicacionInicioServicio.obtenerPublicacionesRecientes(pageable));
+    }
+    @GetMapping("/fecha")
+    public ResponseEntity<Page<PublicacionInicioResponseDTO>> obtenerPublicacionesPorFecha(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            Pageable pageable) {
+        return ResponseEntity.ok(publicacionInicioServicio.obtenerPublicacionesPorFecha(fechaInicio, fechaFin, pageable));
+    }
+   */
 }
-    //Algunos endpoints para obtener por palabras que buscan.
-    //Algunos para obtener por la lsita de amigos para la pagina de inicio.
-    //Falta avanzar mas
+
 
 
