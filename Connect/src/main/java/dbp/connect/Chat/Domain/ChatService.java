@@ -20,6 +20,7 @@ import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,6 +194,23 @@ public class ChatService {
             members.add(chatMembersDTO);
         }
         return members;
+    }
+    public void updateChatImage(Long chatId, MultipartFile image) throws Exception {
+        Chat chat = chatRepository.findById(chatId).orElseThrow(
+                () -> new EntityNotFoundException("Chat no encontrado"));
+        String token = storageService.subiralS3File(image, serializarChatId(chatId));
+        String url = storageService.obtenerURL(token);
+        chat.setChat_image(url);
+        chatRepository.save(chat);
+    }
+    public void leaveChat(Long chatId, String token) {
+        String email = authorizationUtils.authenticateUser();
+        User user = userRepository.findByEmail(email).orElseThrow(()
+                -> new EntityNotFoundException("Usuario no encontrado"));
+        Chat chat = chatRepository.findById(chatId).orElseThrow(
+                () -> new EntityNotFoundException("Chat no encontrado"));
+        chat.getUsers().remove(user);
+        chatRepository.save(chat);
     }
 
     private String serializarChatId(Long imagenId){

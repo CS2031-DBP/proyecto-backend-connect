@@ -2,6 +2,7 @@ package dbp.connect.Mensaje.Domain;
 
 import dbp.connect.Chat.Domain.Chat;
 import dbp.connect.Chat.Domain.ChatService;
+import dbp.connect.Chat.Exceptions.ChatNotFound;
 import dbp.connect.Chat.Infrastructure.ChatRepository;
 import dbp.connect.Mensaje.DTOS.ContentDTO;
 import dbp.connect.Mensaje.DTOS.DTOMensajePost;
@@ -10,7 +11,11 @@ import dbp.connect.Mensaje.Infrastructure.MensajeRepository;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensaje;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensajeServicio;
 import dbp.connect.MultimediaMensaje.Infrastructure.MultimediaMensajeRepositorio;
+import dbp.connect.User.DTO.UserProfileDTO;
 import dbp.connect.User.Domain.User;
+import dbp.connect.User.Domain.UserService;
+import dbp.connect.User.Exceptions.BadCredentialException;
+import dbp.connect.User.Exceptions.UserException;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +48,8 @@ public class MensajeServicio {
     private MultimediaMensajeServicio multimediaMensajeIndividualServicio;
     @Autowired
     private MultimediaMensajeRepositorio multimediaMensajeRepositorio;
+    @Autowired
+    private UserService userService;
 
     public MensajeResponseDTO sendMessage(DTOMensajePost mensaje) {
         User user = userRepository.findById(mensaje.getUserId()).orElseThrow(
@@ -139,7 +146,42 @@ public class MensajeServicio {
         mensajeRepository.save(mensaje);
         return toDTOResponse(mensaje);
     }
+    public void markMessageAsRead(Long chatId, Long mensajeId) throws ChatNotFound {
+        Chat chat = chatRepository.findById(chatId).orElseThrow(
+                ()->new EntityNotFoundException("Chat no encontrado"));
+        if(!chat.getId().equals(chatId)){
+            throw new ChatNotFound("Chat no encontrado");
+        }
+        Mensaje mensaje = mensajeRepository.findByChatIdAndId(chatId,mensajeId)
+                .orElseThrow(()->
+                        new EntityNotFoundException("No se encontro el mensaje para el chat especificado"));
+        mensaje.setStatus(StatusMensaje.VISTO);
+        mensajeRepository.save(mensaje);
+    }
 
+
+    public List<MensajeResponseDTO> getUnreadMessages(Long chatId, String token) throws BadCredentialException, UserException {
+        Chat chat = chatRepository.findById(chatId).orElseThrow(
+                ()->new EntityNotFoundException("Chat no encontrado"));
+        UserProfileDTO userProfile = userService.finddUserProfile(token);
+        User user = userRepository.findById(userProfile.getId()).orElseThrow(
+                ()->new EntityNotFoundException("Usuario no encontrado"));
+        if(!chat.getUsers().contains(user)){
+            throw new EntityNotFoundException("Usuario no pertenece al chat");
+        }
+        List<Mensaje> mensajes = mensajeRepository.findByChatIdAndStatus(chatId, StatusMensaje.ENVIADO);
+        return mensajes.stream()
+                .map(this::toDTOResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<MensajeResponseDTO> searchMessages(Long chatId, String query) {
+        List<Mensaje> mensajes = mensajeRepository.findByChatIdAndCuerpoContainingIgnoreCase(chatId, query);
+        return mensajes.stream()
+                .map(this::toDTOResponse)
+                .collect(Collectors.toList());
+    }
 
 
 
@@ -151,7 +193,9 @@ public class MensajeServicio {
         mensajeResponseDTO.setUsername(mensaje.getAutor().getUsername());
         mensajeResponseDTO.setChatId(mensaje.getChat().getId());
         mensajeResponseDTO.setFecha(mensaje.getFecha_mensaje());
-        return mensajeResponseDTO; //Falta terminar
+        mensajeResponseDTO.setUserImage(mensaje.getAutor().getFotoUrl());
+        mensajeResponseDTO.setMultimedia(mensaje.getMultimediaMensaje());
+        return mensajeResponseDTO;
     }
 
 

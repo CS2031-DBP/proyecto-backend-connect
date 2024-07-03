@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -83,39 +84,37 @@ public class ChatController {
         chatService.renameGroup(chatId, newName, user.getId());
         return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
     }
-    // Listar todos los chats
     @GetMapping("/all/{usuarioId}")
     public ResponseEntity<List<Chat>> getAllChats(@PathVariable Long usuarioId) {
         List<Chat> chats = chatService.findAllChats(usuarioId);
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 
-    // Buscar chats por nombre
     @GetMapping("/search")
     public ResponseEntity<List<Chat>> searchChatsByName( @RequestParam String name) {
         List<Chat> chats = chatService.searchChatsByName( name);
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 
-    // Obtener miembros de un chat
     @GetMapping("/{chatId}/members")
     public ResponseEntity<List<ChatMembersDTO>> getChatMembers(@PathVariable Long chatId) {
         List<ChatMembersDTO> members = chatService.getChatMembers(chatId);
         return new ResponseEntity<>(members, HttpStatus.OK);
     }
-/*
-    // Enviar mensaje a un chat
-    @PostMapping("/{chatId}/message")
-    public ResponseEntity<Void> sendMessageToChat(@PathVariable Long chatId, @RequestBody String message, @RequestHeader("Authorization") String token) throws UserException {
-        UserProfileDTO user = userService.finddUserProfile(token);
-        chatService.sendMessageToChat(chatId, user.getId(), message);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PatchMapping("/{chatId}/updateImage")
+    public ResponseEntity<Void> updateChatImage(@PathVariable Long chatId,
+                                                @RequestParam("image") MultipartFile newImage,
+                                                @RequestHeader("Authorization") String token) throws Exception {
+        chatService.updateChatImage(chatId, newImage);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+    @PutMapping("/{chatId}/leave")
+    public ResponseEntity<Void> leaveChat(@PathVariable Long chatId,
+                                          @RequestHeader("Authorization") String token) {
+        chatService.leaveChat(chatId, token);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // Obtener mensajes de un chat
-    @GetMapping("/{chatId}/messages")
-    public ResponseEntity<List<String>> getChatMessages(@PathVariable Long chatId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        List<String> messages = chatService.getChatMessages(chatId, page, size);
-        return new ResponseEntity<>(messages, HttpStatus.OK);
-    }*/
+
+
 }

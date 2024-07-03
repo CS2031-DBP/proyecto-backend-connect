@@ -1,5 +1,6 @@
 package dbp.connect.Mensaje.Aplication;
 
+import dbp.connect.Chat.Exceptions.ChatNotFound;
 import dbp.connect.Mensaje.DTOS.ContentDTO;
 import dbp.connect.Mensaje.DTOS.DTOMensajePost;
 import dbp.connect.Mensaje.DTOS.MensajeResponseDTO;
@@ -11,11 +12,13 @@ import dbp.connect.User.Exceptions.BadCredentialException;
 import dbp.connect.User.Exceptions.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 
 @RestController
@@ -69,7 +72,8 @@ public class MensajeController {
         return ResponseEntity.noContent().build();
     }
     @PatchMapping("/{chatId}/mensajes/{mensajeId}")
-    public ResponseEntity<MensajeResponseDTO> updateMensaje(@PathVariable Long chatId, @PathVariable Long mensajeId) {
+    public ResponseEntity<MensajeResponseDTO> updateMensaje(@PathVariable Long chatId,
+                                                            @PathVariable Long mensajeId) {
         MensajeResponseDTO mensajeResponseDTO = mensajeServicio.updateStatus(chatId,mensajeId);
         return ResponseEntity.ok(mensajeResponseDTO);
     }
@@ -77,8 +81,23 @@ public class MensajeController {
     public ResponseEntity<MensajeResponseDTO> getMensaje(@PathVariable Long mensajeId) {
         return ResponseEntity.ok(mensajeServicio.findMessageById(mensajeId));
     }
-
-
-
+    @PatchMapping("/{chatId}/mensajes/{mensajeId}/read")
+    public ResponseEntity<Void> markMessageAsRead(@PathVariable Long chatId,
+                                                  @PathVariable Long mensajeId) throws ChatNotFound {
+        mensajeServicio.markMessageAsRead(chatId,mensajeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping("/{chatId}/mensajes/unread")
+    public ResponseEntity<List<MensajeResponseDTO>> getUnreadMessages(@PathVariable Long chatId,
+                                                                      @RequestHeader("Authorization") String token) throws BadCredentialException, UserException {
+        List<MensajeResponseDTO> mensajes = mensajeServicio.getUnreadMessages(chatId,token);
+        return ResponseEntity.ok(mensajes);
+    }
+    @GetMapping("/{chatId}/search")
+    public ResponseEntity<List<MensajeResponseDTO>> searchMessages(@PathVariable Long chatId,
+                                                                   @RequestParam String query) {
+        List<MensajeResponseDTO> mensajes = mensajeServicio.searchMessages(chatId,query);
+        return ResponseEntity.ok(mensajes);
+    }
 
 }
