@@ -5,6 +5,8 @@ import dbp.connect.Chat.Exceptions.ChatNotFound;
 import dbp.connect.Chat.Exceptions.NotAllowedPermissionChat;
 import dbp.connect.Chat.Infrastructure.ChatRepository;
 
+import dbp.connect.Friendship.Domain.FriendshipServicio;
+import dbp.connect.Friendship.Exceptions.NotFriendException;
 import dbp.connect.Mensaje.Infrastructure.MensajeRepository;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensajeServicio;
 import dbp.connect.S3.StorageService;
@@ -37,11 +39,17 @@ public class ChatService {
     @Autowired
     private StorageService storageService;
     private static final AtomicLong counter = new AtomicLong(1);
+    @Autowired
+    private FriendshipServicio friendshipServicio;
 
 
-    public Chat createChat(Long reqUser,Long targUser ) throws UserException{
+    public Chat createChat(Long reqUser,Long targUser ) throws UserException, NotFriendException {
         User user = userRepository.findById(reqUser).orElseThrow(() -> new UserException("Usuario no encontrado"));
         User targetUser = userRepository.findById(targUser).orElseThrow(()-> new EntityNotFoundException("Usuario no encontrado"));
+        if (!friendshipServicio.isFriend(reqUser, targUser)) {
+            throw new NotFriendException("Los usuarios no son amigos");
+        }
+
         Chat ischatExist = chatRepository.findSingleChatByUsersIds(user,targetUser);
         if(ischatExist != null){
             return ischatExist;
