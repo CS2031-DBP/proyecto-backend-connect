@@ -1,11 +1,13 @@
 package dbp.connect.Chat.Aplication;
 
+import dbp.connect.Chat.DTO.ChatMembersDTO;
 import dbp.connect.Chat.DTO.GroupChatRequestDTO;
 import dbp.connect.Chat.DTO.SingleChatRequestDTO;
 import dbp.connect.Chat.Domain.Chat;
 import dbp.connect.Chat.Domain.ChatService;
 import dbp.connect.Chat.Exceptions.ChatNotFound;
 import dbp.connect.Chat.Exceptions.NotAllowedPermissionChat;
+import dbp.connect.Friendship.Exceptions.NotFriendException;
 import dbp.connect.User.DTO.UserProfileDTO;
 import dbp.connect.User.Domain.UserService;
 import dbp.connect.User.Exceptions.BadCredentialException;
@@ -30,7 +32,7 @@ public class ChatController {
     @PostMapping("/single")
     public ResponseEntity<Chat> createChat(@RequestBody SingleChatRequestDTO singleChatRequestDTO,
                                            @RequestHeader ("Authorization") String token
-    ) throws UserException, BadCredentialException {
+    ) throws UserException, BadCredentialException, NotFriendException {
         UserProfileDTO user = userService.finddUserProfile(token);
         Chat chat = chatService.createChat(user.getId(), singleChatRequestDTO.getUserId());
         return new ResponseEntity<Chat>(chat, HttpStatus.CREATED);
@@ -97,11 +99,11 @@ public class ChatController {
 
     // Obtener miembros de un chat
     @GetMapping("/{chatId}/members")
-    public ResponseEntity<List<UserProfileDTO>> getChatMembers(@PathVariable Long chatId) {
-        List<UserProfileDTO> members = chatService.getChatMembers(chatId);
+    public ResponseEntity<List<ChatMembersDTO>> getChatMembers(@PathVariable Long chatId) {
+        List<ChatMembersDTO> members = chatService.getChatMembers(chatId);
         return new ResponseEntity<>(members, HttpStatus.OK);
     }
-
+/*
     // Enviar mensaje a un chat
     @PostMapping("/{chatId}/message")
     public ResponseEntity<Void> sendMessageToChat(@PathVariable Long chatId, @RequestBody String message, @RequestHeader("Authorization") String token) throws UserException {
@@ -115,5 +117,5 @@ public class ChatController {
     public ResponseEntity<List<String>> getChatMessages(@PathVariable Long chatId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<String> messages = chatService.getChatMessages(chatId, page, size);
         return new ResponseEntity<>(messages, HttpStatus.OK);
-    }
+    }*/
 }

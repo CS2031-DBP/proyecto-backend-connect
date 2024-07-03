@@ -1,5 +1,6 @@
 package dbp.connect.Chat.Domain;
 
+import dbp.connect.Chat.DTO.ChatMembersDTO;
 import dbp.connect.Chat.DTO.GroupChatRequestDTO;
 import dbp.connect.Chat.Exceptions.ChatNotFound;
 import dbp.connect.Chat.Exceptions.NotAllowedPermissionChat;
@@ -20,6 +21,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
@@ -173,6 +175,24 @@ public class ChatService {
         User user = userRepository.findByEmail(email).orElseThrow(()
                 -> new EntityNotFoundException("Usuario no encontrado"));
         return chatRepository.findChatsByNameAndUserId(name, user.getId());
+    }
+    public List<ChatMembersDTO> getChatMembers(Long chatId) {
+        Chat chat = chatRepository.findById(chatId).orElseThrow(
+                () -> new EntityNotFoundException("Chat no encontrado"));
+        List<ChatMembersDTO> members = new ArrayList<>();
+        for (User user : chat.getUsers()) {
+            ChatMembersDTO chatMembersDTO = new ChatMembersDTO();
+            chatMembersDTO.setChatId(chatId);
+            chatMembersDTO.setUserId(user.getId());
+            if (chat.isGroup()) {
+                chatMembersDTO.setAdmin(chat.getAdmins().contains(user));
+                chatMembersDTO.setGroup(true);
+                chatMembersDTO.setChatImage(chat.getChat_image());
+            }
+            chatMembersDTO.setDeleted(false);
+            members.add(chatMembersDTO);
+        }
+        return members;
     }
 
     private String serializarChatId(Long imagenId){
