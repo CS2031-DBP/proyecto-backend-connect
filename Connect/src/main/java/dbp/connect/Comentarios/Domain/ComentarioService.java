@@ -48,6 +48,7 @@ public class ComentarioService {
                 findById(publicacionID);
         if (publicacionInicio.isPresent()) {
             PublicacionInicio publicacion = publicacionInicio.get();
+            publicacion.setCantidadComentarios(publicacion.getCantidadComentarios() + 1);
             Comentario comentario = new Comentario();
             comentario.setMessage(comentarioDTO.getMessage());
             User autor = userRepository.findById(comentarioDTO.getAutorId())
@@ -74,6 +75,7 @@ public class ComentarioService {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.findById(publicacionID);
         if (publicacionInicio.isPresent()) {
             PublicacionInicio publicacion = publicacionInicio.get();
+            publicacion.setCantidadComentarios(publicacion.getCantidadComentarios() + 1);
             Comentario comentario = new Comentario();
             comentario.setPublicacion(publicacion);
             Optional<Comentario> parentComentario = comentarioRepository.findById(parentId);
@@ -149,6 +151,7 @@ public class ComentarioService {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.findById(publicacionID);
         if (publicacionInicio.isPresent()) {
             PublicacionInicio publicacion = publicacionInicio.get();
+            publicacion.setCantidadComentarios(publicacion.getCantidadComentarios() - 1);
             Optional<Comentario> comentario = comentarioRepository.findById(comentarioId);
             if (comentario.isPresent()) {
                 Comentario comentarioInicio = comentario.get();
@@ -171,6 +174,7 @@ public class ComentarioService {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.findById(publicacionID);
         if (publicacionInicio.isPresent()) {
             PublicacionInicio publicacion = publicacionInicio.get();
+            publicacion.setCantidadComentarios(publicacion.getCantidadComentarios() - 1);
             Optional<Comentario> comentarioPadreOptional = publicacion.getComentarios().stream()
                     .filter(comentario -> comentario.getId().equals(parentId))
                     .findFirst();
