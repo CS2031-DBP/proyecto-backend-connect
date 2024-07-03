@@ -80,7 +80,7 @@ public class ChatController {
         UserProfileDTO user = userService.finddUserProfile(token);
         chatService.renameGroup(chatId, newName, user.getId());
         return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
-    }
+    }/*
     // Listar todos los chats
     @GetMapping("/all")
     public ResponseEntity<List<Chat>> getAllChats() {
@@ -115,5 +115,5 @@ public class ChatController {
     public ResponseEntity<List<String>> getChatMessages(@PathVariable Long chatId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<String> messages = chatService.getChatMessages(chatId, page, size);
         return new ResponseEntity<>(messages, HttpStatus.OK);
-    }
+    }*/
 }
