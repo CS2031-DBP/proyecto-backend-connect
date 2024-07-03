@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 
 @RestController
 @RequestMapping("/alojamiento")
@@ -26,25 +27,24 @@ public class AlojamientoController {
     AlojamientoMultimediaServicio alojamientoMultimediaServicio;
     @PreAuthorize("hasRole('ROLE_HOST') ")
     @PostMapping()
-    public ResponseEntity<ResponseAlojamientoDTO> crearAlojamiento(@Valid @RequestBody AlojamientoRequest alojamientoRequest) throws AlojamientoNotFound {
+    public ResponseEntity<ResponseAlojamientoDTO> crearAlojamiento(@Valid @RequestBody AlojamientoRequest alojamientoRequest) throws AlojamientoNotFound, AccessDeniedException {
          ResponseAlojamientoDTO createdAlojamiento =alojamientoServicio.guardarAlojamiento(alojamientoRequest);
         return ResponseEntity.created(URI.create("/alojamiento/"+createdAlojamiento.getId())).body(createdAlojamiento);
     }
-    @PreAuthorize("hasRole('ROLE_HOST') ")
     @GetMapping("/{alojamientoId}")
     public ResponseEntity<ResponseAlojamientoDTO> getAlojamiento(@PathVariable Long alojamientoId) throws AlojamientoNotFound {
         ResponseAlojamientoDTO alojamiento= alojamientoServicio.obtenerAlojamiento(alojamientoId);
         return ResponseEntity.ok().body(alojamiento);
     }
     @GetMapping("/multimedia/{alojamientoId}/{imagenId}")
-    public ResponseEntity<ResponseMultimediaDTO> getMultimedia(@PathVariable Long alojamientoId, @PathVariable String imagenId) {
+    public ResponseEntity<ResponseMultimediaDTO> getMultimedia(@PathVariable Long alojamientoId, @PathVariable String imagenId) throws AccessDeniedException {
         ResponseMultimediaDTO multimediaDTO= alojamientoMultimediaServicio.obtenerMultimedia(alojamientoId, imagenId);
         return ResponseEntity.ok().body(multimediaDTO);
     }
     @GetMapping("/{alojamientoId}/multimedia")
     public ResponseEntity<Page<ResponseMultimediaDTO>> getMultimedia(@PathVariable Long alojamientoId,
                                                                      @RequestParam int page,
-                                                                     @RequestParam int size) {
+                                                                     @RequestParam int size) throws AccessDeniedException {
         alojamientoMultimediaServicio.obtenerMultimediaPaginacion(alojamientoId, page, size);
         return ResponseEntity.ok().build();
     }
@@ -104,7 +104,7 @@ public class AlojamientoController {
     }
     @PreAuthorize("hasRole('ROLE_HOST') ")
     @DeleteMapping("/eliminar/imagen/{alojamientoId}/{imagenId}")
-    public ResponseEntity<Void> eliminarImagen(@PathVariable Long alojamientoId, @PathVariable String imagenId) {
+    public ResponseEntity<Void> eliminarImagen(@PathVariable Long alojamientoId, @PathVariable String imagenId) throws AccessDeniedException {
         alojamientoMultimediaServicio.eliminarArchivo(alojamientoId, imagenId);
         return ResponseEntity.noContent().build();
     }

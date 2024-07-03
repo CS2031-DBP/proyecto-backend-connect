@@ -5,9 +5,12 @@ import dbp.connect.Chat.Exceptions.ChatNotFound;
 import dbp.connect.Chat.Exceptions.NotAllowedPermissionChat;
 import dbp.connect.Chat.Infrastructure.ChatRepository;
 
+import dbp.connect.Friendship.Domain.FriendshipServicio;
+import dbp.connect.Friendship.Exceptions.NotFriendException;
 import dbp.connect.Mensaje.Infrastructure.MensajeRepository;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensajeServicio;
 import dbp.connect.S3.StorageService;
+import dbp.connect.Security.Utils.AuthorizationUtils;
 import dbp.connect.User.Domain.User;
 import dbp.connect.User.Domain.UserService;
 
@@ -37,11 +40,19 @@ public class ChatService {
     @Autowired
     private StorageService storageService;
     private static final AtomicLong counter = new AtomicLong(1);
+    @Autowired
+    private FriendshipServicio friendshipServicio;
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
 
 
-    public Chat createChat(Long reqUser,Long targUser ) throws UserException{
+    public Chat createChat(Long reqUser,Long targUser ) throws UserException, NotFriendException {
         User user = userRepository.findById(reqUser).orElseThrow(() -> new UserException("Usuario no encontrado"));
         User targetUser = userRepository.findById(targUser).orElseThrow(()-> new EntityNotFoundException("Usuario no encontrado"));
+        if (!friendshipServicio.isFriend(reqUser, targUser)) {
+            throw new NotFriendException("Los usuarios no son amigos");
+        }
+
         Chat ischatExist = chatRepository.findSingleChatByUsersIds(user,targetUser);
         if(ischatExist != null){
             return ischatExist;
@@ -53,7 +64,6 @@ public class ChatService {
         chat.getUsers().add(targetUser);
         chat.setGroup(false);
         return chat;
-        //Verificar en la lista de amigos si es su amigo
     }
 
     public Chat getChat(Long chatId){
@@ -155,14 +165,24 @@ public class ChatService {
         }
         throw new ChatNotFound("Chat no encontrado");
     }
+    public List<Chat> findAllChats(Long userId) {
+        return chatRepository.findAllByUserId(userId);
+    }
+    public List<Chat> searchChatsByName(String name) {
+        String email = authorizationUtils.authenticateUser();
+        User user = userRepository.findByEmail(email).orElseThrow(()
+                -> new EntityNotFoundException("Usuario no encontrado"));
+        return chatRepository.findChatsByNameAndUserId(name, user.getId());
+    }
 
     private String serializarChatId(Long imagenId){
-        return "imagen-" + imagenId;
+        return "chat-" + imagenId;
     }
 
 
     public Long generateId() {
         return counter.getAndIncrement();
     }
+
 
 }

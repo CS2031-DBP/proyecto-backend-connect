@@ -80,18 +80,18 @@ public class ChatController {
         UserProfileDTO user = userService.finddUserProfile(token);
         chatService.renameGroup(chatId, newName, user.getId());
         return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
-    }/*
+    }
     // Listar todos los chats
-    @GetMapping("/all")
-    public ResponseEntity<List<Chat>> getAllChats() {
-        List<Chat> chats = chatService.findAllChats();
+    @GetMapping("/all/{usuarioId}")
+    public ResponseEntity<List<Chat>> getAllChats(@PathVariable Long usuarioId) {
+        List<Chat> chats = chatService.findAllChats(usuarioId);
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 
     // Buscar chats por nombre
     @GetMapping("/search")
-    public ResponseEntity<List<Chat>> searchChatsByName(@RequestParam String name) {
-        List<Chat> chats = chatService.searchChatsByName(name);
+    public ResponseEntity<List<Chat>> searchChatsByName( @RequestParam String name) {
+        List<Chat> chats = chatService.searchChatsByName( name);
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 
@@ -115,5 +115,5 @@ public class ChatController {
     public ResponseEntity<List<String>> getChatMessages(@PathVariable Long chatId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<String> messages = chatService.getChatMessages(chatId, page, size);
         return new ResponseEntity<>(messages, HttpStatus.OK);
-    }*/
+    }
 }
