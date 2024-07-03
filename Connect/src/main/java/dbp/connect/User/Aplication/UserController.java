@@ -78,4 +78,4 @@ public ResponseEntity<Boolean> verificarAmistad(@PathVariable Long userId, @Path
     return ResponseEntity.ok(esAmigo);
 }
 */
-}
+} //hello
