@@ -21,7 +21,7 @@ public class PublicacionInicio {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "autorP_Id", nullable = false)
+    @JoinColumn(name = "autorP_Id")
     private User autorP;
     @OneToMany(mappedBy = "publicacionInicio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PublicacionInicioMultimedia> publicacionMultimedia = new ArrayList<>();

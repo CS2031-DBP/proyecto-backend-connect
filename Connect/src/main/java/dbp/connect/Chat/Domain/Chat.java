@@ -5,6 +5,8 @@ import dbp.connect.Mensaje.Domain.Mensaje;
 import dbp.connect.User.Domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -31,6 +33,13 @@ public class Chat implements Serializable {
 
     @Column(name = "is_group")
     private boolean isGroup;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private ZonedDateTime updatedAt;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
 
     @ManyToMany
     private Set<User> admins = new HashSet<>();
@@ -92,5 +101,9 @@ public class Chat implements Serializable {
         return Objects.hashCode(getId());
     }
 
+    @Transient
+    public int getMessageCount() {
+        return this.mensajes.size();
+    }
 
 }

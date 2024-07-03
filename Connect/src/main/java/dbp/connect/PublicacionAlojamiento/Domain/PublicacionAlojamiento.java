@@ -21,10 +21,10 @@ public class PublicacionAlojamiento {
     @JoinColumn(name = "alojamientoP_id")
     private Alojamiento alojamientoP;
 
-    @Column(nullable = false)
+    @Column(name = "fecha")
     private ZonedDateTime fecha;
-    @Column(nullable = false)
-    private String Titulo;
+    @Column(name="titulo")
+    private String titulo;
     @Column
     private Double promedioRating;
     @Column

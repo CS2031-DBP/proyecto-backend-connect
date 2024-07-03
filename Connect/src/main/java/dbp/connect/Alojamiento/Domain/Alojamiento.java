@@ -21,21 +21,21 @@ public class Alojamiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JoinColumn(name ="estado", nullable = false)
+    @JoinColumn(name ="estado")
     private Estado estado;
-    @Column(name="latitude",nullable = false)
+    @Column(name="latitude")
     private Double latitude;
-    @Column(name="longitud",nullable = false)
+    @Column(name="longitud")
     private Double longitude;
-    @Column(name="ubicacion",nullable = false)
+    @Column(name="ubicacion")
     private String ubicacion;
-    @Column(name ="fechaPublicacion", nullable = false)
+    @Column(name ="fechaPublicacion")
     private LocalDateTime fechaPublicacion;
-    @Column(name="descripcion", nullable = false)
+    @Column(name="descripcion")
     private String descripcion;
-    @Column(name="precio", nullable = false)
+    @Column(name="precio")
     private Double precio;
-    @Column(name="tipoMoneda", nullable = false)
+    @Column(name="tipoMoneda")
     private TipoMoneda tipoMoneda;
     @OneToMany(mappedBy = "alojamiento", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<AlojamientoMultimedia> alojamientoMultimedia = new ArrayList<>();

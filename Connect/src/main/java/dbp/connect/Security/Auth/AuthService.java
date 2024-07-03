@@ -58,8 +58,6 @@ public class AuthService {
                 newuser.setRole(Rol.TRAVELER);}
             else if(authRegisterRequest.getRole().equals("HOST")){
                 newuser.setRole(Rol.HOST);}
-            else if(authRegisterRequest.getRole().equals("BOTH")){
-                newuser.setRole(Rol.BOTH);}
         }
         System.out.println(newuser);
         System.out.println(newuser.getRole());

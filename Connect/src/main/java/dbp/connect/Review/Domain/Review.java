@@ -21,17 +21,17 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "autorR_id", nullable = false)
+    @JoinColumn(name = "autorR_id")
     private User autorR;
 
     @ManyToOne
-    @JoinColumn(name = "publicacionAlojamiento_id",nullable = false)
+    @JoinColumn(name = "publicacionAlojamiento_id")
     private PublicacionAlojamiento publicacionAlojamiento;
 
-    @Column(name="calificacion",nullable = false)
+    @Column(name="calificacion")
     private Integer calificacion;
-    @Column(name="comentario",nullable = false)
+    @Column(name="comentario")
     private String comentario;
-    @Column(name="fecha",nullable = false)
+    @Column(name="fecha")
     private LocalDateTime fecha;
 }

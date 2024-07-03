@@ -1,5 +1,6 @@
 package dbp.connect.Friendship.Domain;
 
+import dbp.connect.Friendship.DTO.AmigoPersonalizado;
 import dbp.connect.Friendship.DTO.AmigosDTO;
 import dbp.connect.Friendship.Infrastructure.FriendshipRepositorio;
 import dbp.connect.User.Domain.User;
@@ -70,57 +71,84 @@ public class FriendshipServicio {
     }
 
     public Page<AmigosDTO> obtenerAmigosNoBloqueados(Long usuarioId, Integer page, Integer size) {
-        User user = userRepository.findById(usuarioId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Friendship> friendshipsPage = friendshipRepositorio.findNonBlockedFriendsByUserId(usuarioId, pageable);
 
-        Set<AmigosDTO> amigosNoBloqueados = new HashSet<>();
-
-        for (Friendship friendship : user.getFriendshipsInicializados()) {
-            if (!friendship.isBlocked()) {
-                amigosNoBloqueados.add(mapToAmigosDTO(friendship.getFriend()));
-            }
-        }
-
-        for (Friendship friendship : user.getFriendOf()) {
-            if (!friendship.isBlocked()) {
-                amigosNoBloqueados.add(mapToAmigosDTO(friendship.getUser()));
-            }
-        }
-
-        return paginateList(new ArrayList<>(amigosNoBloqueados), page, size);
+        return friendshipsPage.map(friendship -> mapToAmigosDTOFromFriendship(friendship, usuarioId));
     }
+
+    public void deleteFriendship(Long amistadId) {
+        Friendship friendship = friendshipRepositorio.findById(amistadId).orElseThrow(() ->
+                new EntityNotFoundException("Amistad no encontrada"));
+        friendshipRepositorio.deleteById(amistadId);
+    }
+
 
     public Page<AmigosDTO> obtenerAmigosBloqueados(Long usuarioId, int page, int size) {
-        User user = userRepository.findById(usuarioId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Friendship> friendshipsPage = friendshipRepositorio.findBlockedFriendsByUserId(usuarioId, pageable);
 
-        Set<AmigosDTO> amigosBloqueados = new HashSet<>();
-
-        for (Friendship friendship : user.getFriendshipsInicializados()) {
-            if (friendship.isBlocked()) {
-                amigosBloqueados.add(mapToAmigosDTO(friendship.getFriend()));
-            }
-        }
-
-        for (Friendship friendship : user.getFriendOf()) {
-            if (friendship.isBlocked()) {
-                amigosBloqueados.add(mapToAmigosDTO(friendship.getUser()));
-            }
-        }
-
-        return paginateList(new ArrayList<>(amigosBloqueados), page, size);
+        return friendshipsPage.map(friendship -> mapToAmigosDTOFromFriendship(friendship, usuarioId));
     }
 
-    private AmigosDTO mapToAmigosDTO(User user) {
+    public Page<AmigosDTO> findAllAmigos(Long usuarioId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Friendship> friendshipsPage = friendshipRepositorio.findAllByUserId(usuarioId, pageable);
+
+        return friendshipsPage.map(friendship -> mapToAmigosDTOFromFriendship(friendship, usuarioId));
+    }
+    public AmigosDTO findFriendshipById(Long amistadId) {
+        Friendship friendship = friendshipRepositorio.findById(amistadId).orElseThrow(() ->
+                new EntityNotFoundException("Amistad no encontrada"));
+        return mapToAmigosDTOFromFriendship(friendship, friendship.getUser().getId());
+    }
+    public void updateFriendshipDate(Long amistadId, ZonedDateTime newDate) {
+        Friendship friendship = friendshipRepositorio.findById(amistadId).orElseThrow(() ->
+                new EntityNotFoundException("Amistad no encontrada"));
+        friendship.setFechaAmistad(newDate);
+        friendshipRepositorio.save(friendship);
+    }
+    public Long getTotalFriends(Long userId) {
+        return friendshipRepositorio.findAllByUserId(userId, PageRequest.of(0, Integer.MAX_VALUE)).getTotalElements();
+    }
+    public Long getTotalBlockedFriends(Long userId) {
+        return friendshipRepositorio.findBlockedFriendsByUserId(userId, PageRequest.of(0, Integer.MAX_VALUE)).getTotalElements();
+    }
+    public Long getTotalNonBlockedFriends(Long userId) {
+        return friendshipRepositorio.findNonBlockedFriendsByUserId(userId, PageRequest.of(0, Integer.MAX_VALUE)).getTotalElements();
+    }
+    // Implementation in FriendshipServicio
+    public List<AmigoPersonalizado> searchFriendsByName(Long userId, String name) {
+        List<Friendship> friendships = friendshipRepositorio.searchByUserIdAndFriendName(userId, name);
+        List<AmigoPersonalizado> amigos = new ArrayList<>();
+        for (Friendship friendship : friendships) {
+            User friend = userId.equals(friendship.getUser().getId()) ? friendship.getFriend() : friendship.getUser();
+            AmigoPersonalizado amigo = new AmigoPersonalizado();
+            amigo.setUsuarioId(friend.getId());
+            amigo.setUserName(friend.getPrimerNombre() + " " + friend.getSegundoNombre());
+            amigo.setUserName(friend.getUsername());
+            amigos.add(amigo);
+        }
+        return amigos;
+    }
+
+    private AmigosDTO mapToAmigosDTO(User user, ZonedDateTime fechaAmistad, Long friendshipId) {
         AmigosDTO dto = new AmigosDTO();
+        dto.setAmigoId(friendshipId);
         dto.setAmigoId(user.getId());
-        dto.setNombreCompleto(user.getPrimerNombre() + " "+ user.getSegundoNombre());
+        dto.setNombreCompleto(user.getPrimerNombre() + " " + user.getSegundoNombre());
         dto.setApellidoCompleto(user.getPrimerApellido() + " " + user.getSegundoApellido());
-        return dto;    }
-
-    private <T> Page<T> paginateList(List<T> list, int page, int size) {
-        int start = Math.min(page * size, list.size());
-        int end = Math.min((page + 1) * size, list.size());
-        return new PageImpl<>(list.subList(start, end), PageRequest.of(page, size), list.size());
+        dto.setUserName(user.getUsername());
+        dto.setFechaAmistad(fechaAmistad);
+        return dto;
     }
+
+    private AmigosDTO mapToAmigosDTOFromFriendship(Friendship friendship, Long usuarioId) {
+        User friend = friendship.getUser().getId().equals(usuarioId) ? friendship.getFriend() : friendship.getUser();
+        return mapToAmigosDTO(friend, friendship.getFechaAmistad(), friendship.getFId());
+    }
+
+
 
 
 }
