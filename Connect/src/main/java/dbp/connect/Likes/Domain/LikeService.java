@@ -106,5 +106,39 @@ public class LikeService {
         Integer likes = publicacionInicio.getLikes().size();
         return likes;
     }
+    public List<LikeResponseDTO> findLikesByDateRange(ZonedDateTime inicio, ZonedDateTime fin) {
+        List<Like> likes = likeRepositorio.findByFechaLikeBetween(inicio, fin);
+        return likes.stream()
+                .map(like -> {
+                    LikeResponseDTO dto = new LikeResponseDTO();
+                    dto.setId(like.getId());
+                    dto.setFechaLike(like.getFechaLike());
+                    dto.setPublicacionInicioId(like.getPublicacionInicio().getId());
+                    dto.setUsuarioLikeId(like.getUsuarioLike().getId());
+                    dto.setUsuarioLikeUsername(like.getUsuarioLike().getUsername());
+                    dto.setUsuarioFotoPerfil(like.getUsuarioLike().getFotoUrl());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+    public List<LikeResponseDTO> findRecentLikesByUsuario(Long usuarioLikeId, int limit) {
+        User user = userRepository.findById(usuarioLikeId).orElseThrow(()
+                -> new IllegalArgumentException("User not found"));
+        List<Like> likes = user.getLikes().stream()
+                .sorted((l1, l2) -> l2.getFechaLike().compareTo(l1.getFechaLike()))
+                .limit(limit)
+                .collect(Collectors.toList());
+        return likes.stream().map(like -> {
+            LikeResponseDTO dto = new LikeResponseDTO();
+            dto.setId(like.getId());
+            dto.setFechaLike(like.getFechaLike());
+            dto.setPublicacionInicioId(like.getPublicacionInicio().getId());
+            dto.setUsuarioLikeId(like.getUsuarioLike().getId());
+            dto.setUsuarioLikeUsername(like.getUsuarioLike().getUsername());
+            dto.setUsuarioFotoPerfil(like.getUsuarioLike().getFotoUrl());
+            return dto;
+        }).collect(Collectors.toList());
+
+    }
 
 }

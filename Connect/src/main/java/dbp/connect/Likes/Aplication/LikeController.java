@@ -5,9 +5,11 @@ import dbp.connect.Likes.DTOS.LikesOfUserDTO;
 import dbp.connect.Likes.Domain.Like;
 import dbp.connect.Likes.Domain.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
@@ -21,6 +23,7 @@ public class LikeController {
         likeService.processLikeAsync(publicacionInicioId, usuarioLikeId);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/{likeId}")
     public ResponseEntity<LikeResponseDTO> getLikeById(@PathVariable Long likeId) {
         try{
@@ -53,5 +56,21 @@ public class LikeController {
         Integer likes = likeService.findLikesCountByPublicacionInicioId(publicacionInicioId);
         return ResponseEntity.ok(likes);
     }
+
+    @GetMapping("/fecha")
+    public ResponseEntity<List<LikeResponseDTO>> getLikesByDateRange(
+            @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime inicio,
+            @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime fin) {
+        List<LikeResponseDTO> likes = likeService.findLikesByDateRange(inicio, fin);
+        return ResponseEntity.ok(likes);
+    }
+
+    @GetMapping("/usuario/{usuarioLikeId}/recientes")
+    public ResponseEntity<List<LikeResponseDTO>> getRecentLikesByUsuario(@PathVariable Long usuarioLikeId,
+                                                                         @RequestParam(defaultValue = "5") int limit) {
+        List<LikeResponseDTO> likes = likeService.findRecentLikesByUsuario(usuarioLikeId, limit);
+        return ResponseEntity.ok(likes);
+    }
+
 
 }
