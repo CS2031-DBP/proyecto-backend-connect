@@ -82,16 +82,16 @@ public class ChatController {
         return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
     }
     // Listar todos los chats
-    @GetMapping("/all")
-    public ResponseEntity<List<Chat>> getAllChats() {
-        List<Chat> chats = chatService.findAllChats();
+    @GetMapping("/all/{usuarioId}")
+    public ResponseEntity<List<Chat>> getAllChats(@PathVariable Long usuarioId) {
+        List<Chat> chats = chatService.findAllChats(usuarioId);
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 
     // Buscar chats por nombre
     @GetMapping("/search")
-    public ResponseEntity<List<Chat>> searchChatsByName(@RequestParam String name) {
-        List<Chat> chats = chatService.searchChatsByName(name);
+    public ResponseEntity<List<Chat>> searchChatsByName( @RequestParam String name) {
+        List<Chat> chats = chatService.searchChatsByName( name);
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 

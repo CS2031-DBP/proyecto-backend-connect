@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MensajeServicio {
     @Autowired
-    private ChatService chatService;
-    @Autowired
     private ChatRepository chatRepository;
     @Autowired
     private MensajeRepository mensajeRepository;
@@ -132,6 +130,8 @@ public class MensajeServicio {
         }
         mensajeRepository.deleteById(id);
     }
+
+
     public MensajeResponseDTO updateStatus(Long chatId,Long MensajeId){
         Mensaje mensaje = mensajeRepository.findByChatIdAndId(chatId,MensajeId)
                 .orElseThrow(()->new EntityNotFoundException("No se encontro el mensaje para el chat especificado"));
@@ -139,6 +139,7 @@ public class MensajeServicio {
         mensajeRepository.save(mensaje);
         return toDTOResponse(mensaje);
     }
+
 
 
 
