@@ -9,6 +9,7 @@ import dbp.connect.Comentarios.Infrastructure.ComentarioRepository;
 import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimedia;
 import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimediaServicio;
 import dbp.connect.ComentariosMultimedia.Infrastructure.ComentarioMultimediaRepositorio;
+import dbp.connect.Notificaciones.Domain.NotificacionesService;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.PublicacionInicio.Infrastructure.PublicacionInicioRepositorio;
 import dbp.connect.User.Domain.User;
@@ -42,6 +43,8 @@ public class ComentarioService {
     private ComentarioMultimediaServicio comentarioMultimediaServicio;
     @Autowired
     private ComentarioMultimediaRepositorio comentarioMultimediaRepositorio;
+    @Autowired
+    private NotificacionesService notificacionesService;
 
     public Comentario createNewComentario(Long publicacionID, ComentarioDto comentarioDTO) {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.
@@ -65,6 +68,8 @@ public class ComentarioService {
             comentarioRepository.save(comentario);
             publicacion.getComentarios().add(comentario);
             publicacionInicioRepositorio.save(publicacion);
+            notificacionesService.crearNotificacionPorComentario(publicacion.getAutorP().getId(),
+                    publicacionID,autor.getUsername() + "Acaba de comentar en tu publicacion");
             return comentario;
         } else {
             throw new PublicacionNoEncontradoException("Publicacion no encontrada");
@@ -103,6 +108,10 @@ public class ComentarioService {
                     publicacion.getComentarios().add(parentComentarioParent);
                     publicacionInicioRepositorio.save(publicacion);
                 }
+                notificacionesService.crearNotificacionPorComentario(publicacion.getAutorP().getId(),
+                        publicacionID,autor.getUsername() + "Acaba de comentar en tu publicacion");
+                notificacionesService.crearNotificacionPorComentario(parentComentarioParent.getAutorComentario().getId(),
+                        publicacionID,autor.getUsername() + "Acaba de responder a tu comentario");
                 return comentario;
             } else {
                 throw new ComentarioNoEncontradoException("Comentario no encontrado");

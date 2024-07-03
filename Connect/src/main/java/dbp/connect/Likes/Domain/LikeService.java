@@ -3,6 +3,7 @@ package dbp.connect.Likes.Domain;
 import dbp.connect.Likes.DTOS.LikeResponseDTO;
 import dbp.connect.Likes.DTOS.LikesOfUserDTO;
 import dbp.connect.Likes.Infrastructure.LikeRepositorio;
+import dbp.connect.Notificaciones.Domain.NotificacionesService;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.PublicacionInicio.Infrastructure.PublicacionInicioRepositorio;
 import dbp.connect.User.Domain.User;
@@ -25,6 +26,8 @@ public class LikeService {
     private UserRepository userRepository;
     @Autowired
     private PublicacionInicioRepositorio publicacionInicioRepositorio;
+    @Autowired
+    private NotificacionesService notificacionesService;
 
     @Async
     public void processLikeAsync(Long publicacionInicioId, Long usuarioLikeId) {
@@ -41,8 +44,9 @@ public class LikeService {
         likeRepositorio.save(like);
         publicacionInicio.getLikes().add(like);
         publicacionInicioRepositorio.save(publicacionInicio);
+        notificacionesService.crearNotificacionPorLike(publicacionInicio.getAutorP().getId(), publicacionInicioId,
+                "A " + userLike.getUsername() + " le ha gustado tu publicacion");
         System.out.println("Procesando like asincrono para publicacionInicioId: " + publicacionInicioId + " y usuarioLikeId: " + usuarioLikeId);
-
     }
     public LikeResponseDTO findLikeById(Long likeId) {
         Like like = likeRepositorio.findById(likeId).orElseThrow(()

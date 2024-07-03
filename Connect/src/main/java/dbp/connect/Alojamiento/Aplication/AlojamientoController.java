@@ -19,7 +19,7 @@ import java.net.URI;
 import java.nio.file.AccessDeniedException;
 
 @RestController
-@RequestMapping("/alojamiento")
+@RequestMapping("/api/alojamiento")
 public class AlojamientoController {
     @Autowired
     AlojamientoServicio alojamientoServicio;

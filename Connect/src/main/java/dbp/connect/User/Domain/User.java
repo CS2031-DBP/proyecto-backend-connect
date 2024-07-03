@@ -1,5 +1,6 @@
 package dbp.connect.User.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.Chat.Domain.Chat;
 import dbp.connect.Comentarios.Domain.Comentario;
@@ -7,6 +8,7 @@ import dbp.connect.FriendRequest.Domain.FriendshipRequest;
 import dbp.connect.Friendship.Domain.Friendship;
 import dbp.connect.Likes.Domain.Like;
 import dbp.connect.Mensaje.Domain.Mensaje;
+import dbp.connect.Notificaciones.Domain.Notificaciones;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.Review.Domain.Review;
 import jakarta.persistence.*;
@@ -122,6 +124,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FriendshipRequest> sentFriendRequests = new HashSet<>();
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("usuario")
+    private Set<Notificaciones> notificaciones = new HashSet<>();
+
+
+
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FriendshipRequest> receivedFriendRequests = new HashSet<>();
     public User removeMensaje(Mensaje mensaje) {
@@ -164,42 +172,56 @@ public class User implements UserDetails {
         chat.getUsers().remove(this);
         return this;
     }
+    public void addNotificacion(Notificaciones notificacion) {
+        notificaciones.add(notificacion);
+        notificacion.setUsuario(this);
+    }
+
+    public void removeNotificacion(Notificaciones notificacion) {
+        notificaciones.remove(notificacion);
+        notificacion.setUsuario(null);
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return edad == user.edad && Objects.equals(id, user.id)
-                && Objects.equals(username, user.username) &&
-                Objects.equals(primerNombre, user.primerNombre) &&
-                Objects.equals(segundoNombre, user.segundoNombre) &&
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(username,
+                user.username) && Objects.equals(primerNombre, user.primerNombre)
+                && Objects.equals(segundoNombre, user.segundoNombre) &&
                 Objects.equals(primerApellido, user.primerApellido) &&
                 Objects.equals(segundoApellido, user.segundoApellido) &&
-                Objects.equals(email, user.email) && Objects.equals(password,
-                user.password) && Objects.equals(genero, user.genero) &&
-                Objects.equals(fotoUrl, user.fotoUrl) &&
-                Objects.equals(descripcion, user.descripcion) &&
+                Objects.equals(edad, user.edad) && Objects.equals(email, user.email)
+                && Objects.equals(password, user.password) &&
+                Objects.equals(genero, user.genero) && Objects.equals(fotoUrl, user.fotoUrl)
+                && Objects.equals(descripcion, user.descripcion) &&
                 Objects.equals(telefono, user.telefono) &&
                 Objects.equals(fechaNacimiento, user.fechaNacimiento) &&
                 Objects.equals(ciudad, user.ciudad) && Objects.equals(pais, user.pais)
-                && Objects.equals(direccion, user.direccion) && Objects.equals(mensaje, user.mensaje)
-                && Objects.equals(chats, user.chats) &&
-                Objects.equals(friendshipsInicializados, user.friendshipsInicializados)
-                && Objects.equals(friendOf, user.friendOf) && Objects.equals(alojamientos,
-                user.alojamientos) && Objects.equals(publicacionInicio, user.publicacionInicio)
-                && Objects.equals(comentarios, user.comentarios) && Objects.equals(reviews, user.reviews)
-                && Objects.equals(likes, user.likes) && Objects.equals(sentFriendRequests,
-                user.sentFriendRequests) && Objects.equals(receivedFriendRequests,
-                user.receivedFriendRequests);
+                && Objects.equals(direccion, user.direccion) && role == user.role
+                && Objects.equals(createdAt, user.createdAt) &&
+                Objects.equals(mensaje, user.mensaje) && Objects.equals(chats, user.chats)
+                && Objects.equals(friendshipsInicializados, user.friendshipsInicializados)
+                && Objects.equals(friendOf, user.friendOf) &&
+                Objects.equals(alojamientos, user.alojamientos) &&
+                Objects.equals(publicacionInicio, user.publicacionInicio) &&
+                Objects.equals(comentarios, user.comentarios) &&
+                Objects.equals(reviews, user.reviews) &&
+                Objects.equals(likes, user.likes) &&
+                Objects.equals(sentFriendRequests, user.sentFriendRequests) &&
+                Objects.equals(notificaciones, user.notificaciones) &&
+                Objects.equals(receivedFriendRequests, user.receivedFriendRequests) &&
+                Objects.equals(role_prefix, user.role_prefix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, primerNombre, segundoNombre, primerApellido,
-                segundoApellido, edad, email, password, genero, fotoUrl, descripcion,
-                telefono, fechaNacimiento, ciudad, pais, direccion, mensaje, chats,
-                friendshipsInicializados, friendOf, alojamientos, publicacionInicio,
-                comentarios, reviews, likes, sentFriendRequests, receivedFriendRequests);
+        return Objects.hash(id, username, primerNombre, segundoNombre, primerApellido, segundoApellido,
+                edad, email, password, genero, fotoUrl, descripcion, telefono, fechaNacimiento, ciudad,
+                pais, direccion, role, createdAt, mensaje, chats, friendshipsInicializados, friendOf,
+                alojamientos, publicacionInicio, comentarios, reviews, likes, sentFriendRequests,
+                notificaciones, receivedFriendRequests, role_prefix);
     }
 
     @Transient

@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/comentarios")
+@RequestMapping("/api/comentarios")
 public class ComentarioController {
 
     @Autowired

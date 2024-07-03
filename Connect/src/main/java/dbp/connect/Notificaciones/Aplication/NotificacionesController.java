@@ -1,58 +1,58 @@
-package dbp.connect.Notificaciones.application;
+package dbp.connect.Notificaciones.Aplication;
 
+import dbp.connect.Notificaciones.DTOS.NotificacionResponse;
+import dbp.connect.Notificaciones.Domain.Notificaciones;
+import dbp.connect.Notificaciones.Domain.NotificacionesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/notificaciones")
 public class NotificacionesController {
-/*
+
     @Autowired
     private NotificacionesService notificacionesService;
-
-    @GetMapping
-    public ResponseEntity<List<Notificaciones>> obtenerTodasLasNotificaciones() {
-        List<Notificaciones> notificaciones = notificacionesService.obtenerTodasLasNotificaciones();
-        return new ResponseEntity<>(notificaciones, HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<Notificaciones> createNotificacion(@RequestBody Notificaciones notificacion) {
+        Notificaciones createdNotificacion = notificacionesService.createNotificacion(notificacion);
+        return ResponseEntity.ok(createdNotificacion);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Notificaciones> obtenerNotificacionPorId(@PathVariable Long id) {
-        try {
-            Notificaciones notificacion = notificacionesService.obtenerNotificacionPorId(id);
-            return new ResponseEntity<>(notificacion, HttpStatus.OK);
-        } catch (NotificacionesExceptions e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<NotificacionResponse> getNotificacionById(@PathVariable Long id) {
+        NotificacionResponse notificacion = notificacionesService.getNotificacionById(id);
+        return ResponseEntity.ok(notificacion);
     }
 
-    @PostMapping
-    public ResponseEntity<Notificaciones> crearNotificacion(@RequestBody Notificaciones notificacion) {
-        Notificaciones nuevaNotificacion = notificacionesService.crearNotificacion(notificacion);
-        return new ResponseEntity<>(nuevaNotificacion, HttpStatus.CREATED);
-    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Notificaciones> actualizarNotificacion(@PathVariable Long id, @RequestBody Notificaciones notificacion) {
-        try {
-            Notificaciones notificacionActualizada = notificacionesService.actualizarNotificacion(id, notificacion);
-            return new ResponseEntity<>(notificacionActualizada, HttpStatus.OK);
-        } catch (NotificacionesExceptions e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarNotificacion(@PathVariable Long id) {
-        try {
-            notificacionesService.eliminarNotificacion(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (NotificacionesExceptions e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteNotificacion(@PathVariable Long id) {
+        notificacionesService.deleteNotificacion(id);
+        return ResponseEntity.ok().build();
     }
-}*/}
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<Page<NotificacionResponse>> getNotificacionesByUsuarioId(@PathVariable Long usuarioId, Pageable pageable) {
+        Page<NotificacionResponse> notificaciones = notificacionesService.getNotificacionesByUsuarioId(usuarioId, pageable);
+        return ResponseEntity.ok(notificaciones);
+    }
+
+    @GetMapping("/{usuarioId}/fecha")
+    public ResponseEntity<List<NotificacionResponse>> getNotificacionesByDateBetween(@PathVariable Long usuarioId, @RequestParam ZonedDateTime startDate, @RequestParam ZonedDateTime endDate) {
+        List<NotificacionResponse> notificaciones = notificacionesService.getNotificacionesByDateBetween(usuarioId, startDate, endDate);
+        return ResponseEntity.ok(notificaciones);
+    }
+
+    @GetMapping("/{usuarioId}/buscar")
+    public ResponseEntity<List<NotificacionResponse>> getNotificacionesByQuery(@PathVariable Long usuarioId, @RequestParam String query) {
+        List<NotificacionResponse> notificaciones = notificacionesService.getNotificacionesByQuery(usuarioId, query);
+        return ResponseEntity.ok(notificaciones);
+    }
+}
