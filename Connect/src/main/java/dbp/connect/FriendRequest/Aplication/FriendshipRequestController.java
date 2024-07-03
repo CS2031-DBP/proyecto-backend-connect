@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/friendship-requests")
+@RequestMapping("/api/friendship-requests")
 public class FriendshipRequestController {
 
     @Autowired

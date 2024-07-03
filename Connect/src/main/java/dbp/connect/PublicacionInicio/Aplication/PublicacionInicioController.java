@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RestController("/publicacionInicio")
+@RestController("/api/publicacionInicio")
 public class PublicacionInicioController {
     @Autowired
     private PublicacionInicioServicio publicacionInicioServicio;

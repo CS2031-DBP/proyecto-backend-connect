@@ -25,7 +25,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("api/messages")
+@RequestMapping("/api/messages")
 public class MensajeController {
     @Autowired
     private MensajeServicio mensajeServicio;

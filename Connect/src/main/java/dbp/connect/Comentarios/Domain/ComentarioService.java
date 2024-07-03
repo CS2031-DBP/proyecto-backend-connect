@@ -110,7 +110,7 @@ public class ComentarioService {
                 }
                 notificacionesService.crearNotificacionPorComentario(publicacion.getAutorP().getId(),
                         publicacionID,autor.getUsername() + "Acaba de comentar en tu publicacion");
-                notificacionesService.crearNotificacionPorComentario(parentComentarioParent.getAutorComentario().getId(),
+                notificacionesService.crearNotificacionPorRespuesta(parentComentarioParent.getAutorComentario().getId(),
                         publicacionID,autor.getUsername() + "Acaba de responder a tu comentario");
                 return comentario;
             } else {

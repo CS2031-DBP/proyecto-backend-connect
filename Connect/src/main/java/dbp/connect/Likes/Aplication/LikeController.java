@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/likes")
+@RequestMapping("/api/likes")
 public class LikeController {
     @Autowired
     private LikeService likeService;

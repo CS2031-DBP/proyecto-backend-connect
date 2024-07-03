@@ -11,9 +11,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/api/review")
 public class ReviewController {
     @Autowired
     private ReviewServicio reviewServicio;
@@ -49,5 +50,42 @@ public class ReviewController {
                                                     @RequestParam String contenido){
         reviewServicio.actualizarContenido(publicacionAId,reviewId,contenido);
         return ResponseEntity.accepted().build();
+    }
+    @PreAuthorize("hasRole('ROLE_TRAVELER')")
+    @PatchMapping("/{publicacionId}/{reviewId}/calificacion")
+    public ResponseEntity<Void> actualizarCalificacion(@PathVariable Long reviewId,
+                                                       @PathVariable Long publicacionId,
+                                                       @RequestParam Integer calificacion) {
+        reviewServicio.actualizarRating(reviewId, publicacionId, calificacion);
+        return ResponseEntity.accepted().build();
+    }
+
+    @GetMapping("/autor/{autorId}")
+    public ResponseEntity<List<ResponseReviewDTO>> obtenerReviewsPorAutor(@PathVariable Long autorId) {
+        List<ResponseReviewDTO> reviews = reviewServicio.obtenerReviewsPorAutorId(autorId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/{publicacionAlojId}/recientes")
+    public ResponseEntity<List<ResponseReviewDTO>> obtenerReviewsRecientes(@PathVariable Long publicacionAlojId) {
+        List<ResponseReviewDTO> reviews = reviewServicio.obtenerReviewsRecientes(publicacionAlojId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/calificacion")
+    public ResponseEntity<List<ResponseReviewDTO>> obtenerReviewsPorCalificacion(@RequestParam Integer calificacion) {
+        List<ResponseReviewDTO> reviews = reviewServicio.obtenerReviewsPorCalificacion(calificacion);
+        return ResponseEntity.ok(reviews);
+    }
+    @GetMapping("/calificacion/{publicacionId}")
+    public ResponseEntity<List<ResponseReviewDTO>> obtenerMejoresReviews(@PathVariable Long publicacionId,
+                                                        @RequestParam Integer calificacion) {
+        List<ResponseReviewDTO> responseReviewDTO  = reviewServicio.obtenerReviewsAlojIdPorCalificacion(publicacionId, calificacion);
+        return ResponseEntity.ok(responseReviewDTO);
+    }
+    @GetMapping("/calificacion/{publicacionId}/promedio")
+    public ResponseEntity<Double> obtenerPromedioCalificacion(@PathVariable Long publicacionId) {
+        Double promedio = reviewServicio.obtenerPromedioCalificacion(publicacionId);
+        return ResponseEntity.ok(promedio);
     }
 }

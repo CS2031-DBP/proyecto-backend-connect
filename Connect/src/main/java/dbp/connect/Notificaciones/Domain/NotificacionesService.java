@@ -39,6 +39,34 @@ public class NotificacionesService {
         userRepository.save(user);
     }
     @Async
+    public void crearNotificacionPorRespuesta(Long usuarioId, Long publicacionId, String mensaje) {
+        User user = userRepository.findById(usuarioId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Notificaciones notificacion = new Notificaciones();
+        notificacion.setType(NotificationType.REPLY);
+        notificacion.setMessage(mensaje);
+        notificacion.setRelatedEntityId(publicacionId);
+        notificacion.setDate(ZonedDateTime.now(ZoneId.systemDefault()));
+        notificacion.setUsuario(user);
+        notificacionesRepository.save(notificacion);
+        user.addNotificacion(notificacion);
+        userRepository.save(user);
+    }
+    @Async
+    public void crearNotificacionPorReview(Long usuarioId, Long publicacionId, String mensaje) {
+        User user = userRepository.findById(usuarioId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Notificaciones notificacion = new Notificaciones();
+        notificacion.setType(NotificationType.REVIEW);
+        notificacion.setMessage(mensaje);
+        notificacion.setRelatedEntityId(publicacionId);
+        notificacion.setDate(ZonedDateTime.now(ZoneId.systemDefault()));
+        notificacion.setUsuario(user);
+        notificacionesRepository.save(notificacion);
+        user.addNotificacion(notificacion);
+        userRepository.save(user);
+    }
+
+
+    @Async
     public void crearNotificacionPorLike(Long usuarioId, Long publicacionId, String mensaje){
         User user = userRepository.findById(usuarioId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         Notificaciones notificacion = new Notificaciones();

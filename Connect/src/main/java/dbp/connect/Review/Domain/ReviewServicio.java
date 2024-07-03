@@ -1,5 +1,6 @@
 package dbp.connect.Review.Domain;
 
+import dbp.connect.Notificaciones.Domain.NotificacionesService;
 import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamiento;
 import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamientoServicio;
 import dbp.connect.PublicacionAlojamiento.Exceptions.PublicacionAlojamientoNotFoundException;
@@ -32,6 +33,8 @@ public class ReviewServicio {
     private PublicacionAlojamientoRespositorio publicacionAlojamientoRespositorio;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private NotificacionesService notificacionesService;
 
     public Long createReview( ReviewRequest reviewRequest) {
         Optional<PublicacionAlojamiento> publicacionAlojamiento = publicacionAlojamientoRespositorio.findById(reviewRequest.getPublicacionId());
@@ -62,6 +65,8 @@ public class ReviewServicio {
         promedio = Double.parseDouble(roundedPromedio);
 
         publicacion.setPromedioRating(promedio);
+        notificacionesService.crearNotificacionPorReview(publicacion.getAlojamientoP().getPropietario().
+                getId(),publicacion.getId(),"Se ha creado una nueva reseña en tu publicación");
         publicacionAlojamientoRespositorio.save(publicacion);
         return review.getId();
     }
@@ -155,6 +160,46 @@ public class ReviewServicio {
             throw new ReviewNotFoundException("Revisión no encontrada en esta publicación");
         }
     }
+    public List<ResponseReviewDTO> obtenerReviewsPorAutorId(Long autorId){
+        User autor = userRepository.findById(autorId).orElseThrow(()->new EntityNotFoundException("Autor no encontrado"));
+        List<Review> reviews = reviewRepository.findByAutorR(autor);
+        List<ResponseReviewDTO> responseReviewDTOS = new ArrayList<>();
+        for(Review review: reviews){
+            responseReviewDTOS.add(mapToResponseDTO(review));
+        }
+        return responseReviewDTOS;
+    }
+    public List<ResponseReviewDTO> obtenerReviewsRecientes(Long publicacionAlojamientoId){
+        Pageable topFive = PageRequest.of(0, 5);
+
+        List<Review> reviews = reviewRepository.findTop5ByPublicacionAlojamientoIdOrderByFechaDesc(publicacionAlojamientoId, topFive).getContent();
+        List<ResponseReviewDTO> responseReviewDTOS = new ArrayList<>();
+        for(Review review: reviews){
+            responseReviewDTOS.add(mapToResponseDTO(review));
+        }
+        return responseReviewDTOS;
+    }
+    public List<ResponseReviewDTO> obtenerReviewsAlojIdPorCalificacion(Long publicacionId, Integer calificacion){
+        List<Review> reviews = reviewRepository.findByPublicacionAlojamientoIdAndCalificacion(publicacionId,calificacion);
+        List<ResponseReviewDTO> responseReviewDTOS = new ArrayList<>();
+        for(Review review: reviews){
+            responseReviewDTOS.add(mapToResponseDTO(review));
+        }
+        return responseReviewDTOS;
+    }
+    public List<ResponseReviewDTO> obtenerReviewsPorCalificacion(Integer calificacion){
+        List<Review> reviews = reviewRepository.findByCalificacion(calificacion);
+        List<ResponseReviewDTO> responseReviewDTOS = new ArrayList<>();
+        for(Review review: reviews){
+            responseReviewDTOS.add(mapToResponseDTO(review));
+        }
+        return responseReviewDTOS;
+    }
+    public Double obtenerPromedioCalificacion(Long publicacionId){
+        PublicacionAlojamiento publicacionAlojamiento = publicacionAlojamientoRespositorio.findById(publicacionId).
+                orElseThrow(()->new EntityNotFoundException("Publicacion no encontrada"));
+        return publicacionAlojamiento.getPromedioRating();
+    }
 
     private ResponseReviewDTO mapToResponseDTO(Review review) {
         ResponseReviewDTO dto = new ResponseReviewDTO();
@@ -169,4 +214,5 @@ public class ReviewServicio {
         dto.setDateTime(review.getFecha().atZone(ZoneId.systemDefault()));
         return dto;
     }
+
 }

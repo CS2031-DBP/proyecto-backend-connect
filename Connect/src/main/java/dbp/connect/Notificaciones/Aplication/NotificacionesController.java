@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/notificaciones")
+@RequestMapping("/api/notificaciones")
 public class NotificacionesController {
 
     @Autowired
