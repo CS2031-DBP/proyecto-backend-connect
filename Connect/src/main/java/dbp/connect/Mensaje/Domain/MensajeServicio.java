@@ -8,6 +8,7 @@ import dbp.connect.Mensaje.DTOS.ContentDTO;
 import dbp.connect.Mensaje.DTOS.DTOMensajePost;
 import dbp.connect.Mensaje.DTOS.MensajeResponseDTO;
 import dbp.connect.Mensaje.Infrastructure.MensajeRepository;
+import dbp.connect.MultimediaMensaje.DTO.MensajeMultimediaDTO;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensaje;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensajeServicio;
 import dbp.connect.MultimediaMensaje.Infrastructure.MultimediaMensajeRepositorio;
@@ -194,7 +195,13 @@ public class MensajeServicio {
         mensajeResponseDTO.setChatId(mensaje.getChat().getId());
         mensajeResponseDTO.setFecha(mensaje.getFecha_mensaje());
         mensajeResponseDTO.setUserImage(mensaje.getAutor().getFotoUrl());
-        mensajeResponseDTO.setMultimedia(mensaje.getMultimediaMensaje());
+        for(MultimediaMensaje multimediaMensaje: mensaje.getMultimediaMensaje()){
+            MensajeMultimediaDTO multimediaDTO = new MensajeMultimediaDTO();
+            multimediaDTO.setId(multimediaMensaje.getId());
+            multimediaDTO.setTipo(multimediaMensaje.getTipo());
+            multimediaDTO.setUrl(multimediaMensaje.getUrl());
+            mensajeResponseDTO.getMultimedia().add(multimediaDTO);
+        }
         return mensajeResponseDTO;
     }
 

@@ -1,5 +1,7 @@
 package dbp.connect.MultimediaMensaje.Domain;
 
+import dbp.connect.Chat.Domain.Chat;
+import dbp.connect.Chat.Infrastructure.ChatRepository;
 import dbp.connect.Mensaje.Domain.Mensaje;
 import dbp.connect.Mensaje.Infrastructure.MensajeRepository;
 import dbp.connect.MultimediaMensaje.DTO.MensajeMultimediaDTO;
@@ -28,6 +30,8 @@ public class MultimediaMensajeServicio {
     private MensajeRepository mensajeRepository;
 
     private static Long idCounter =0L;
+    @Autowired
+    private ChatRepository chatRepository;
 
 
     public MultimediaMensaje saveMultimedia(MultipartFile file) {
@@ -54,7 +58,11 @@ public class MultimediaMensajeServicio {
         }
     }
 
-    public void eliminarArchivo(Long mensajeId, String imagenId) {
+    public void eliminarArchivo(Long chatId, Long mensajeId, String imagenId) {
+
+        Chat chat = chatRepository.findById(chatId).orElseThrow(
+                () -> new EntityNotFoundException("Chat no encontrado"));
+
         Optional<Mensaje> mensajeOptional = mensajeRepository.findById(mensajeId);
         if (mensajeOptional.isPresent()) {
             Mensaje mensaje= mensajeOptional.get();
@@ -73,7 +81,9 @@ public class MultimediaMensajeServicio {
         }
     }
 
-    public void modificarArchivo(Long mensajeId, String imagenId, MultipartFile archivo) throws Exception {
+    public void modificarArchivo(Long chatId, Long mensajeId, String imagenId, MultipartFile archivo) throws Exception {
+        Chat chat = chatRepository.findById(chatId).orElseThrow(
+                () -> new EntityNotFoundException("Chat no encontrado"));
         Optional<Mensaje> mensajeOptioanl = mensajeRepository.findById(mensajeId);
         if (mensajeOptioanl.isPresent()) {
             Mensaje mensaje= mensajeOptioanl.get();

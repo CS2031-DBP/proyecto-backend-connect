@@ -6,6 +6,8 @@ import dbp.connect.Mensaje.DTOS.DTOMensajePost;
 import dbp.connect.Mensaje.DTOS.MensajeResponseDTO;
 import dbp.connect.Mensaje.Domain.MensajeServicio;
 
+import dbp.connect.MultimediaMensaje.DTO.MensajeMultimediaDTO;
+import dbp.connect.MultimediaMensaje.Domain.MultimediaMensajeServicio;
 import dbp.connect.User.DTO.UserProfileDTO;
 import dbp.connect.User.Domain.UserService;
 import dbp.connect.User.Exceptions.BadCredentialException;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,6 +31,8 @@ public class MensajeController {
     private MensajeServicio mensajeServicio;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MultimediaMensajeServicio multimediaMensajeServicio;
 
     @PostMapping("/create")
     public ResponseEntity<MensajeResponseDTO> createMensaje(@RequestBody DTOMensajePost mensaje,
@@ -98,6 +103,26 @@ public class MensajeController {
                                                                    @RequestParam String query) {
         List<MensajeResponseDTO> mensajes = mensajeServicio.searchMessages(chatId,query);
         return ResponseEntity.ok(mensajes);
+    }
+    @DeleteMapping("/{chatId}/mensajes/{multimediaId}")
+    public ResponseEntity<Void> deleteMultimedia(@PathVariable Long chatId,
+                                                 @PathVariable Long mensajeId,
+                                                 @PathVariable String multimediaId) {
+        multimediaMensajeServicio.eliminarArchivo(chatId,mensajeId,multimediaId);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping("/{chatId}/mensajes/{multimediaId}")
+    public ResponseEntity<Void> updateMultimedia(@PathVariable Long chatId,
+                                                 @PathVariable Long mensajeId,
+                                                 @PathVariable String multimediaId,
+                                                 @RequestParam MultipartFile archivo) throws Exception {
+        multimediaMensajeServicio.modificarArchivo(chatId, mensajeId,multimediaId,archivo);
+        return ResponseEntity.accepted().build();
+    }
+    @GetMapping("/{mensajeId}/multimedia/{multimediaId}")
+    public ResponseEntity<MensajeMultimediaDTO> getMultimedia(@PathVariable Long mensajeId,
+                                                              @PathVariable String multimediaId) {
+        return ResponseEntity.ok(multimediaMensajeServicio.obtenerMultimedia(mensajeId,multimediaId));
     }
 
 }

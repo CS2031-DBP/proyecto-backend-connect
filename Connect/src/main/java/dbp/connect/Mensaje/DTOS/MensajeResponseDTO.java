@@ -1,6 +1,7 @@
 package dbp.connect.Mensaje.DTOS;
 
 import dbp.connect.Mensaje.Domain.StatusMensaje;
+import dbp.connect.MultimediaMensaje.DTO.MensajeMultimediaDTO;
 import dbp.connect.MultimediaMensaje.Domain.MultimediaMensaje;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
@@ -25,5 +26,5 @@ public class MensajeResponseDTO {
     private StatusMensaje statusMensaje;
     private String userImage;
     private ZonedDateTime fecha;
-    private List<MultimediaMensaje> multimedia;
+    private List<MensajeMultimediaDTO> multimedia;
 }
