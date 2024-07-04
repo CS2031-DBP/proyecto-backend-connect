@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -25,23 +26,15 @@ public class HandShakeInterceptor implements HandshakeInterceptor, WebSocketHand
     private UserService userService;
 
     private final Logger log = LoggerFactory.getLogger(HandShakeInterceptor.class);
+
     @Override
-    public boolean beforeHandshake (ServerHttpRequest request, ServerHttpResponse response,
-                                   WebSocketHandler wsHandler, Map<String, Object> attributes){
-        String jwtToken = request.getURI().getQuery().substring(6);
-        if(!StringUtils.hasLength(jwtToken)){
-            log.error("No se ha encontrado el token de autenticación");
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+        String authToken = request.getHeaders().getFirst("Authorization");
+        if (authToken == null || authToken.isEmpty()) {
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return false;
         }
-       /* String name = userService.findUsernameWithWsToken(jwtToken);
-        Long userId = userService.findUserIdWithToken(jwtToken);
-        if(request instanceof ServletServerHttpRequest servletRequest){
-            HttpSession session = servletRequest.getServletRequest().getSession();
-            attributes.put("sessionId", session.getId());
-            userService.getWsSessions().put(userId, session.getId());
-        }*/
-        //TODO
-        return StringUtils.hasLength("name");
+        return true;
     }
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
