@@ -62,6 +62,7 @@ public class AlojamientoServicio {
         alojamientoAux.setLatitude(alojamiento.getLatitude());
         alojamientoAux.setEstado(Estado.DISPONIBLE);
         alojamientoAux.setPrecio(alojamiento.getPrecio());
+
         for (MultipartFile archivo : alojamiento.getMultimedia()) {
             AlojamientoMultimedia multimedia = alojamientoMultimediaServicio.guardarArchivo(archivo);
             multimedia.setAlojamiento(alojamientoAux);

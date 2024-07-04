@@ -107,7 +107,7 @@ public class PublicacionAlojamientoServicio {
                 .map(this::converToDTO) // Assuming there's a method `convertToDTO`
                 .collect(Collectors.toList());
     }
-    public Page<ResponsePublicacionAlojamiento> buscarPorUbicacion(double latitud, double longitud, double radio, int page, int sz) throws IOException {
+    /*public Page<ResponsePublicacionAlojamiento> buscarPorUbicacion(double latitud, double longitud, double radio, int page, int sz) throws IOException {
         Pageable pageable = PageRequest.of(page, sz);
 
         H3Core h3 = H3Core.newInstance();
@@ -117,7 +117,7 @@ public class PublicacionAlojamientoServicio {
 
         Page<PublicacionAlojamiento> publicaciones = publicacionAlojamientoRepositorio.findByH3IndexIn(indicesCercanos, pageable);
         return publicaciones.map(this::converToDTO);
-    }
+    }*/
 
     private ResponsePublicacionAlojamiento converToDTO(PublicacionAlojamiento publicacionAlojamiento){
         ResponsePublicacionAlojamiento response = new ResponsePublicacionAlojamiento();

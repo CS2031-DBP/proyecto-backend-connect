@@ -18,7 +18,7 @@ public class LikeController {
     @Autowired
     private LikeService likeService;
 
-    @PostMapping("/{publicacionInicioId}/{usuarioLikeId")
+    @PostMapping("/{publicacionInicioId}/{usuarioLikeId}")
     public ResponseEntity<Void> postLike(Long publicacionInicioId, Long usuarioLikeId) {
         likeService.processLikeAsync(publicacionInicioId, usuarioLikeId);
         return ResponseEntity.ok().build();

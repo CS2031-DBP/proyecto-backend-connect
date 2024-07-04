@@ -66,7 +66,7 @@ public class PublicacionAlojamientoController {
     public ResponseEntity<List<ResponsePublicacionAlojamiento>> obtenerPublicacionesPorRangoDeCalificacion(@RequestParam Integer minRating, @RequestParam Integer maxRating) {
         List<ResponsePublicacionAlojamiento> publicacionDTOs = publicacionAlojamientoServicio.obtenerPublicacionesPorRangoDeCalificacion(minRating, maxRating);
         return ResponseEntity.ok(publicacionDTOs);
-    }
+    }/*
     @GetMapping("/buscarPorUbicacion")
     public ResponseEntity<Page<ResponsePublicacionAlojamiento>> buscarPorUbicacion(
             @RequestParam double latitud,

@@ -16,5 +16,5 @@ public interface PublicacionAlojamientoRespositorio extends JpaRepository<Public
     @Query("SELECT p FROM PublicacionAlojamiento p WHERE p.promedioRating BETWEEN :minRating AND :maxRating")
     List<PublicacionAlojamiento> findByCalificacionBetween(@Param("minRating") Integer minRating, @Param("maxRating") Integer maxRating);
 
-    Page<PublicacionAlojamiento> findByH3IndexIn(List<Long> h3Indices, Pageable pageable);
-}
+    /*Page<PublicacionAlojamiento> findByH3IndexIn(List<Long> h3Indices, Pageable pageable);
+*/}
