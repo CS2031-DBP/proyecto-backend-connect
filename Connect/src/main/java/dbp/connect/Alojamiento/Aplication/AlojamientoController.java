@@ -108,4 +108,13 @@ public class AlojamientoController {
         alojamientoMultimediaServicio.eliminarArchivo(alojamientoId, imagenId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/alojamientos")
+    public ResponseEntity<Page<ResponseAlojamientoDTO>> getAlojamientos(@RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "10") int size,
+                                                                        @Valid @RequestBody(required = false) AlojamientoFilters filters) {
+        return ResponseEntity.ok(alojamientoServicio.obtenerAlojamientosDashboard(page,size,filters));
+    }
+
+
 }

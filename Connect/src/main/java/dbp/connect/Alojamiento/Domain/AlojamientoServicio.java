@@ -193,6 +193,7 @@ public class AlojamientoServicio {
         return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalElements());
     }
 
+
     public Page<ResponseAlojamientoDTO> obtenerAlojamientoPaginacionNoDisponibles(Long propietarioId, int page, int size ){
         Pageable pageable = PageRequest.of(page, size);
         User propietario = userRepository.findById(propietarioId).orElseThrow(()-> new RuntimeException("Propietario no encontrado"));
@@ -258,4 +259,48 @@ public class AlojamientoServicio {
         return responseAlojamientoDTO;
     }
 
+
+
+        public Page<ResponseAlojamientoDTO> obtenerAlojamientosDashboard(int page, int size, AlojamientoFilters filters){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Alojamiento> alojamientos = alojamientoRepositorio.findAllByEstado(Estado.DISPONIBLE,pageable);
+
+        List<ResponseAlojamientoDTO> alojamientoDTOList = alojamientos.getContent().stream()
+                .filter(alojamiento -> checkFilter(filters, alojamiento))
+                .map(alojamiento -> {
+                    try {
+                        return mapResponseAlojamientoDTO(alojamiento.getId());
+                    } catch (AlojamientoNotFound e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
+        return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalElements());
+    }
+
+    public boolean checkFilter(AlojamientoFilters filters, Alojamiento a){
+            double distance = calculateDistance(filters.getLatitude(), filters.getLongitude(), a.getLatitude(), a.getLongitude());
+
+            return distance <= filters.getMaxDistance()&&
+                    a.getPrecio() <= filters.getMaxPrecio() && a.getPrecio() >= filters.getMinPrecio() &&
+                    a.getTipoMoneda().equals(filters.getTipoMoneda());
+    }
+
+    private static final double R = 6371; // Earth radius in kilometers
+
+    // Calculate distance using Haversine formula
+    public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double deltaLat = Math.toRadians(lat2 - lat1);
+        double deltaLon = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                   Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // Distance in kilometers
+    }
+
 }
+
