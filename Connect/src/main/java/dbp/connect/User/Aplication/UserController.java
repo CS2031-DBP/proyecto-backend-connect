@@ -3,6 +3,7 @@ package dbp.connect.User.Aplication;
 import dbp.connect.User.DTO.UpdateUserNameAndProfileDTO;
 import dbp.connect.User.DTO.UserProfileDTO;
 import dbp.connect.User.DTO.UserSearchDTO;
+import dbp.connect.User.DTO.informacionDelusuario;
 import dbp.connect.User.Domain.User;
 import dbp.connect.User.Domain.UserService;
 import dbp.connect.User.Exceptions.BadCredentialException;
@@ -25,7 +26,7 @@ import java.util.List;
 public class UserController {
     @Autowired
     private  UserService userService;
-    @GetMapping("/profile")
+    @GetMapping("/perfilMasInformacion")
     public ResponseEntity<UserProfileDTO> getProfile(@RequestHeader("Authorization") String token) throws BadCredentialException, UserException {
         UserProfileDTO userProfileDTO = userService.finddUserProfile(token);
         return new ResponseEntity<UserProfileDTO>(userProfileDTO, HttpStatus.ACCEPTED);
@@ -41,6 +42,12 @@ public class UserController {
         UserProfileDTO userProfDTO = userService.finddUserProfile(token);
         userService.UpdateUser(userProfDTO.getId(), update);
         return ResponseEntity.accepted().build();
+    }
+    @GetMapping("/perfil")
+    public ResponseEntity<informacionDelusuario> obtenerPequeñaInfo(@RequestHeader("Authorization") String token)
+            throws BadCredentialException, UserException {
+        informacionDelusuario informacionDelusuario = userService.obtenerInformacionUsuario();
+        return new ResponseEntity<informacionDelusuario>(informacionDelusuario, HttpStatus.ACCEPTED);
     }
     /*// Cambiar Contraseña
 @PostMapping("/changePassword")

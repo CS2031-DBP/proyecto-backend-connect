@@ -3,10 +3,7 @@ package dbp.connect.User.Domain;
 import dbp.connect.S3.StorageService;
 import dbp.connect.Security.JWT.JwtService;
 import dbp.connect.Security.Utils.AuthorizationUtils;
-import dbp.connect.User.DTO.UpdateUserNameAndProfileDTO;
-import dbp.connect.User.DTO.UserProfileDTO;
-import dbp.connect.User.DTO.UserResponseDTO;
-import dbp.connect.User.DTO.UserSearchDTO;
+import dbp.connect.User.DTO.*;
 import dbp.connect.User.Exceptions.BadCredentialException;
 import dbp.connect.User.Exceptions.UserException;
 import dbp.connect.User.Infrastructure.UserRepository;
@@ -131,6 +128,16 @@ public class UserService {
             userSearchDTOList.add(userSearchDTO);
         }
         return userSearchDTOList;
+    }
+    public informacionDelusuario obtenerInformacionUsuario(){
+        String email = authorizationUtils.authenticateUser();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        informacionDelusuario informacionDelusuario = new informacionDelusuario();
+        informacionDelusuario.setId(user.getId());
+        informacionDelusuario.setUserName(user.getUsername());
+        informacionDelusuario.setFotoPerfil(user.getFotoUrl());
+        informacionDelusuario.setEmail(user.getEmail());
+        return informacionDelusuario;
     }
 
     private String serializarId(Long imagenId){

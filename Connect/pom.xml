@@ -237,6 +237,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>spring-boot-aws-exe</finalName>
 	</build>
 	<repositories>
 		<repository>
