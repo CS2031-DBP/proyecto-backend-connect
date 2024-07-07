@@ -7,6 +7,7 @@ import dbp.connect.Review.Infrastructure.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -15,10 +16,8 @@ import java.net.URI;
 @RequestMapping("/review")
 public class ReviewController {
     @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
     private ReviewServicio reviewServicio;
-
+    @PreAuthorize("hasRole('ROLE_TRAVELER') ")
     @PostMapping()
     public ResponseEntity<Void> createReview(@RequestBody ReviewRequest reviewDTO) {
         Long reviewId = reviewServicio.createReview(reviewDTO);
@@ -36,11 +35,14 @@ public class ReviewController {
         ResponseReviewDTO dto = reviewServicio.getReview(publicacionAlojamientoId,reviewId);
         return ResponseEntity.ok(dto);
     }
+
+    @PreAuthorize("hasRole('ROLE_TRAVELER') ")
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> elimarReviewById(@PathVariable Long reviewId){
         reviewServicio.eliminarReseña(reviewId);
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("hasRole('ROLE_TRAVELER') ")
     @PatchMapping("{publicacionAId}/{reviewId}")
     public ResponseEntity<Void> actualizarContenido(@PathVariable Long publicacionAId,
                                                     @PathVariable  Long reviewId,

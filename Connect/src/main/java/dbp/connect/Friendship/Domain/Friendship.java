@@ -3,12 +3,16 @@ package dbp.connect.Friendship.Domain;
 import dbp.connect.FriendRequest.Domain.FriendshipRequest;
 import dbp.connect.User.Domain.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Friendship {
     @Id
@@ -25,4 +29,5 @@ public class Friendship {
     private boolean blocked;
     @Column(name = "fechaAmistad")
     private ZonedDateTime fechaAmistad;
+
 }

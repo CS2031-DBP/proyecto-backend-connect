@@ -7,6 +7,7 @@ import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamientoServicio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -16,6 +17,7 @@ import java.net.URI;
 public class PublicacionAlojamientoController {
     @Autowired
     private PublicacionAlojamientoServicio publicacionAlojamientoServicio;
+    @PreAuthorize("hasRole('ROLE_HOST') ")
     @PostMapping()
     public ResponseEntity<ResponsePublicacionAlojamiento> crearPublicacionAlojamiento(@Valid @RequestBody PostPublicacionAlojamientoDTO publicacionAlojamientoDTO) {
         ResponsePublicacionAlojamiento createdPublicacionAlojamiento = publicacionAlojamientoServicio.guardarPublicacionAlojamiento(publicacionAlojamientoDTO);
@@ -44,11 +46,13 @@ public class PublicacionAlojamientoController {
         return ResponseEntity.ok(publicacionAlojamientoServicio.getPublicacionRecomendadas(userId,page,size));
         }
     */
+   @PreAuthorize("hasRole('ROLE_HOST') ")
     @PatchMapping("/publicacionId")
     public ResponseEntity<Void> actualizarTItulo(@PathVariable Long publicacionId, @RequestBody  String titulo){
         publicacionAlojamientoServicio.actualizarTituloAlojamiento(publicacionId, titulo);
         return ResponseEntity.ok().build();
     }
+    @PreAuthorize("hasRole('ROLE_HOST') ")
     @DeleteMapping("/{publicacionId}")
     public ResponseEntity<Void> eliminarPublicacionAlojamiento(@PathVariable Long publicacionId) {
         publicacionAlojamientoServicio.eliminarPublicacion(publicacionId);

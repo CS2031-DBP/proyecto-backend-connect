@@ -1,17 +1,31 @@
 package dbp.connect.SocketsConfi.Controller;
 
 import dbp.connect.Mensaje.Domain.Mensaje;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class RealTimeChatController {
-    private SimpMessagingTemplate SimpMessagingTemplate;
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    public RealTimeChatController(SimpMessagingTemplate simpMessagingTemplate) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
+    }
+
     @MessageMapping("/mensaje")
     @SendTo("/group/public")
     public Mensaje recibirMensaje(@Payload Mensaje mensaje) {
-        SimpMessagingTemplate.convertAndSend("/group/" + mensaje.getChat().getId().toString(), mensaje);
+        simpMessagingTemplate.convertAndSend("/group/" + mensaje.getChat().getId().toString(), mensaje);
         return mensaje;
+    }
+
+    public void sendMessageToUser(Long userId, Mensaje mensaje) {
+        simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/messages", mensaje);
     }
 }

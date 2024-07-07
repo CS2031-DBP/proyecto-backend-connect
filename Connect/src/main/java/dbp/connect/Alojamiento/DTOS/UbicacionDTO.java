@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class UbicacionDTO {
+    @NotNull
     private Double latitude;
+    @NotNull
     private Double longitude;
     @NotNull
     private String ubicacion;
