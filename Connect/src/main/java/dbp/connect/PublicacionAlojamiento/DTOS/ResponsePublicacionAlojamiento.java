@@ -2,6 +2,7 @@ package dbp.connect.PublicacionAlojamiento.DTOS;
 
 import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
+import dbp.connect.Review.DTOS.ResponseReviewDTO;
 import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -41,4 +42,6 @@ public class ResponsePublicacionAlojamiento {
     private String pais;
     @NotNull
     private ZonedDateTime fechaPublicacion;
+    private List<ResponseReviewDTO> reviews;
+    private Double price;
 }

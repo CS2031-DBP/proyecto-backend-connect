@@ -128,8 +128,6 @@ public class User implements UserDetails {
     @JsonIgnoreProperties("usuario")
     private Set<Notificaciones> notificaciones = new HashSet<>();
 
-
-
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FriendshipRequest> receivedFriendRequests = new HashSet<>();
     public User removeMensaje(Mensaje mensaje) {
