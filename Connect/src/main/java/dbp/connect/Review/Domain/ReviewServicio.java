@@ -205,7 +205,7 @@ public class ReviewServicio {
         dto.setAutorFullname(review.getAutorR().getUsername());
         dto.setContenido(review.getComentario());
         dto.setCalificacion(review.getCalificacion());
-        if (review.getAutorR().getFotoUrl().isEmpty()) {
+        if (!review.getAutorR().getFotoUrl().isEmpty()) {
             dto.setAutorFotoUrl(review.getAutorR().getFotoUrl());
         } else {
             dto.setAutorFotoUrl(null);

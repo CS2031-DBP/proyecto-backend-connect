@@ -130,7 +130,7 @@ public class PublicacionAlojamientoServicio {
         response.setId(publicacionAlojamiento.getId());
         response.setTitulo(publicacionAlojamiento.getTitulo());
         response.setDescripcion(publicacionAlojamiento.getAlojamientoP().getDescripcion());
-        response.setLatitue(publicacionAlojamiento.getAlojamientoP().getLatitude());
+        response.setLatitude(publicacionAlojamiento.getAlojamientoP().getLatitude());
         response.setLongitud(publicacionAlojamiento.getAlojamientoP().getLongitude());
         response.setCantidadReviews(publicacionAlojamiento.getCantidadReseñas());
         response.setPromedioRating(publicacionAlojamiento.getPromedioRating());
@@ -138,19 +138,17 @@ public class PublicacionAlojamientoServicio {
         response.setFechaPublicacion(publicacionAlojamiento.getFecha());
         response.setPrice(publicacionAlojamiento.getAlojamientoP().getPrecio());
         response.setReviews(reviewServicio.obtenerReviewsRecientes(publicacionAlojamiento.getId()));
+        response.setTipoMoneda(publicacionAlojamiento.getAlojamientoP().getTipoMoneda());
         if (publicacionAlojamiento.getAlojamientoP().getPropietario().getFotoUrl() != null) {
             response.setAutorPhotoUrl(publicacionAlojamiento.getAlojamientoP().getPropietario().getFotoUrl());
         } else {
             response.setAutorPhotoUrl(null);
         }
 
-        if (!publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia().isEmpty()) {
-            for(AlojamientoMultimedia multimedia: publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia()){
-                response.getAlojamientoMultimedia().add(converToDto(multimedia));
-            }
-        } else {
-            response.setAlojamientoMultimedia(null);
+        for(AlojamientoMultimedia multimedia: publicacionAlojamiento.getAlojamientoP().getAlojamientoMultimedia()){
+            response.getAlojamientoMultimedia().add(converToDto(multimedia));
         }
+
         return response;
     }
 

@@ -17,6 +17,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/publicacionAlojamiento")
 public class PublicacionAlojamientoController {
     @Autowired
@@ -34,6 +35,7 @@ public class PublicacionAlojamientoController {
 
     @GetMapping("/id/{apartmentID}")
     public ResponseEntity<ResponsePublicacionAlojamiento> getApartmentoPost(@PathVariable Long apartmentID) {
+        System.out.println(publicacionAlojamientoServicio.getApartmentoPost(apartmentID));
         return ResponseEntity.ok(publicacionAlojamientoServicio.getApartmentoPost(apartmentID));
     }
 
