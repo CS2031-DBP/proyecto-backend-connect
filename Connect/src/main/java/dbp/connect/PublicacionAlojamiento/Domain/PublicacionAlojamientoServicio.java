@@ -11,6 +11,7 @@ import dbp.connect.PublicacionAlojamiento.Exceptions.PublicacionAlojamientoNotFo
 import dbp.connect.PublicacionAlojamiento.Infrastructure.PublicacionAlojamientoRespositorio;
 import dbp.connect.PublicacionInicioMultimedia.DTOS.MultimediaInicioDTO;
 import dbp.connect.PublicacionInicioMultimedia.Domain.PublicacionInicioMultimedia;
+import dbp.connect.Review.Domain.ReviewServicio;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,12 @@ public class PublicacionAlojamientoServicio {
 
     @Autowired
     private AlojamientoRepositorio alojamientoRepositorio;
+
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ReviewServicio reviewServicio;
 
     public ResponsePublicacionAlojamiento guardarPublicacionAlojamiento(PostPublicacionAlojamientoDTO publicacionAlojamientoDTO){
 
@@ -107,6 +112,7 @@ public class PublicacionAlojamientoServicio {
                 .map(this::converToDTO) // Assuming there's a method `convertToDTO`
                 .collect(Collectors.toList());
     }
+
     /*public Page<ResponsePublicacionAlojamiento> buscarPorUbicacion(double latitud, double longitud, double radio, int page, int sz) throws IOException {
         Pageable pageable = PageRequest.of(page, sz);
 
@@ -130,6 +136,8 @@ public class PublicacionAlojamientoServicio {
         response.setPromedioRating(publicacionAlojamiento.getPromedioRating());
         response.setAutorFullName(publicacionAlojamiento.getAlojamientoP().getPropietario().getUsername());
         response.setFechaPublicacion(publicacionAlojamiento.getFecha());
+        response.setPrice(publicacionAlojamiento.getAlojamientoP().getPrecio());
+        response.setReviews(reviewServicio.obtenerReviewsRecientes(publicacionAlojamiento.getId()));
         if (publicacionAlojamiento.getAlojamientoP().getPropietario().getFotoUrl() != null) {
             response.setAutorPhotoUrl(publicacionAlojamiento.getAlojamientoP().getPropietario().getFotoUrl());
         } else {
@@ -153,5 +161,15 @@ public class PublicacionAlojamientoServicio {
         dto.setTipo(multimedia.getTipo());
         dto.setUrl_contenido(multimedia.getUrlContenido());
         return dto;
+    }
+
+    public ResponsePublicacionAlojamiento getApartmentoPost(Long apartmentID) {
+        Optional<PublicacionAlojamiento> publicacionOpt = publicacionAlojamientoRepositorio.findByAlojamientoP_Id(apartmentID);
+        if (publicacionOpt.isPresent()) {
+            PublicacionAlojamiento publicacion = publicacionOpt.get();
+            return converToDTO(publicacion);
+        } else {
+            throw new PublicacionAlojamientoNotFoundException("No se encontro publicacion del alojamiento/departamento con ID: " + apartmentID);
+        }
     }
 }

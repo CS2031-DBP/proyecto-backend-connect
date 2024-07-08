@@ -27,8 +27,7 @@ import java.util.Optional;
 public class ReviewServicio {
     @Autowired
     private ReviewRepository reviewRepository;
-    @Autowired
-    private PublicacionAlojamientoServicio publicacionAlojamientoServicio;
+
     @Autowired
     private PublicacionAlojamientoRespositorio publicacionAlojamientoRespositorio;
     @Autowired
@@ -206,7 +205,7 @@ public class ReviewServicio {
         dto.setAutorFullname(review.getAutorR().getUsername());
         dto.setContenido(review.getComentario());
         dto.setCalificacion(review.getCalificacion());
-        if (review.getAutorR().getFotoUrl() != null) {
+        if (review.getAutorR().getFotoUrl().isEmpty()) {
             dto.setAutorFotoUrl(review.getAutorR().getFotoUrl());
         } else {
             dto.setAutorFotoUrl(null);

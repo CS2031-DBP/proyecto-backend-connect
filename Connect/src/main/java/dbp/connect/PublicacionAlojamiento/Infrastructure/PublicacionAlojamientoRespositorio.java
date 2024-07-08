@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -16,5 +17,6 @@ public interface PublicacionAlojamientoRespositorio extends JpaRepository<Public
     @Query("SELECT p FROM PublicacionAlojamiento p WHERE p.promedioRating BETWEEN :minRating AND :maxRating")
     List<PublicacionAlojamiento> findByCalificacionBetween(@Param("minRating") Integer minRating, @Param("maxRating") Integer maxRating);
 
+    Optional<PublicacionAlojamiento> findByAlojamientoP_Id(Long id);
     /*Page<PublicacionAlojamiento> findByH3IndexIn(List<Long> h3Indices, Pageable pageable);
 */}
