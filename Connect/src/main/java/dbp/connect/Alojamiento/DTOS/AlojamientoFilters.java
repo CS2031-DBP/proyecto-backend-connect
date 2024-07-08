@@ -2,8 +2,10 @@ package dbp.connect.Alojamiento.DTOS;
 
 import dbp.connect.TipoMoneda;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class AlojamientoFilters {
     @NotNull

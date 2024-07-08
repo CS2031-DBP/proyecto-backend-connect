@@ -7,10 +7,12 @@ import dbp.connect.Alojamiento.Domain.AlojamientoServicio;
 import dbp.connect.Alojamiento.Excepciones.AlojamientoNotFound;
 import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimediaServicio;
+import dbp.connect.TipoMoneda;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,9 @@ public class AlojamientoController {
     AlojamientoServicio alojamientoServicio;
     @Autowired
     AlojamientoMultimediaServicio alojamientoMultimediaServicio;
+    @Autowired
+    private StringHttpMessageConverter stringHttpMessageConverter;
+
     @PreAuthorize("hasRole('ROLE_HOST') ")
     @PostMapping()
     public ResponseEntity<ResponseAlojamientoDTO> crearAlojamiento(@Valid @RequestBody AlojamientoRequest alojamientoRequest) throws AlojamientoNotFound {
@@ -109,11 +114,25 @@ public class AlojamientoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/alojamientos")
-    public ResponseEntity<Page<ResponseAlojamientoDTO>> getAlojamientos(@RequestParam(defaultValue = "0") int page,
-                                                                        @RequestParam(defaultValue = "10") int size,
-                                                                        @Valid @RequestBody(required = false) AlojamientoFilters filters) {
-        return ResponseEntity.ok(alojamientoServicio.obtenerAlojamientosDashboard(page,size,filters));
+
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/dashboard")
+    public ResponseEntity<Page<ResponseAlojamientoDTO>> getAlojamientos(@RequestParam int page,
+                                                                        @RequestParam int size,
+                                                                        @RequestParam Double distancia,
+                                                                        @RequestParam Double maxPrecio,
+                                                                        @RequestParam Double minPrecio,
+                                                                        @RequestParam String tipoMoneda,
+                                                                        @RequestParam Double latitude,
+                                                                        @RequestParam Double longuitude) {
+        return ResponseEntity.ok(alojamientoServicio.obtenerAlojamientosDashboard(page,size,distancia,maxPrecio,minPrecio,tipoMoneda, latitude, longuitude));
+    }
+
+    @GetMapping("/dashboard/all")
+    @CrossOrigin(origins = "http://localhost:5173")
+    public ResponseEntity<Page<ResponseAlojamientoDTO>> getAlojamientos(@RequestParam int page,
+                                                                        @RequestParam int size) {
+        return ResponseEntity.ok(alojamientoServicio.obtenerTodosAlojamientosDashboard(page,size));
     }
 
 

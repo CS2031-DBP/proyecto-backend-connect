@@ -9,6 +9,7 @@ import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimediaServicio;
 import dbp.connect.AlojamientoMultimedia.Infrastructure.AlojamientoMultimediaRepositorio;
+import dbp.connect.TipoMoneda;
 import dbp.connect.User.Domain.User;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AlojamientoServicio {
@@ -261,10 +263,21 @@ public class AlojamientoServicio {
 
 
 
-        public Page<ResponseAlojamientoDTO> obtenerAlojamientosDashboard(int page, int size, AlojamientoFilters filters){
+        public Page<ResponseAlojamientoDTO> obtenerAlojamientosDashboard(int page, int size, Double distancia ,
+                                                                         Double maxPrecio, Double minPrec,
+                                                                         String tipoMoneda,
+                                                                         Double latitude, Double longuitude){
         Pageable pageable = PageRequest.of(page, size);
         Page<Alojamiento> alojamientos = alojamientoRepositorio.findAllByEstado(Estado.DISPONIBLE,pageable);
+        TipoMoneda realTipoMoneda = TipoMoneda.SOLES;
+        if (tipoMoneda == "SOLES"){
+            realTipoMoneda = TipoMoneda.SOLES;
+        }
+        else{
+            realTipoMoneda = TipoMoneda.DOLARES;
+        }
 
+        AlojamientoFilters filters = new AlojamientoFilters(latitude,longuitude,distancia,maxPrecio,minPrec,realTipoMoneda);
         List<ResponseAlojamientoDTO> alojamientoDTOList = alojamientos.getContent().stream()
                 .filter(alojamiento -> checkFilter(filters, alojamiento))
                 .map(alojamiento -> {
@@ -276,6 +289,39 @@ public class AlojamientoServicio {
                 })
                 .toList();
         return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalElements());
+    }
+
+
+    public Page<ResponseAlojamientoDTO> obtenerTodosAlojamientosDashboard(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Alojamiento> alojamientos = alojamientoRepositorio.findAll(pageable);
+
+        List<ResponseAlojamientoDTO> alojamientoDTOList = alojamientos.stream()
+                .map(this::mapBienResponseAlojamientoDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(alojamientoDTOList, pageable, alojamientos.getTotalPages());
+    }
+
+    private ResponseAlojamientoDTO mapBienResponseAlojamientoDTO(Alojamiento alojamiento) {
+        ResponseAlojamientoDTO responseAlojamientoDTO = new ResponseAlojamientoDTO();
+        responseAlojamientoDTO.setId(alojamiento.getId());
+        responseAlojamientoDTO.setPropietarioId(alojamiento.getPropietario().getId());
+        responseAlojamientoDTO.setDescripcion(alojamiento.getDescripcion());
+        responseAlojamientoDTO.setPrecio(alojamiento.getPrecio());
+        responseAlojamientoDTO.setTipoMoneda(alojamiento.getTipoMoneda());
+        responseAlojamientoDTO.setLatitude(alojamiento.getLatitude());
+        responseAlojamientoDTO.setLongitude(alojamiento.getLongitude());
+        responseAlojamientoDTO.setUbicacion(alojamiento.getUbicacion());
+        List<ResponseMultimediaDTO> multimediaDTOList = new ArrayList<>();
+        for(AlojamientoMultimedia multimedia: alojamiento.getAlojamientoMultimedia()){
+            ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
+            multimediaDTO.setId(multimedia.getId());
+            multimediaDTO.setTipo(multimedia.getTipo());
+            multimedia.setUrlContenido(multimedia.getUrlContenido());
+            multimediaDTOList.add(multimediaDTO);
+        }
+        responseAlojamientoDTO.setMultimedia(multimediaDTOList);
+        return responseAlojamientoDTO;
     }
 
     public boolean checkFilter(AlojamientoFilters filters, Alojamiento a){

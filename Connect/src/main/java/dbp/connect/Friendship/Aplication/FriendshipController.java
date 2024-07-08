@@ -1,6 +1,6 @@
 package dbp.connect.Friendship.Aplication;
 
-import dbp.connect.Friendship.DTO.AmigoPersonalizado;
+//import dbp.connect.Friendship.DTO.AmigoPersonalizado;
 import dbp.connect.Friendship.DTO.AmigosDTO;
 import dbp.connect.Friendship.Domain.Friendship;
 import dbp.connect.Friendship.Domain.FriendshipServicio;
@@ -98,11 +98,11 @@ public class FriendshipController {
         return ResponseEntity.ok(totalNonBlockedFriends);
     }
 
-    // Buscar amigos por nombre
-    @GetMapping("/buscar/{userId}")
-    public ResponseEntity<List<AmigoPersonalizado>>searchFriendsByName(@PathVariable Long userId,
-                                                                       @RequestParam String name) {
-        return ResponseEntity.ok(friendshipServicio.searchFriendsByName(userId, name));
-    }
+//    // Buscar amigos por nombre
+//    @GetMapping("/buscar/{userId}")
+//    public ResponseEntity<List<AmigoPersonalizado>>searchFriendsByName(@PathVariable Long userId,
+//                                                                       @RequestParam String name) {
+//        return ResponseEntity.ok(friendshipServicio.searchFriendsByName(userId, name));
+//    }
 
 }
