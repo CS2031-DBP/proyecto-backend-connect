@@ -5,6 +5,7 @@ import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
 import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
 import dbp.connect.AlojamientoMultimedia.Infrastructure.AlojamientoMultimediaRepositorio;
 import dbp.connect.S3.StorageService;
+import dbp.connect.Security.Utils.AuthorizationUtils;
 import dbp.connect.Tipo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -31,6 +33,8 @@ public class AlojamientoMultimediaServicio {
     private AlojamientoMultimediaRepositorio alojamientoMultimediaRepositorio;
     @Autowired
     private AlojamientoRepositorio alojamientoRepositorio;
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
 
     public AlojamientoMultimedia guardarArchivo(MultipartFile archivo) {
         try {
@@ -56,10 +60,11 @@ public class AlojamientoMultimediaServicio {
         }
     }
 
-    public void eliminarArchivo(Long alojamientoId, String imagenId) {
+    public void eliminarArchivo(Long alojamientoId, String imagenId) throws AccessDeniedException {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
             Alojamiento aloj= alojamientoOptional.get();
+            authorizationUtils.verifyUserAuthorization(aloj.getPropietario().getEmail(), aloj.getPropietario().getId());
             for(AlojamientoMultimedia multimedia: aloj.getAlojamientoMultimedia()){
                 if(multimedia.getId().equals(imagenId)){
                     storageService.deleteFile(multimedia.getId());
@@ -78,6 +83,7 @@ public class AlojamientoMultimediaServicio {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
             Alojamiento aloj= alojamientoOptional.get();
+            authorizationUtils.verifyUserAuthorization(aloj.getPropietario().getEmail(), aloj.getPropietario().getId());
             for(AlojamientoMultimedia multimedia: aloj.getAlojamientoMultimedia()){
                 if(multimedia.getId().equals(imagenId)){
                     if (Objects.requireNonNull(archivo.getContentType()).startsWith("image/")) {
@@ -100,10 +106,11 @@ public class AlojamientoMultimediaServicio {
         }
     }
 
-    public Page<ResponseMultimediaDTO> obtenerMultimediaPaginacion(Long alojamientoId, int page, int size) {
+    public Page<ResponseMultimediaDTO> obtenerMultimediaPaginacion(Long alojamientoId, int page, int size) throws AccessDeniedException {
         Pageable pageable = PageRequest.of(page, size);
         Alojamiento alojamiento = alojamientoRepositorio.findById(alojamientoId).orElseThrow(
                 ()->new EntityNotFoundException("No se encontro el alojamiento"));
+        authorizationUtils.verifyUserAuthorization(alojamiento.getPropietario().getEmail(), alojamiento.getPropietario().getId());
         Page <AlojamientoMultimedia> multimediaPage = alojamientoMultimediaRepositorio.findByAlojamiento_Id(alojamientoId, pageable);
 
         if (multimediaPage.isEmpty()){
@@ -115,10 +122,11 @@ public class AlojamientoMultimediaServicio {
         return new PageImpl<>(multimediaDTOList, pageable, multimediaPage.getTotalElements());
     }
 
-    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, String imagenId) {
+    public ResponseMultimediaDTO obtenerMultimedia(Long alojamientoId, String imagenId) throws AccessDeniedException {
         Optional<Alojamiento> alojamientoOptional = alojamientoRepositorio.findById(alojamientoId);
         if (alojamientoOptional.isPresent()) {
             Alojamiento alojamiento = alojamientoOptional.get();
+            authorizationUtils.verifyUserAuthorization(alojamiento.getPropietario().getEmail(), alojamiento.getPropietario().getId());
             ResponseMultimediaDTO multimediaDTO = new ResponseMultimediaDTO();
             for (AlojamientoMultimedia multimedia : alojamiento.getAlojamientoMultimedia()) {
                 if (multimedia.getId().equals((imagenId))) {

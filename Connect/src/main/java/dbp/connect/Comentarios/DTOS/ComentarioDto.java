@@ -15,8 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Data
 public class ComentarioDto {
-    @NotNull
-    private Long id;
+
     @NotEmpty(message = "El mensaje no pued eestar vacio")
     @Size(min=1, max = 600)
     private String message;

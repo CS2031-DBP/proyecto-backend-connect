@@ -147,6 +147,9 @@ public class FriendshipServicio {
         User friend = friendship.getUser().getId().equals(usuarioId) ? friendship.getFriend() : friendship.getUser();
         return mapToAmigosDTO(friend, friendship.getFechaAmistad(), friendship.getFId());
     }
+    public boolean isFriend(Long userId1, Long userId2) {
+        return friendshipRepositorio.areFriends(userId1, userId2);
+    }
 
 
 

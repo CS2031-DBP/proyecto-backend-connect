@@ -6,6 +6,7 @@ import dbp.connect.Chat.Exceptions.ChatNotFound;
 import dbp.connect.Chat.Exceptions.NotAllowedPermissionChat;
 import dbp.connect.Comentarios.Excepciones.ComentarioNoEncontradoException;
 import dbp.connect.Comentarios.Excepciones.PublicacionNoEncontradoException;
+import dbp.connect.Friendship.Exceptions.NotFriendException;
 import dbp.connect.Mensaje.Exceptions.MessageException;
 import dbp.connect.PublicacionInicio.Exceptions.UsuarioNoCoincideId;
 import dbp.connect.Review.Exceptions.ReviewNotFoundException;
@@ -90,5 +91,13 @@ public class GlobalExceptionHandler {
         errorDetail.setError(req.getDescription(false));
         errorDetail.setTimestamp(java.time.ZonedDateTime.now());
         return new ResponseEntity<>(errorDetail, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(NotFriendException.class)
+    public ResponseEntity<ErrorDetail> NotFriendExceptionHandler(NotFriendException e, WebRequest req){
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setMessage(e.getMessage());
+        errorDetail.setError(req.getDescription(false));
+        errorDetail.setTimestamp(java.time.ZonedDateTime.now());
+        return new ResponseEntity<>(errorDetail, HttpStatus.UNAUTHORIZED);
     }
 }

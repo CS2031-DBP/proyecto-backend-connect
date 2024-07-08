@@ -9,6 +9,7 @@ import dbp.connect.Comentarios.Infrastructure.ComentarioRepository;
 import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimedia;
 import dbp.connect.ComentariosMultimedia.Domain.ComentarioMultimediaServicio;
 import dbp.connect.ComentariosMultimedia.Infrastructure.ComentarioMultimediaRepositorio;
+import dbp.connect.Notificaciones.Domain.NotificacionesService;
 import dbp.connect.PublicacionInicio.Domain.PublicacionInicio;
 import dbp.connect.PublicacionInicio.Infrastructure.PublicacionInicioRepositorio;
 import dbp.connect.User.Domain.User;
@@ -42,12 +43,15 @@ public class ComentarioService {
     private ComentarioMultimediaServicio comentarioMultimediaServicio;
     @Autowired
     private ComentarioMultimediaRepositorio comentarioMultimediaRepositorio;
+    @Autowired
+    private NotificacionesService notificacionesService;
 
     public Comentario createNewComentario(Long publicacionID, ComentarioDto comentarioDTO) {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.
                 findById(publicacionID);
         if (publicacionInicio.isPresent()) {
             PublicacionInicio publicacion = publicacionInicio.get();
+            publicacion.setCantidadComentarios(publicacion.getCantidadComentarios() + 1);
             Comentario comentario = new Comentario();
             comentario.setMessage(comentarioDTO.getMessage());
             User autor = userRepository.findById(comentarioDTO.getAutorId())
@@ -64,6 +68,8 @@ public class ComentarioService {
             comentarioRepository.save(comentario);
             publicacion.getComentarios().add(comentario);
             publicacionInicioRepositorio.save(publicacion);
+            notificacionesService.crearNotificacionPorComentario(publicacion.getAutorP().getId(),
+                    publicacionID,autor.getUsername() + "Acaba de comentar en tu publicacion");
             return comentario;
         } else {
             throw new PublicacionNoEncontradoException("Publicacion no encontrada");
@@ -74,6 +80,7 @@ public class ComentarioService {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.findById(publicacionID);
         if (publicacionInicio.isPresent()) {
             PublicacionInicio publicacion = publicacionInicio.get();
+            publicacion.setCantidadComentarios(publicacion.getCantidadComentarios() + 1);
             Comentario comentario = new Comentario();
             comentario.setPublicacion(publicacion);
             Optional<Comentario> parentComentario = comentarioRepository.findById(parentId);
@@ -101,6 +108,10 @@ public class ComentarioService {
                     publicacion.getComentarios().add(parentComentarioParent);
                     publicacionInicioRepositorio.save(publicacion);
                 }
+                notificacionesService.crearNotificacionPorComentario(publicacion.getAutorP().getId(),
+                        publicacionID,autor.getUsername() + "Acaba de comentar en tu publicacion");
+                notificacionesService.crearNotificacionPorRespuesta(parentComentarioParent.getAutorComentario().getId(),
+                        publicacionID,autor.getUsername() + "Acaba de responder a tu comentario");
                 return comentario;
             } else {
                 throw new ComentarioNoEncontradoException("Comentario no encontrado");
@@ -149,9 +160,11 @@ public class ComentarioService {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.findById(publicacionID);
         if (publicacionInicio.isPresent()) {
             PublicacionInicio publicacion = publicacionInicio.get();
+            publicacion.setCantidadComentarios(publicacion.getCantidadComentarios() - 1);
             Optional<Comentario> comentario = comentarioRepository.findById(comentarioId);
             if (comentario.isPresent()) {
                 Comentario comentarioInicio = comentario.get();
+                comentarioMultimediaServicio.eliminarArchivo(comentarioInicio.getId(), comentarioInicio.getComentarioMultimedia().getId());
                 publicacion.getComentarios().remove(comentarioInicio);
                 comentarioRepository.deleteById(comentarioInicio.getId());
                 publicacionInicioRepositorio.save(publicacion);
@@ -170,6 +183,7 @@ public class ComentarioService {
         Optional<PublicacionInicio> publicacionInicio = publicacionInicioRepositorio.findById(publicacionID);
         if (publicacionInicio.isPresent()) {
             PublicacionInicio publicacion = publicacionInicio.get();
+            publicacion.setCantidadComentarios(publicacion.getCantidadComentarios() - 1);
             Optional<Comentario> comentarioPadreOptional = publicacion.getComentarios().stream()
                     .filter(comentario -> comentario.getId().equals(parentId))
                     .findFirst();
@@ -182,6 +196,7 @@ public class ComentarioService {
                         .findFirst();
                 if (respuestaOptional.isPresent()) {
                     Comentario respuesta = respuestaOptional.get();
+                    comentarioMultimediaServicio.eliminarArchivo(respuesta.getId(), respuesta.getComentarioMultimedia().getId());
                     comentarioPadre.getReplies().remove(respuesta);
                     comentarioRepository.deleteById(respuesta.getId());
                     publicacionInicioRepositorio.save(publicacion);
@@ -248,6 +263,7 @@ public class ComentarioService {
 
     private ComentarioRespuestaDTO convertToDto(Comentario comentario) {
         ComentarioRespuestaDTO dto = new ComentarioRespuestaDTO();
+        dto.setId(comentario.getId());
         dto.setAutorNombreCompleto(comentario.getAutorComentario().getUsername());
         dto.setMessage(comentario.getMessage());
 
@@ -260,8 +276,10 @@ public class ComentarioService {
         dto.setFechaCreacion(comentario.getDate());
         if (comentario.getComentarioMultimedia() != null) {
             dto.setUrlMulimedia(comentario.getComentarioMultimedia().getUrlContenido());
+            dto.setMultimediaId(comentario.getComentarioMultimedia().getId());
         } else {
             dto.setUrlMulimedia(null);
+            dto.setMultimediaId(null);
         }
 
         return dto;
@@ -304,6 +322,45 @@ public class ComentarioService {
                 .orElseThrow(() -> new ComentarioNoEncontradoException("Respuesta no encontrado con ID: " + comentarioId));
 
         comentarioHijo.setLikes(comentarioHijo.getLikes()+1);
+        comentarioRepository.save(comentarioHijo);
+        publicacionInicio.getComentarios().add(comentarioPadre);
+        publicacionInicioRepositorio.save(publicacionInicio);
+    }
+    @Transactional
+    public void actualizarComentarioDislikes(Long publicacionId,Long comentarioId){
+        PublicacionInicio publicacionInicio = publicacionInicioRepositorio.findById(publicacionId)
+                .orElseThrow(() -> new PublicacionNoEncontradoException("Publicación no encontrada"));
+
+        Comentario comentarioInicio = publicacionInicio.getComentarios().stream()
+                .filter(comentario -> comentario.getId().equals(comentarioId))
+                .findFirst()
+                .orElseThrow(() -> new ComentarioNoEncontradoException("Comentario no encontrado con ID: " + comentarioId));
+        if (!comentarioInicio.getPublicacion().getId().equals(publicacionId)) {
+            throw new ComentarioNoEncontradoException("El comentario no pertenece a la publicación especificada");
+        }
+        comentarioInicio.setLikes(comentarioInicio.getLikes()-1);
+        publicacionInicio.getComentarios().add(comentarioInicio);
+        publicacionInicioRepositorio.save(publicacionInicio);
+        comentarioRepository.save(comentarioInicio);
+    }
+    public void actualizarContenidoDeComentarioRespuestaDislikes(Long publicacionId, Long parentId, Long comentarioId){
+        PublicacionInicio publicacionInicio = publicacionInicioRepositorio.findById(publicacionId)
+                .orElseThrow(() -> new PublicacionNoEncontradoException("Publicación no encontrada"));
+
+        Comentario comentarioPadre = publicacionInicio.getComentarios().stream()
+                .filter(comentario -> comentario.getId().equals(parentId))
+                .findFirst()
+                .orElseThrow(() -> new ComentarioNoEncontradoException("Comentario no encontrado con ID: " + parentId));
+
+        if (!comentarioPadre.getPublicacion().getId().equals(publicacionId)) {
+            throw new ComentarioNoEncontradoException("El comentario no pertenece a la publicación especificada");
+        }
+        Comentario comentarioHijo = comentarioPadre.getReplies().stream()
+                .filter(comentario -> comentario.getId().equals(comentarioId))
+                .findFirst()
+                .orElseThrow(() -> new ComentarioNoEncontradoException("Respuesta no encontrado con ID: " + comentarioId));
+
+        comentarioHijo.setLikes(comentarioHijo.getLikes()-1);
         comentarioRepository.save(comentarioHijo);
         publicacionInicio.getComentarios().add(comentarioPadre);
         publicacionInicioRepositorio.save(publicacionInicio);

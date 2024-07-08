@@ -1,5 +1,6 @@
 package dbp.connect.PublicacionAlojamiento.Domain;
 
+import com.uber.h3core.H3Core;
 import dbp.connect.Alojamiento.Domain.Alojamiento;
 import dbp.connect.Alojamiento.Infrastructure.AlojamientoRepositorio;
 import dbp.connect.AlojamientoMultimedia.DTOS.ResponseMultimediaDTO;
@@ -13,14 +14,20 @@ import dbp.connect.PublicacionInicioMultimedia.Domain.PublicacionInicioMultimedi
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PublicacionAlojamientoServicio {
@@ -94,6 +101,24 @@ public class PublicacionAlojamientoServicio {
             throw new PublicacionAlojamientoNotFoundException("Publicacion no existe");
         }
     }
+    public List<ResponsePublicacionAlojamiento> obtenerPublicacionesPorRangoDeCalificacion(Integer minRating, Integer maxRating) {
+        List<PublicacionAlojamiento> publicaciones = publicacionAlojamientoRepositorio.findByCalificacionBetween(minRating, maxRating);
+        return publicaciones.stream()
+                .map(this::converToDTO) // Assuming there's a method `convertToDTO`
+                .collect(Collectors.toList());
+    }
+    /*public Page<ResponsePublicacionAlojamiento> buscarPorUbicacion(double latitud, double longitud, double radio, int page, int sz) throws IOException {
+        Pageable pageable = PageRequest.of(page, sz);
+
+        H3Core h3 = H3Core.newInstance();
+        int resolucion = 12; // or any other resolution that fits your needs
+        long indiceH3 = h3.geoToH3(latitud, longitud, resolucion);
+        List<Long> indicesCercanos = h3.kRing(indiceH3, (int) radio); // Adjust the radio accordingly
+
+        Page<PublicacionAlojamiento> publicaciones = publicacionAlojamientoRepositorio.findByH3IndexIn(indicesCercanos, pageable);
+        return publicaciones.map(this::converToDTO);
+    }*/
+
     private ResponsePublicacionAlojamiento converToDTO(PublicacionAlojamiento publicacionAlojamiento){
         ResponsePublicacionAlojamiento response = new ResponsePublicacionAlojamiento();
         response.setId(publicacionAlojamiento.getId());
@@ -120,6 +145,7 @@ public class PublicacionAlojamientoServicio {
         }
         return response;
     }
+
 
     private ResponseMultimediaDTO converToDto(AlojamientoMultimedia multimedia){
         ResponseMultimediaDTO dto = new ResponseMultimediaDTO();

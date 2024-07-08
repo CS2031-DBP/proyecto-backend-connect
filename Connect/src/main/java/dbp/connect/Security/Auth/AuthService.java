@@ -84,7 +84,6 @@ public class AuthService {
         user.setEdad(authRegisterRequest.getEdad());
         user.setTelefono(authRegisterRequest.getTelefono());
         user.setGenero(authRegisterRequest.getGenero());
-        user.setDireccion(authRegisterRequest.getDireccion());
         user.setCiudad(authRegisterRequest.getCiudad());
         user.setPais(authRegisterRequest.getPais());
         user.setEmail(authRegisterRequest.getEmail());

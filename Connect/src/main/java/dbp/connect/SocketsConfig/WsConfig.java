@@ -1,4 +1,4 @@
-package dbp.connect.SocketsConfi;
+package dbp.connect.SocketsConfig;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

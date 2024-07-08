@@ -26,12 +26,10 @@ public class Like implements Serializable {
     private Long id;
     @Column(name = "fecha_like")
     private ZonedDateTime fechaLike;
-
     @ManyToOne
     @JsonIgnoreProperties("likes")
     private PublicacionInicio publicacionInicio;
     @ManyToOne
     @JsonIgnoreProperties("usuarioLikes")
     private User usuarioLike;
-
 }

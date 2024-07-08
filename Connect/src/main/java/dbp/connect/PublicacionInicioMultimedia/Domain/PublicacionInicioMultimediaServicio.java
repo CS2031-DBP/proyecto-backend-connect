@@ -7,6 +7,7 @@ import dbp.connect.PublicacionInicio.Infrastructure.PublicacionInicioRepositorio
 import dbp.connect.PublicacionInicioMultimedia.DTOS.MultimediaInicioDTO;
 import dbp.connect.PublicacionInicioMultimedia.Infrastructure.PublicacionInicioMultimediaRepositorio;
 import dbp.connect.S3.StorageService;
+import dbp.connect.Security.Utils.AuthorizationUtils;
 import dbp.connect.Tipo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class PublicacionInicioMultimediaServicio {
     private StorageService storageService;
     private static Long idCounter =0L;
 
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
 
     public PublicacionInicioMultimedia guardarArchivo(MultipartFile archivo) {
         try {

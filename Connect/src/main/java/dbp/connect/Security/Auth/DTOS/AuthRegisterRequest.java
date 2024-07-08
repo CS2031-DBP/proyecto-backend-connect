@@ -18,6 +18,5 @@ public class AuthRegisterRequest {
     private String genero;
     private String ciudad;
     private String pais;
-    private String direccion;
-    private Integer telefono;
+   private Integer telefono;
 }

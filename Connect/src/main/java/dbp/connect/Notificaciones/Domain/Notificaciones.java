@@ -1,9 +1,11 @@
 package dbp.connect.Notificaciones.Domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import dbp.connect.User.Domain.User;
+import jakarta.persistence.*;
+
+import java.time.ZonedDateTime;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,9 +21,18 @@ public class Notificaciones {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String type;
+
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
+
     private String message;
-    private Date date;
-    private String destinatario;
-    private String remitente;
+    private ZonedDateTime date;
+
+    @ManyToOne
+    @JsonBackReference
+    private User usuario;
+
+    private Long relatedEntityId;
+
 }
+

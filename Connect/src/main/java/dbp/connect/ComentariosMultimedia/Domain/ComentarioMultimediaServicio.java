@@ -116,13 +116,7 @@ public class ComentarioMultimediaServicio {
             throw new EntityNotFoundException("Coomentario no encontrado con id: " + comentarioId);
         }
     }
-    private ResponseComMultimediaDTO mapResponseMultimediaDTO(ComentarioMultimedia multimedia){
-        ResponseComMultimediaDTO multimediaDTO = new ResponseComMultimediaDTO();
-        multimediaDTO.setId(multimedia.getId());
-        multimediaDTO.setTipo(multimedia.getTipo());
-        multimediaDTO.setUrl_contenido(multimedia.getUrlContenido());
-        return multimediaDTO;
-    }
+
 
     private String serializarId(Long imagenId){
         return "imagen-" + imagenId;

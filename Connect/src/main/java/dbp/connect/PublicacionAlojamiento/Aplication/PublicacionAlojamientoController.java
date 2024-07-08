@@ -6,14 +6,18 @@ import dbp.connect.PublicacionAlojamiento.DTOS.ResponsePublicacionAlojamiento;
 import dbp.connect.PublicacionAlojamiento.Domain.PublicacionAlojamientoServicio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
+import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 @RestController
-@RequestMapping("/publicacionAlojamiento")
+@RequestMapping("/api/publicacionAlojamiento")
 public class PublicacionAlojamientoController {
     @Autowired
     private PublicacionAlojamientoServicio publicacionAlojamientoServicio;
@@ -58,4 +62,40 @@ public class PublicacionAlojamientoController {
         publicacionAlojamientoServicio.eliminarPublicacion(publicacionId);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/publicaciones/rango-calificacion")
+    public ResponseEntity<List<ResponsePublicacionAlojamiento>> obtenerPublicacionesPorRangoDeCalificacion(@RequestParam Integer minRating, @RequestParam Integer maxRating) {
+        List<ResponsePublicacionAlojamiento> publicacionDTOs = publicacionAlojamientoServicio.obtenerPublicacionesPorRangoDeCalificacion(minRating, maxRating);
+        return ResponseEntity.ok(publicacionDTOs);
+    }/*
+    @GetMapping("/buscarPorUbicacion")
+    public ResponseEntity<Page<ResponsePublicacionAlojamiento>> buscarPorUbicacion(
+            @RequestParam double latitud,
+            @RequestParam double longitud,
+            @RequestParam double radio,
+            @RequestParam int page,
+            @RequestParam int size) throws IOException {
+        Page<ResponsePublicacionAlojamiento> publicaciones = publicacionAlojamientoServicio.buscarPorUbicacion(latitud, longitud, radio, page, size);
+        return ResponseEntity.ok(publicaciones);
+    }
+    /*
+    @PreAuthorize("hasRole('ROLE_HOST')")
+    @PatchMapping("/{publicacionId}/actualizar")
+    public ResponseEntity<Void> actualizarPublicacion(@PathVariable Long publicacionId, @RequestBody ActualizarPublicacionDTO actualizarPublicacionDTO) {
+        publicacionAlojamientoServicio.actualizarPublicacion(publicacionId, actualizarPublicacionDTO);
+        return ResponseEntity.ok().build();
+    }
+
+
+
+    @GetMapping("/recientes")
+    public ResponseEntity<List<ResponsePublicacionAlojamiento>> listarRecientes() {
+        List<ResponsePublicacionAlojamiento> publicacionesRecientes = publicacionAlojamientoServicio.listarRecientes();
+        return ResponseEntity.ok(publicacionesRecientes);
+    }
+
+    @GetMapping("/buscarPorPalabrasClave")
+    public ResponseEntity<List<ResponsePublicacionAlojamiento>> buscarPorPalabrasClave(@RequestParam String palabrasClave) {
+        List<ResponsePublicacionAlojamiento> publicaciones = publicacionAlojamientoServicio.buscarPorPalabrasClave(palabrasClave);
+        return ResponseEntity.ok(publicaciones);
+    }*/
 }

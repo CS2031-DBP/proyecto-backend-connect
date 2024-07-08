@@ -20,4 +20,6 @@ public class ComentarioRespuestaDTO {
     private Integer likes;
     private String urlMulimedia;
     private ZonedDateTime fechaCreacion;
+    private Long id;
+    private String multimediaId;
 }

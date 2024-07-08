@@ -39,7 +39,8 @@ public class AuthorizationUtils {
                 ()-> new EntityNotFoundException("Usuario no encontrado"));
         User usuarioId = usuarioRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException("Usuario no encontrado"));
-        if (!Objects.equals(usuarioEmail.getEmail(), usuarioId.getEmail()) && !Objects.equals(usuarioEmail.getRole().toString(), "ADMIN"))
+        if (!Objects.equals(usuarioEmail.getEmail(), usuarioId.getEmail()) &&
+                !Objects.equals(usuarioEmail.getRole().toString(), "HOST"))
             throw new AccessDeniedException("No estas autorizado");
     }
 

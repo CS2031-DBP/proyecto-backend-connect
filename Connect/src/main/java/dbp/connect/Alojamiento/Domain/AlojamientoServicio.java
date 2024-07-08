@@ -10,6 +10,7 @@ import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimedia;
 import dbp.connect.AlojamientoMultimedia.Domain.AlojamientoMultimediaServicio;
 import dbp.connect.AlojamientoMultimedia.Infrastructure.AlojamientoMultimediaRepositorio;
 import dbp.connect.TipoMoneda;
+import dbp.connect.Security.Utils.AuthorizationUtils;
 import dbp.connect.User.Domain.User;
 import dbp.connect.User.Infrastructure.UserRepository;
 import jakarta.transaction.Transactional;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -41,9 +43,11 @@ public class AlojamientoServicio {
     private UserRepository userRepository;
     @Autowired
     private AlojamientoMultimediaRepositorio alojamientoMultimediaRepositorio;
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
 
     @Transactional
-    public ResponseAlojamientoDTO guardarAlojamiento(AlojamientoRequest alojamiento) throws AlojamientoNotFound {
+    public ResponseAlojamientoDTO guardarAlojamiento(AlojamientoRequest alojamiento) throws AlojamientoNotFound, AccessDeniedException {
         Alojamiento alojamientoAux = new Alojamiento();
         if(alojamiento.getId()==null || alojamiento.getDescripcion()==null ||
         alojamiento.getLongitude()==null || alojamiento.getLatitude()==null  ){
@@ -51,6 +55,7 @@ public class AlojamientoServicio {
         }
         User currentPropietario = userRepository.findById(alojamiento.getPropietarioId()).
                 orElseThrow(()-> new RuntimeException("Propietario no encontrado"));
+        authorizationUtils.verifyUserAuthorization(currentPropietario.getEmail(), alojamiento.getPropietarioId());
         alojamientoAux.setId(alojamiento.getId());
         alojamientoAux.setPropietario(currentPropietario);
         alojamientoAux.setFechaPublicacion(LocalDateTime.now(ZoneId.systemDefault()));
@@ -59,6 +64,7 @@ public class AlojamientoServicio {
         alojamientoAux.setLatitude(alojamiento.getLatitude());
         alojamientoAux.setEstado(Estado.DISPONIBLE);
         alojamientoAux.setPrecio(alojamiento.getPrecio());
+
         for (MultipartFile archivo : alojamiento.getMultimedia()) {
             AlojamientoMultimedia multimedia = alojamientoMultimediaServicio.guardarArchivo(archivo);
             multimedia.setAlojamiento(alojamientoAux);

@@ -20,7 +20,6 @@ public class PublicacionAlojamiento {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "alojamientoP_id")
     private Alojamiento alojamientoP;
-
     @Column(name = "fecha")
     private ZonedDateTime fecha;
     @Column(name="titulo")
