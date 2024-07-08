@@ -1,6 +1,6 @@
 package dbp.connect.Friendship.Domain;
 
-import dbp.connect.Friendship.DTO.AmigoPersonalizado;
+//import dbp.connect.Friendship.DTO.AmigoPersonalizado;
 import dbp.connect.Friendship.DTO.AmigosDTO;
 import dbp.connect.Friendship.Infrastructure.FriendshipRepositorio;
 import dbp.connect.User.Domain.User;
@@ -118,19 +118,19 @@ public class FriendshipServicio {
         return friendshipRepositorio.findNonBlockedFriendsByUserId(userId, PageRequest.of(0, Integer.MAX_VALUE)).getTotalElements();
     }
     // Implementation in FriendshipServicio
-    public List<AmigoPersonalizado> searchFriendsByName(Long userId, String name) {
-        List<Friendship> friendships = friendshipRepositorio.searchByUserIdAndFriendName(userId, name);
-        List<AmigoPersonalizado> amigos = new ArrayList<>();
-        for (Friendship friendship : friendships) {
-            User friend = userId.equals(friendship.getUser().getId()) ? friendship.getFriend() : friendship.getUser();
-            AmigoPersonalizado amigo = new AmigoPersonalizado();
-            amigo.setUsuarioId(friend.getId());
-            amigo.setUserName(friend.getPrimerNombre() + " " + friend.getSegundoNombre());
-            amigo.setUserName(friend.getUsername());
-            amigos.add(amigo);
-        }
-        return amigos;
-    }
+//    public List<AmigoPersonalizado> searchFriendsByName(Long userId, String name) {
+//        List<Friendship> friendships = friendshipRepositorio.searchByUserIdAndFriendName(userId, name);
+//        List<AmigoPersonalizado> amigos = new ArrayList<>();
+//        for (Friendship friendship : friendships) {
+//            User friend = userId.equals(friendship.getUser().getId()) ? friendship.getFriend() : friendship.getUser();
+//            AmigoPersonalizado amigo = new AmigoPersonalizado();
+//            amigo.setUsuarioId(friend.getId());
+//            amigo.setUserName(friend.getPrimerNombre() + " " + friend.getSegundoNombre());
+//            amigo.setUserName(friend.getUsername());
+//            amigos.add(amigo);
+//        }
+//        return amigos;
+//    }
 
     private AmigosDTO mapToAmigosDTO(User user, ZonedDateTime fechaAmistad, Long friendshipId) {
         AmigosDTO dto = new AmigosDTO();

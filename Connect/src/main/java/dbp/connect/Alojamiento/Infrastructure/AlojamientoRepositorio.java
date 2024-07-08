@@ -12,4 +12,6 @@ public interface AlojamientoRepositorio extends JpaRepository<Alojamiento, Long>
     Page<Alojamiento> findByPropietarioId(Long propietarioId, Pageable pageable);
 
     Page<Alojamiento> findByPropietarioIdAndEstado(Long propietarioId, Estado estado, Pageable pageable);
+
+    Page<Alojamiento> findAllByEstado(Estado estado, Pageable pageable);
 }
