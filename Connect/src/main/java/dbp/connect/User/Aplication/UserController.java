@@ -22,6 +22,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/user")
 public class UserController {
     @Autowired
