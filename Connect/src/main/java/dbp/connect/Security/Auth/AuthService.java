@@ -76,6 +76,7 @@ public class AuthService {
 
     private User mapear(AuthRegisterRequest authRegisterRequest) throws Exception {
         User user = new User();
+
         user.setPrimerNombre(authRegisterRequest.getPrimerNombre());
         user.setSegundoNombre(authRegisterRequest.getSegundoNombre());
         user.setPrimerApellido(authRegisterRequest.getPrimerApellido());

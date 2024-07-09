@@ -1,6 +1,7 @@
 package dbp.connect.Security.Auth.DTOS;
 
 import jakarta.persistence.Lob;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,7 @@ public class AuthRegisterRequest {
     private String primerApellido;
     private String segundoApellido;
     private Integer edad;
+    @Email
     private String email;
     private String password;
     private String role;
