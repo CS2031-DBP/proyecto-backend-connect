@@ -9,12 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173/")
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
     private AuthService authService;
     @PostMapping("/login")
+    @CrossOrigin(origins = "http://localhost:5173/")
     public ResponseEntity<AuthJwtResponse> login(@RequestBody @Valid AuthLoginRequest authLoginRequest) {
         return ResponseEntity.ok(authService.login(authLoginRequest));
     }
